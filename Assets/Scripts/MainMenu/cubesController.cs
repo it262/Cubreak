@@ -6,9 +6,9 @@ public class cubesController : MonoBehaviour {
 
 	static SocketObject so;
 
-    public GameObject prefab;
+    public GameObject prefab,cube;
 
-	public GameObject cube,sphire;
+	private GameObject sphire;
 
     List<GameObject> cubes = new List<GameObject>();
 
@@ -26,7 +26,7 @@ public class cubesController : MonoBehaviour {
 
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 11; j++) {
-				GameObject g =  (GameObject)Instantiate (cube, new Vector3 (-7 + i, 0, 5 - j),Quaternion.identity);
+				GameObject g = (GameObject)Instantiate(cube, new Vector3 (-7 + i, 0, 5 - j),Quaternion.identity);
 				g.transform.parent = this.gameObject.transform;
 				cubes.Add(g);
 				SettingColor (g,Random.Range(0,5));
