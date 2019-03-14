@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IntermittentChaos
 {
-	float n;
+	private float n;
 
 	public IntermittentChaos(){
 		n = Random.Range (0, 1f);
