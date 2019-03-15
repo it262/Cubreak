@@ -11,7 +11,7 @@ public class NameIndicater : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		GetComponent<TextMesh> ().text = transform.parent.gameObject.GetComponent<player> ().name;
+		GetComponent<TextMesh> ().text = transform.parent.gameObject.GetComponent<PlayerScript> ().name;
 		if (Camera.main) {
 			transform.LookAt (Camera.main.transform.position);
 		}

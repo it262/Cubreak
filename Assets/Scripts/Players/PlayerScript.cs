@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class player : MonoBehaviour {
+public class PlayerScript : MonoBehaviour {
 
 	public State state;
 
@@ -17,9 +17,7 @@ public class player : MonoBehaviour {
     private Vector3 velocity;
 	private float defaultSpeed = 5.0f;
 	private float moveSpeed;
-	public head h;
     public fpsCamera fpsCam;
-	public shoot gun;
 
 	public bool isPlayer = false;
 

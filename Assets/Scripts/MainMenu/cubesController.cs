@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class cubesController : MonoBehaviour {
+public class CubesController : MonoBehaviour {
 
 	static SocketObject so;
 
@@ -12,27 +12,18 @@ public class cubesController : MonoBehaviour {
 
     List<GameObject> cubes = new List<GameObject>();
 
+	[SerializeField]int _X=15,_Z=11;
+
     //public Material[] materials;
 	//public Material materials;
 
     private float intensity = 1;
 
-    public bool isStartGame = false;
-
 	// Use this for initialization
 	void Start () {
 
 		so = SocketObject.Instance;
-
-		for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 11; j++) {
-				GameObject g = (GameObject)Instantiate(cube, new Vector3 (-7 + i, 0, 5 - j),Quaternion.identity);
-				g.transform.parent = this.gameObject.transform;
-				cubes.Add(g);
-				SettingColor (g,Random.Range(0,5));
-				g.GetComponent<cubeModel> ().setColorDef();
-			}
-		}
+		CubeSetting ();
 	}
 	
 	// Update is called once per frame
@@ -41,19 +32,10 @@ public class cubesController : MonoBehaviour {
 			sphire = (GameObject)Instantiate (prefab,
 				new Vector3 (0, 0, 0),
 				Quaternion.identity);
-			isStartGame = false;
 		} else if(!so.connecting && GameObject.FindGameObjectsWithTag ("ChangeColorArea_Start").Length > 0){
 			Destroy (sphire);
-			foreach (GameObject c in cubes) {
-				c.GetComponent<cubeModel> ().isStart = false;
-			}
 		}
 	}
-
-    public void startGame()
-    {
-        isStartGame = true;
-    }
 
 	void SettingColor(GameObject obs,int n){
 		switch (n) {
@@ -78,5 +60,25 @@ public class cubesController : MonoBehaviour {
 				new Color (0, 1, 0));
 			break;
 		}
+	}
+
+	public void CubeSetting(){
+		for (int i = 0; i < _X; i++) {
+			for (int j = 0; j < _Z; j++) {
+				GameObject g = (GameObject)Instantiate(cube, new Vector3 (-7 + i, 0, 5 - j),Quaternion.identity);
+				g.transform.parent = this.gameObject.transform;
+				cubes.Add(g);
+				SettingColor (g,Random.Range(0,5));
+				g.GetComponent<CubeModel> ().setColorDef();
+				g.GetComponent<CubeModel> ().isStart = false;
+			}
+		}
+	}
+
+	public void GameStart(){
+		foreach (GameObject c in cubes) {
+			Destroy (c);
+		}
+		cubes.Clear ();
 	}
 }

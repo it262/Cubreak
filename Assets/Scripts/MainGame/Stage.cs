@@ -7,6 +7,8 @@ public class Stage : MonoBehaviour {
 
 	static DataWorker dw;
 
+	public GameObject ObsController;
+
 	public bool debug = false;
 
     public int half_zSection = 5;
@@ -18,7 +20,7 @@ public class Stage : MonoBehaviour {
     int[] zGridArray;
     int[] xGridArray;
 
-	[SerializeField]GameObject obCon;
+	public List<Vector2> spawnPoints = new List<Vector2> ();
 
     // Use this for initialization
     void Start () {
@@ -45,28 +47,16 @@ public class Stage : MonoBehaviour {
             xGridArray[i] = -1 * half_xSection + i;
         }
 
-		/*
-		if (debug) {
-			GameObject g = (GameObject)Instantiate (player);
-			g.GetComponent<player> ().isPlayer = true;
-			return;
-		}
-		*/
-
-
-		/*
-		List<string> keys = new List<string> ();
-		foreach (string id in so.GetComponent<DataWorker> ().players.Keys) {
-			keys.Add (id);
-		}
-		*/
+		GameObject obs = (GameObject)Instantiate (ObsController, Vector3.zero, Quaternion.identity);
+		obs.GetComponent<ObstacleControllSync> ().stage = this.gameObject;
+		dw.InstanceObsCon = obs;
 
 		List<Vector2> spawnPoints = new List<Vector2> ();
 		spawnPoints.Add (TargetSection(0,0));
 		spawnPoints.Add (TargetSection(xSection-1,zSection-1));
 		spawnPoints.Add (TargetSection(0,zSection-1));
 		spawnPoints.Add (TargetSection(xSection-1,0));
-		dw.PlayerCreate (obCon,spawnPoints);
+		dw.PlayerCreate (obs,spawnPoints);
 
 	}
 	

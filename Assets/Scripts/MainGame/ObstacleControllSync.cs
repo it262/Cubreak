@@ -20,7 +20,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	public float speed;
 
-	bool leady = false;
+	bool FPComplete = false;
 	bool send = false;
 
 	public Dictionary<string,string> first = new Dictionary<string,string>();
@@ -38,16 +38,18 @@ public class ObstacleControllSync : MonoBehaviour {
 		// -> FirstProcessing()
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
-		stage = GameObject.Find("Stage");
 	}
 
 	// Update is called once per frame
 	void Update () {
 
+		if (stage == null)
+			return;
+
 		if (stage.GetComponent<Stage>().debug)
 			return;
 
-		if (dw.leady && !leady) {
+		if (dw.leady && !FPComplete) {
 			FirstProcessing ();
 			return;
 		}
@@ -101,8 +103,9 @@ public class ObstacleControllSync : MonoBehaviour {
 
 			first.Clear ();
 			stateSync(0);
-			leady = true;
+			FPComplete = true;
 			send = false;
+			Debug.Log ("初期オブジェクト設置完了");
 		}
 
 	}
@@ -201,20 +204,17 @@ public class ObstacleControllSync : MonoBehaviour {
 		return master;
 	}
 
-	public void destroy(){
-	}
-
 	void stateSync(int s){
 		var data = new Dictionary<string,string> ();
 		data ["TYPE"] = "StateUpdate";
 		data ["state"] = s.ToString();
-		so.GetComponent<SocketObject> ().EmitMessage ("ToOwnRoom", data);
+		so.EmitMessage ("ToOwnRoom", data);
 	}
 
 
 	//targetTagが"いない"時にtrueを返す。フィールド上にobstacleが残っているかどうかを判定するのに使う。
 	bool isnt_There(string targetTag) {
-		if (!leady)
+		if (!FPComplete)
 			return false;
 		tagObjects = GameObject.FindGameObjectsWithTag(targetTag);
 		if (tagObjects.Length == 0){
@@ -246,6 +246,12 @@ public class ObstacleControllSync : MonoBehaviour {
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 1, 0));
 			break;
+		}
+	}
+
+	public void DestroyAll(){
+		foreach (GameObject obj in obstacle.Values) {
+			Destroy (obj);
 		}
 	}
 }

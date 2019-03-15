@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class sphereModel : MonoBehaviour
+public class SphereModel : MonoBehaviour
 {
 
     private float r;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class sphereController : MonoBehaviour {
+public class SphereController : MonoBehaviour {
 
     public GameObject Prefab;
 

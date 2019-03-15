@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class startSphere : MonoBehaviour {
+public class StartSphere : MonoBehaviour {
+
+	static DataWorker dw;
 
     private float r;
 
@@ -13,11 +15,14 @@ public class startSphere : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		
+		dw = DataWorker.Instance;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		if (dw.leady)
+			Destroy (this.gameObject);
 
         r = Mathf.Lerp(minimumR, maximumR, t);
         t = speed * Time.deltaTime;

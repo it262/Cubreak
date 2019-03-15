@@ -23,7 +23,7 @@ public class fpsCamera : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (!transform.root.gameObject.GetComponent<player>().isPlayer)
+		if (!transform.root.gameObject.GetComponent<PlayerScript>().isPlayer)
 			return;
 		
         float sensitivity = 5f; // いわゆるマウス感度

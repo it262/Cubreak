@@ -228,23 +228,23 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	public void FirstObs(SocketIOEvent e)
 	{
 		Debug.Log ("初期オブジェクト位置受信");
-		GameObject.Find ("ObstacleControll").GetComponent<ObstacleControllSync> ().first = new JSONObject (e.data.ToString ()).ToDictionary ();
+		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().first = new JSONObject (e.data.ToString ()).ToDictionary ();
 	}
 
 	public void Obs(SocketIOEvent e)
 	{
 		Debug.Log ("OBSデータ受信");
-		GameObject.Find ("ObstacleControll").GetComponent<ObstacleControllSync> ().obs = new JSONObject (e.data.ToString ()).ToDictionary ();
+		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().obs = new JSONObject (e.data.ToString ()).ToDictionary ();
 	}
 
 	public void DestroyObs(SocketIOEvent e)
 	{
-		GameObject.Find ("ObstacleControll").GetComponent<ObstacleControllSync> ().victim.Enqueue(new JSONObject (e.data.ToString ()).ToDictionary ());
+		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().victim.Enqueue(new JSONObject (e.data.ToString ()).ToDictionary ());
 	}
 
 	public void StateUpdate(SocketIOEvent e)
 	{
-		GameObject.Find ("ObstacleControll").GetComponent<ObstacleControllSync> ().state[new JSONObject (e.data.ToString ()).ToDictionary ()["id"]] = new JSONObject (e.data.ToString ()).ToDictionary ()["state"];
+		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().state[new JSONObject (e.data.ToString ()).ToDictionary ()["id"]] = new JSONObject (e.data.ToString ()).ToDictionary ()["state"];
 	}
 
 	public void Dead(SocketIOEvent e)

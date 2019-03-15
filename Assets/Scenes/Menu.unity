@@ -2432,6 +2432,32 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8186872356699063377, guid: 3e6801c9f0961f24a983aeb543ed78eb,
         type: 3}
+    - target: {fileID: 114575006882513960, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8,
+        type: 3}
+      propertyPath: StagePrefab
+      value: 
+      objectReference: {fileID: 3966307474001914548, guid: ddc015ce64d372d409f3271dfa66f708,
+        type: 3}
+    - target: {fileID: 114575006882513960, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8,
+        type: 3}
+      propertyPath: cubesController
+      value: 
+      objectReference: {fileID: 1554696693}
+    - target: {fileID: 114575006882513960, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8,
+        type: 3}
+      propertyPath: sphereController
+      value: 
+      objectReference: {fileID: 1253319183}
+    - target: {fileID: 114575006882513960, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8,
+        type: 3}
+      propertyPath: TitleCamera
+      value: 
+      objectReference: {fileID: 196483640}
+    - target: {fileID: 114575006882513960, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8,
+        type: 3}
+      propertyPath: TitleText
+      value: 
+      objectReference: {fileID: 1788317925}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}
@@ -3180,7 +3206,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 1106053352383112, guid: 616fdc9562a554a4c9644faee61f5d59, type: 3}
   cube: {fileID: 5143092747359337571, guid: 80283323b6837854bb1e7a7f3a03041d, type: 3}
-  isStartGame: 0
+  _X: 15
+  _Z: 11
 --- !u!4 &1554696695
 Transform:
   m_ObjectHideFlags: 0
@@ -8150,7 +8177,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1788317926}
   m_Layer: 0
-  m_Name: 3DText
+  m_Name: TitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

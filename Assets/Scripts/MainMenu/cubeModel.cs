@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class cubeModel : MonoBehaviour {
+public class CubeModel : MonoBehaviour {
 
+	static SocketObject so;
 	static DataWorker dw;
+	IntermittentChaos IChaos;
 
     Color color = new Color();
 
@@ -17,12 +19,17 @@ public class cubeModel : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
+		IChaos = new IntermittentChaos ();
 		StartCoroutine ("Chaos");
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (!so.connecting) {
+			isStart = false;
+		}
         if (isEnter || isStart)
         {
 
@@ -55,6 +62,9 @@ public class cubeModel : MonoBehaviour {
         gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor",
 			new Color(color.r, color.g, color.b) * intensity);
 
+		if(dw.playing)
+			CheckDestroy ();
+
 	}
 
     private void OnTriggerEnter(Collider other)
@@ -75,17 +85,16 @@ public class cubeModel : MonoBehaviour {
         color = gameObject.GetComponent<Renderer>().material.GetColor("_EmissionColor");
     }
 
+	void CheckDestroy(){
+		if (Vector3.Distance (Vector3.zero, transform.position) > 50f) {
+			Destroy (this.gameObject);
+		}
+	}
+
 	IEnumerator Chaos(){
 		while (true) {
 			if (dw.searching) {
-				if (intensity > 0.5f) {
-					chaos = chaos + 2 * chaos * chaos;
-				} else {
-					chaos = chaos - 2 * (1 - chaos) * (1 - chaos);
-				}
-				if (chaos < 0.05f || chaos > 0.995) {
-					chaos = Random.Range (0.1f, 0.9f);
-				}
+				chaos = IChaos.getChaos (intensity);
 			}
 			yield return new WaitForSeconds (0.1f);
 		}

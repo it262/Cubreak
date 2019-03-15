@@ -24,6 +24,7 @@ public class ButtonTest : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (this.gameObject.name.Equals ("Start")){
+			transform.Find ("Text").gameObject.GetComponent<Text> ().text = (dw.searching)? "Cansel":"Start";
 			if (!so.connecting || name.GetComponent<Text> ().text.Equals ("")) {
 				GetComponent<Button> ().interactable = false;
 			} else {

@@ -9,7 +9,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 	public int MAX = 2;
 
-	[SerializeField]GameObject PlayerPrefab;
+	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText;
 
 	public Dictionary<string,Vector3> posSync = new Dictionary<string,Vector3>();
 	public Dictionary<string,Vector2> rotSync = new Dictionary<string,Vector2>();
@@ -21,13 +21,15 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public JSONObject roomState;
 	public Dictionary<string,GameObject> players = new Dictionary<string,GameObject> ();
 
-	bool playing = false;
+	public bool playing = false;
 
 	public Room myRoom;
 
 	public bool searching,leady,wait;
 
 	public int score;
+
+	public GameObject InstanceStage,InstanceObsCon;
 
 	// Use this for initialization
 	void Start () {
@@ -47,7 +49,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			if (hitQue.Count > 0) {
 				d = hitQue.Dequeue ();
 				GameObject g = players [d ["trg"].ToString ()];
-				if (g.GetComponent<player> ().state.damage (int.Parse (d ["damage"]))) {
+				if (g.GetComponent<PlayerScript> ().state.damage (int.Parse (d ["damage"]))) {
 					if (d ["trg"].ToString ().Equals (GetComponent<SocketObject> ().id)) {
 						disconnectUser (d ["trg"].ToString ());
 					}
@@ -65,8 +67,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 			if (players.Count == 1) {
 				score += 300;
-				DataClear ();
-				SceneManager.LoadScene (0);
+				MenuSetting ();
 			}
 
 
@@ -94,10 +95,18 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 				playing = true;
 				Debug.Log ("Start[ルーム名：" + myRoom.roomName + "/人数：" + players.Count + "]");
 				searching = false;
-				SceneManager.LoadScene (1);
+				GameSettings ();
 			}
 		}
 			
+	}
+
+	void GameSettings(){
+		TitleText.SetActive (false);
+		TitleCamera.SetActive (false);
+		sphereController.SetActive (false);
+		cubesController.GetComponent<CubesController> ().GameStart ();
+		InstanceStage = (GameObject)Instantiate (StagePrefab,Vector3.zero,Quaternion.identity);
 	}
 
 	public void PlayerCreate(GameObject obCon,List<Vector2> pos){
@@ -108,18 +117,33 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			obCon.GetComponent<ObstacleControllSync> ().state.Add (data.Key, "0");
 			GameObject g = (GameObject)Instantiate (PlayerPrefab,new Vector3(pos[cnt-1].x,5,pos[cnt-1].y),Quaternion.identity);
 			if (GetComponent<SocketObject> ().id.Equals (data.Key)) {
-				g.GetComponent<player> ().isPlayer = true;
+				TitleCamera.SetActive (false);
+				g.GetComponent<PlayerScript> ().isPlayer = true;
 				g.tag = "Player";
-				g.GetComponent<player> ().damage = GameObject.Find ("Image");
+				g.GetComponent<PlayerScript> ().damage = GameObject.Find ("Image");
 			} else {
-				g.GetComponent<player> ().cam.GetComponent<Camera> ().enabled = false;
+				g.GetComponent<PlayerScript> ().cam.GetComponent<Camera> ().enabled = false;
 				g.tag = "Others";
 			}
-			g.GetComponent<player> ().id = data.Key;
-			g.GetComponent<player> ().name = data.Value;
+			g.GetComponent<PlayerScript> ().id = data.Key;
+			g.GetComponent<PlayerScript> ().name = data.Value;
 			players.Add (data.Key, g);
 		}
 		leady = true;
+	}
+
+	void MenuSetting(){
+		Destroy (InstanceStage);
+		InstanceObsCon.GetComponent<ObstacleControllSync> ().DestroyAll ();
+		Destroy (InstanceObsCon);
+		foreach (GameObject data in players.Values) {
+			Destroy (data);
+		}
+		DataClear ();
+		TitleCamera.SetActive (true);
+		TitleText.SetActive (true);
+		sphereController.SetActive (true);
+		cubesController.GetComponent<CubesController> ().CubeSetting ();
 	}
 
 	public void disconnectUser(string id){
@@ -127,10 +151,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		data ["TYPE"] = "Dead";
 		data ["id"] = id;
 		GetComponent<SocketObject> ().EmitMessage ("ToOwnRoom", data);
-		score += (players.Count > 2) ? 150 :
-												(players.Count > 3) ? 50 : 0;
-		DataClear ();
-		SceneManager.LoadScene (0);
+		score += (players.Count > 2) ? 150 :(players.Count > 3) ? 50 : 0;
+		MenuSetting ();
 	}
 
 	public void exclusion(string id){
@@ -158,6 +180,9 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		roomQue.Clear ();
 		hitQue.Clear ();
 		players.Clear ();
+
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.SetCursor (null,Vector2.zero,CursorMode.ForceSoftware);
 
 	}
 }
