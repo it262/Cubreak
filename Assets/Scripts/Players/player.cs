@@ -53,12 +53,17 @@ public class player : MonoBehaviour {
 
 			if (dw.posSync.ContainsKey (id)) {
 				Vector3 toPos = dw.posSync [id];
-				if (Vector3.Distance (transform.position, toPos) > 0) {
+				/*
+				if (Vector3.Distance (transform.position, toPos) > 0.05f) {
 					transform.position = Vector3.Lerp (transform.position, toPos, 0.8f);
 				} else {
 					transform.position = toPos;
 					dw.posSync.Remove (id);
 				}
+				*/
+				transform.position = toPos;
+				dw.posSync.Remove (id);
+
 			}
 
 			if (dw.rotSync.ContainsKey (id)) {
@@ -66,13 +71,13 @@ public class player : MonoBehaviour {
 				Quaternion head = Quaternion.Euler(0,toRot.x,0);
 				Quaternion body = Quaternion.Euler(0,toRot.y,0);
 
-				if (Quaternion.Angle (headBone.transform.rotation, head) > 0) {
+				if (Quaternion.Angle (headBone.transform.rotation, head) > 0.05f) {
 					headBone.transform.localRotation = Quaternion.Lerp (headBone.transform.localRotation, head, 0.8f);
 				} else {
 					headBone.transform.localRotation = head;
 				}
 
-				if (Quaternion.Angle (transform.rotation, body) > 0) {
+				if (Quaternion.Angle (transform.rotation, body) > 0.05f) {
 					transform.rotation = Quaternion.Lerp (transform.rotation, body, 0.8f);
 				} else {
 					transform.rotation = body;
@@ -188,7 +193,7 @@ public class player : MonoBehaviour {
 					data ["TYPE"] = "Rot";
 					data ["bodyY"] = transform.rotation.eulerAngles.y.ToString();
 					data ["headY"] = headBone.transform.localRotation.eulerAngles.y.ToString();
-					so.GetComponent<SocketObject> ().EmitMessage ("ToOwnRoom", data);
+					so.EmitMessage ("ToOwnRoom", data);
 					Debug.Log ("Rotation送信");
 					bHead = headBone.transform.localRotation;
 					bBody = transform.rotation;
