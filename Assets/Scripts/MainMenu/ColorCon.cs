@@ -13,7 +13,7 @@ public class ColorCon : MonoBehaviour {
 	List<GameObject> obs = new List<GameObject>();
 	List<Color> def = new List<Color> ();
 
-	public float intensity = 999;
+	public float intensity = 0;
 
 	// Use this for initialization
 	void Start () {
