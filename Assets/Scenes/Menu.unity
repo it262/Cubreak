@@ -2640,7 +2640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290464e3d8fabfa4a8970eec63ad8fd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 1983029688808996, guid: 2e8820ee32f3cd44cba1fbedb0044727, type: 3}
+  prefab: {fileID: 1106053352383112, guid: 616fdc9562a554a4c9644faee61f5d59, type: 3}
   cube: {fileID: 5143092747359337571, guid: 80283323b6837854bb1e7a7f3a03041d, type: 3}
   isStartGame: 0
 --- !u!4 &1554696695
