@@ -210,13 +210,15 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	{
 		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
 		GetComponent<DataWorker>().posSync.Add(d["id"],new Vector3(float.Parse(d["x"]),float.Parse(d["y"]),float.Parse(d["z"])));
+        Debug.Log("ポジション受信");
 	}
 
 	public void Rot(SocketIOEvent e)
 	{
 		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
 		GetComponent<DataWorker>().rotSync.Add(d["id"],new Vector2(float.Parse(d["headY"]),float.Parse(d["bodyY"])));
-	}
+        Debug.Log("ローテーション受信");
+    }
 
 	public void Hit(SocketIOEvent e)
 	{
