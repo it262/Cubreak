@@ -53,21 +53,6 @@ public class player : MonoBehaviour {
 
 			if (dw.posSync.ContainsKey (id)) {
 				Vector3 toPos = dw.posSync [id];
-<<<<<<< HEAD
-				if (Vector3.Distance (transform.position, toPos) > 0.05f) {
-                    transform.position = toPos;
-                }
-                else {
-=======
-				/*
-				if (Vector3.Distance (transform.position, toPos) > 0.05f) {
-					transform.position = Vector3.Lerp (transform.position, toPos, 0.8f);
-				} else {
->>>>>>> 49334e5c6026521dedae39dfcf50be3c936ee4d3
-					transform.position = toPos;
-					dw.posSync.Remove (id);
-				}
-				*/
 				transform.position = toPos;
 				dw.posSync.Remove (id);
 
@@ -75,34 +60,14 @@ public class player : MonoBehaviour {
 
 			if (dw.rotSync.ContainsKey (id)) {
 				Vector2 toRot = dw.rotSync [id];
-				Quaternion head = Quaternion.Euler(0,toRot.x,0);
-				Quaternion body = Quaternion.Euler(0,toRot.y,0);
+				Quaternion head = Quaternion.Euler (0, toRot.x, 0);
+				Quaternion body = Quaternion.Euler (0, toRot.y, 0);
 
-				if (Quaternion.Angle (headBone.transform.rotation, head) > 0.05f) {
-<<<<<<< HEAD
-                    headBone.transform.localRotation = head;
-                } else {
-					headBone.transform.localRotation = head;
-				}
-
-				if (Quaternion.Angle (transform.rotation, body) > 0) {
-                    transform.rotation = body;
-                } else {
-=======
-					headBone.transform.localRotation = Quaternion.Lerp (headBone.transform.localRotation, head, 0.8f);
-				} else {
-					headBone.transform.localRotation = head;
-				}
-
-				if (Quaternion.Angle (transform.rotation, body) > 0.05f) {
-					transform.rotation = Quaternion.Lerp (transform.rotation, body, 0.8f);
-				} else {
->>>>>>> 49334e5c6026521dedae39dfcf50be3c936ee4d3
-					transform.rotation = body;
-					dw.rotSync.Remove (id);
-				}
-
+				headBone.transform.localRotation = head;
+				transform.rotation = body;
+				dw.rotSync.Remove (id);
 			}
+
 			exitPlayer ();
 			return;
 		}
