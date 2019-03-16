@@ -65,7 +65,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			*/
 
 
-			if (players.Count == 1) {
+			if ((MAX!=1) &&(players.Count == 1)) {
 				score += 300;
 				MenuSetting ();
 			}
@@ -122,7 +122,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 				g.tag = "Player";
 				g.GetComponent<PlayerScript> ().damage = GameObject.Find ("Image");
 			} else {
-				g.GetComponent<PlayerScript> ().cam.GetComponent<Camera> ().enabled = false;
+				g.GetComponent<PlayerScript> ().cam.SetActive(false);
 				g.tag = "Others";
 			}
 			g.GetComponent<PlayerScript> ().id = data.Key;

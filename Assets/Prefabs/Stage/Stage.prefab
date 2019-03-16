@@ -112,3 +112,4 @@ MonoBehaviour:
   half_xSection: 20
   zSection: 0
   xSection: 0
+  spawnPoints: []

@@ -12,7 +12,7 @@ public class PlayerScript : MonoBehaviour {
 	public static DataWorker dw;
 	public string id,name;
 
-	[SerializeField]GameObject headBone;
+	public GameObject headBone;
 
     private Vector3 velocity;
 	private float defaultSpeed = 5.0f;

@@ -7,6 +7,7 @@ public class ObsUpdate : MonoBehaviour
 
 	static SocketObject so;
     public LayerMask mask;
+	private float preSpeed = 0;
     public float speed;
 
 	public int id;
@@ -44,6 +45,7 @@ public class ObsUpdate : MonoBehaviour
 					);
 				}
                 gameObject.tag = "fallenObstacle";
+				preSpeed = 0;
             }
             else {
                 fallen();
@@ -67,7 +69,8 @@ public class ObsUpdate : MonoBehaviour
     //落とす関数。今回は簡略化。
     private void fallen()
     {
-        transform.Translate(0, -speed * Time.deltaTime, 0);
+		preSpeed += 0.1f;
+		transform.Translate(0, -preSpeed * Time.deltaTime, 0);
     }
 
     private void OnCollisionEnter(Collision collision)

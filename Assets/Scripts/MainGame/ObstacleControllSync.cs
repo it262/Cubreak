@@ -7,7 +7,7 @@ public class ObstacleControllSync : MonoBehaviour {
 	static SocketObject so;
 	static DataWorker dw;
 
-	public GameObject obstaclePrefab;
+	public GameObject obstaclePrefab,SummonPref;
 
 	public Material emit;
 
@@ -19,6 +19,8 @@ public class ObstacleControllSync : MonoBehaviour {
 	GameObject[] tagObjects;
 
 	public float speed;
+
+	private int _Y = 30;
 
 	bool FPComplete = false;
 	bool send = false;
@@ -98,7 +100,9 @@ public class ObstacleControllSync : MonoBehaviour {
 				obs.gameObject.tag = "fallenObstacle";
 				obstacle.Add (idCounter, obs);
 				obs.GetComponent<ObsUpdate> ().id = idCounter++;
-				SettingColor (obs, int.Parse (first ["color" + i]));
+				Color color = SettingColor (obs, int.Parse (first ["color" + i]));
+				GameObject summon =  (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
+
 			}
 
 			first.Clear ();
@@ -178,11 +182,13 @@ public class ObstacleControllSync : MonoBehaviour {
 					for (int j = 0; j < z_width; j++) {
 						for (int k = 0; k < y_width; k++) {
 							GameObject obs = (GameObject)Instantiate (obstaclePrefab,
-								new Vector3 (targetSection.x + i, 10f - j, targetSection.y/*z*/ - k),
+								new Vector3 (targetSection.x + i, _Y - j, targetSection.y/*z*/ - k),
 								Quaternion.identity);
 							obstacle.Add (idCounter, obs);
 							obs.GetComponent<ObsUpdate> ().id = idCounter++;
-							SettingColor (obs, int.Parse (c [cnt++].ToString()));
+							Color color = SettingColor (obs, int.Parse (c [cnt++].ToString()));
+							GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
+							summon.GetComponent<ParticleSystem> ().startColor = color;
 						}
 					}
 				}
@@ -224,29 +230,35 @@ public class ObstacleControllSync : MonoBehaviour {
 		}
 	}
 
-	void SettingColor(GameObject obs,int n){
+	Color SettingColor(GameObject obs,int n){
 		switch (n) {
 		case 0:
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 0, 1));
+			return new Color (1,0,1);
 			break;
 		case 1:
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 0, 0));
+			return new Color (1,0,0);
 			break;
 		case 2:
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 0, 1));
+			return new Color (0,0,1);
 			break;
 		case 3:
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 1, 0));
+			return new Color (1,1,0);
 			break;
 		case 4:
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 1, 0));
+			return new Color (0,1,0);
 			break;
 		}
+		return new Color (0,0,0);
 	}
 
 	public void DestroyAll(){

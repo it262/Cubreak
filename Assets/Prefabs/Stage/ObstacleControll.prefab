@@ -68,6 +68,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 1259663811491254, guid: 5b78c348033ef054fac54329e7a0162e,
     type: 3}
+  SummonPref: {fileID: 8269553044903239756, guid: eee3a8a510175f34292a8c519cc04d1d,
+    type: 3}
   emit: {fileID: 2100000, guid: 1d7a9d0511a1b4c4b91377300e510094, type: 2}
   xTarget: 0
   zTarget: 0
