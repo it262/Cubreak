@@ -30,6 +30,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public int score;
 
 	public GameObject InstanceStage,InstanceObsCon;
+	public GameObject Menu;
 
 	// Use this for initialization
 	void Start () {
@@ -144,6 +145,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		TitleText.SetActive (true);
 		sphereController.SetActive (true);
 		cubesController.GetComponent<CubesController> ().CubeSetting ();
+		Menu.SetActive (true);
 	}
 
 	public void disconnectUser(string id){

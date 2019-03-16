@@ -16,6 +16,8 @@ public class MenuController : MonoBehaviour
     {
 		if (dw.playing) {
 			GetComponent<RectTransform> ().localPosition = Vector3.Lerp (GetComponent<RectTransform> ().localPosition, new Vector3 (0, -150f, 0), 0.8f);
+			if (GetComponent<RectTransform> ().localPosition.y < 149f)
+				this.gameObject.SetActive (false);
 		} else {
 			GetComponent<RectTransform> ().localPosition = Vector3.Lerp (GetComponent<RectTransform> ().localPosition, new Vector3 (0, 0, 0), 0.8f);
 		}
