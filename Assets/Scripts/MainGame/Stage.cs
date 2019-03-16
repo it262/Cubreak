@@ -32,7 +32,7 @@ public class Stage : MonoBehaviour {
         zScale = zSection / 10.0f;
         xScale = xSection / 10.0f;
         
-        transform.localScale = new Vector3(xScale, 1f, zScale);
+        transform.localScale = new Vector3(xScale*10, 1f, zScale*10);
 
         //targetObstacleを求めるための座標を格納する配列を作る。
         zGridArray = new int[zSection + 1];

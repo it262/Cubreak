@@ -51,7 +51,7 @@ MonoBehaviour:
       ambientOnly: 0
       highPrecision: 0
   screenSpaceReflection:
-    m_Enabled: 1
+    m_Enabled: 0
     m_Settings:
       reflection:
         blendType: 0
@@ -68,13 +68,13 @@ MonoBehaviour:
         fresnelFade: 1
         fresnelFadePower: 1
       screenEdgeMask:
-        intensity: 0.006
+        intensity: 0
   depthOfField:
     m_Enabled: 0
     m_Settings:
       focusDistance: 10
-      aperture: 1.4
-      focalLength: 201
+      aperture: 15.8
+      focalLength: 1
       useCameraFov: 0
       kernelSize: 0
   motionBlur:

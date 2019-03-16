@@ -35,11 +35,14 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	int idCounter = 0;
 
+	public float SendObsInterval = 0.5f;
+
 	// Use this for initialization
 	void Start(){
 		// -> FirstProcessing()
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
+		StartCoroutine("SendObsData");
 	}
 
 	// Update is called once per frame
@@ -95,13 +98,15 @@ public class ObstacleControllSync : MonoBehaviour {
 				string x = "x"+i;
 				string z = "z"+i;
 				GameObject obs = (GameObject)Instantiate (obstaclePrefab,
-					new Vector3 (float.Parse(first[x]), 0.5f, float.Parse(first[z])),
+					new Vector3 (float.Parse(first[x]), stage.transform.position.y+1f, float.Parse(first[z])),
 					                Quaternion.identity);
 				obs.gameObject.tag = "fallenObstacle";
 				obstacle.Add (idCounter, obs);
 				obs.GetComponent<ObsUpdate> ().id = idCounter++;
 				Color color = SettingColor (obs, int.Parse (first ["color" + i]));
-				GameObject summon =  (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
+				GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
+				summon.GetComponent<ParticleSystem> ().startColor = color;
+				Destroy (summon, 3f);
 
 			}
 
@@ -120,10 +125,11 @@ public class ObstacleControllSync : MonoBehaviour {
 			obstacle [int.Parse(victim.Dequeue() ["n"])].GetComponent<ObsUpdate>().Destroy();
 		}
 
+		/*
 		if (isnt_There ("Obstacle")) {
 			stateSync(0);
 		}
-
+		/*
 		if (!send) {
 			if (isMaster()) {
 				if (isnt_There ("Obstacle")) {
@@ -145,37 +151,35 @@ public class ObstacleControllSync : MonoBehaviour {
 							return;
 						}
 					}
-					var data = new Dictionary<string,string> ();
-					data ["TYPE"] = "Obs";
-					data ["xTarget"] = ((int)Random.Range (0, stage.GetComponent<Stage> ().xSection)).ToString ();
-					data ["zTarget"] = ((int)Random.Range (0, stage.GetComponent<Stage> ().zSection)).ToString ();
-					int x_width = (int)Random.Range (1, 3);
-					int y_width = (int)Random.Range (1, 2);
-					int z_width = (int)Random.Range (1, 3);
-					data ["x_width"] = x_width.ToString ();
-					data ["y_width"] = y_width.ToString ();
-					data ["z_width"] = z_width.ToString ();
-					int max = x_width * y_width * z_width;
-					string s="";
-					for (int i = 0; i < max; i++) {
-						s += ((int)Random.Range (0,5)).ToString();
-					}
-					data ["color"] = s;
-					so.EmitMessage ("ToOwnRoom", data);
+					//イテレータ SendObsData
 					send = true;
 					Debug.Log ("送信完了");
 				}
 				return;
 			}
 		}
+		*/
 		if (obs.Count > 0) {
-			if (isnt_There ("Obstacle")) {
-				stateSync(1);
-				targetSection = stage.GetComponent<Stage> ().TargetSection (int.Parse(obs["xTarget"]), int.Parse(obs["zTarget"]));
-				int x_width = int.Parse (obs ["x_width"]);
-				int y_width = int.Parse (obs ["y_width"]);
-				int z_width = int.Parse (obs ["z_width"]);
-				string colorData = obs ["color"];
+			//if (isnt_There ("Obstacle")) {
+				//stateSync(1);
+				int xT = int.Parse(obs["xTarget"+idCounter.ToString()]);
+				int zT = int.Parse (obs ["zTarget" + idCounter.ToString ()]);
+				int xW = int.Parse (obs ["x_width" + idCounter.ToString ()]);
+				int yW = int.Parse (obs ["y_width" + idCounter.ToString ()]);
+				int zW = int.Parse (obs ["z_width" + idCounter.ToString ()]);
+				string colorData = obs ["color"+idCounter.ToString()];
+
+				obs.Remove(obs["xTarget"+idCounter.ToString()]);
+				obs.Remove(obs["zTarget"+idCounter.ToString()]);
+				obs.Remove(obs["x_width"+idCounter.ToString()]);
+				obs.Remove(obs["y_width"+idCounter.ToString()]);
+				obs.Remove(obs["z_width"+idCounter.ToString()]);
+				obs.Remove(obs["color"+idCounter.ToString()]);
+
+				targetSection = stage.GetComponent<Stage> ().TargetSection (xT,zT);
+				int x_width = xW;
+				int y_width = yW;
+				int z_width = zW;
 				char[] c = colorData.ToCharArray ();
 				int cnt = 0;
 				for (int i = 0; i < x_width; i++) {
@@ -189,13 +193,14 @@ public class ObstacleControllSync : MonoBehaviour {
 							Color color = SettingColor (obs, int.Parse (c [cnt++].ToString()));
 							GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
 							summon.GetComponent<ParticleSystem> ().startColor = color;
+						Destroy (summon, 3f);
 						}
 					}
 				}
-				obs.Clear ();
+				//obs.Clear ();
 				send = false;
-			}
-			return;
+			//}
+			//return;
 		}
 	}
 
@@ -264,6 +269,31 @@ public class ObstacleControllSync : MonoBehaviour {
 	public void DestroyAll(){
 		foreach (GameObject obj in obstacle.Values) {
 			Destroy (obj);
+		}
+	}
+
+	IEnumerator SendObsData(){
+			while (true) {
+			if (isMaster () && FPComplete) {
+				var data = new Dictionary<string,string> ();
+				data ["TYPE"] = "Obs";
+				data ["xTarget"+idCounter.ToString()] = ((int)Random.Range (0, stage.GetComponent<Stage> ().xSection)).ToString ();
+				data ["zTarget"+idCounter.ToString()] = ((int)Random.Range (0, stage.GetComponent<Stage> ().zSection)).ToString ();
+				int x_width = (int)Random.Range (1, 3);
+				int y_width = (int)Random.Range (1, 2);
+				int z_width = (int)Random.Range (1, 3);
+				data ["x_width"+idCounter.ToString()] = x_width.ToString ();
+				data ["y_width"+idCounter.ToString()] = y_width.ToString ();
+				data ["z_width"+idCounter.ToString()] = z_width.ToString ();
+				int max = x_width * y_width * z_width;
+				string s = "";
+				for (int i = 0; i < max; i++) {
+					s += ((int)Random.Range (0, 5)).ToString ();
+				}
+				data ["color"+idCounter.ToString()] = s;
+				so.EmitMessage ("ToOwnRoom", data);
+			}
+			yield return new WaitForSeconds (SendObsInterval);
 		}
 	}
 }

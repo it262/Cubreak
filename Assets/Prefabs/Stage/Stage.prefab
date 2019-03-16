@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3966307474001914544}
   - component: {fileID: 3966307474001914547}
   - component: {fileID: 3966307474001914546}
-  - component: {fileID: 3966307474001914549}
+  - component: {fileID: 632980128042108980}
   - component: {fileID: 3966307475267300627}
   m_Layer: 11
   m_Name: Stage
@@ -41,7 +41,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3966307474001914548}
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &3966307474001914546
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -79,8 +79,8 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &3966307474001914549
-MeshCollider:
+--- !u!65 &632980128042108980
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -89,10 +89,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3966307475267300627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,8 +107,8 @@ MonoBehaviour:
   ObsController: {fileID: 5255899952393898438, guid: 453a1e0801b278e489e5fc40949b0879,
     type: 3}
   debug: 0
-  half_zSection: 10
-  half_xSection: 20
+  half_zSection: 50
+  half_xSection: 50
   zSection: 0
   xSection: 0
   spawnPoints: []

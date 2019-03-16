@@ -34,7 +34,7 @@ public class ObsUpdate : MonoBehaviour
 				if (hit.transform.gameObject.CompareTag ("Stage")) {
 					transform.position = new Vector3 (
 						transform.position.x,
-						hit.transform.position.y + 0.5f,
+						hit.transform.position.y + 1f,
 						transform.position.z
 					);
 				} else {
