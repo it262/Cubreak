@@ -161,22 +161,23 @@ public class ObstacleControllSync : MonoBehaviour {
 		*/
 		if (obs.Count > 0) {
 			//if (isnt_There ("Obstacle")) {
-				//stateSync(1);
-				int xT = int.Parse(obs["xTarget"+idCounter.ToString()]);
+			//stateSync(1);
+			if (obs.ContainsKey ("xTarget" + idCounter.ToString ())) {
+				int xT = int.Parse (obs ["xTarget" + idCounter.ToString ()]);
 				int zT = int.Parse (obs ["zTarget" + idCounter.ToString ()]);
 				int xW = int.Parse (obs ["x_width" + idCounter.ToString ()]);
 				int yW = int.Parse (obs ["y_width" + idCounter.ToString ()]);
 				int zW = int.Parse (obs ["z_width" + idCounter.ToString ()]);
-				string colorData = obs ["color"+idCounter.ToString()];
+				string colorData = obs ["color" + idCounter.ToString ()];
 
-				obs.Remove(obs["xTarget"+idCounter.ToString()]);
-				obs.Remove(obs["zTarget"+idCounter.ToString()]);
-				obs.Remove(obs["x_width"+idCounter.ToString()]);
-				obs.Remove(obs["y_width"+idCounter.ToString()]);
-				obs.Remove(obs["z_width"+idCounter.ToString()]);
-				obs.Remove(obs["color"+idCounter.ToString()]);
+				obs.Remove (obs ["xTarget" + idCounter.ToString ()]);
+				obs.Remove (obs ["zTarget" + idCounter.ToString ()]);
+				obs.Remove (obs ["x_width" + idCounter.ToString ()]);
+				obs.Remove (obs ["y_width" + idCounter.ToString ()]);
+				obs.Remove (obs ["z_width" + idCounter.ToString ()]);
+				obs.Remove (obs ["color" + idCounter.ToString ()]);
 
-				targetSection = stage.GetComponent<Stage> ().TargetSection (xT,zT);
+				targetSection = stage.GetComponent<Stage> ().TargetSection (xT, zT);
 				int x_width = xW;
 				int y_width = yW;
 				int z_width = zW;
@@ -186,21 +187,22 @@ public class ObstacleControllSync : MonoBehaviour {
 					for (int j = 0; j < z_width; j++) {
 						for (int k = 0; k < y_width; k++) {
 							GameObject obs = (GameObject)Instantiate (obstaclePrefab,
-								new Vector3 (targetSection.x + i, _Y - j, targetSection.y/*z*/ - k),
-								Quaternion.identity);
+								                 new Vector3 (targetSection.x + i, _Y - j, targetSection.y/*z*/ - k),
+								                 Quaternion.identity);
 							obstacle.Add (idCounter, obs);
 							obs.GetComponent<ObsUpdate> ().id = idCounter++;
-							Color color = SettingColor (obs, int.Parse (c [cnt++].ToString()));
+							Color color = SettingColor (obs, int.Parse (c [cnt++].ToString ()));
 							GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
 							summon.GetComponent<ParticleSystem> ().startColor = color;
-						Destroy (summon, 3f);
+							Destroy (summon, 3f);
 						}
 					}
 				}
 				//obs.Clear ();
 				send = false;
-			//}
-			//return;
+				//}
+				//return;
+			}
 		}
 	}
 
