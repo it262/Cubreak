@@ -11,6 +11,9 @@ TagManager:
   - MyBullet
   - Bullet
   - SocketObject
+  - ChangeColorArea_Start
+  - ChangeColorArea
+  - Attacker
   layers:
   - Default
   - TransparentFX

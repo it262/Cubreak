@@ -17,6 +17,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public Queue<Dictionary<string,string>> chatQue = new Queue<Dictionary<string,string>>();
 	public Queue<Dictionary<string,string>> roomQue = new Queue<Dictionary<string,string>>();
 	public Queue<Dictionary<string,string>> hitQue = new Queue<Dictionary<string,string>>();
+	public Queue<Dictionary<string,string>> elimQue = new Queue<Dictionary<string,string>>();
 
 	public JSONObject roomState;
 	public Dictionary<string,GameObject> players = new Dictionary<string,GameObject> ();
@@ -54,6 +55,15 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 					if (d ["trg"].ToString ().Equals (GetComponent<SocketObject> ().id)) {
 						disconnectUser (d ["trg"].ToString ());
 					}
+				}
+			}
+
+			if (elimQue.Count > 0) {
+				d = elimQue.Dequeue ();
+				if (d ["trg"].ToString ().Equals (GetComponent<SocketObject> ().id)) {
+					MenuSetting ();
+				} else {
+					exclusion (d ["trg"].ToString ());
 				}
 			}
 
@@ -98,8 +108,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 				searching = false;
 				GameSettings ();
 			}
-		}
-			
+		}	
 	}
 
 	void GameSettings(){

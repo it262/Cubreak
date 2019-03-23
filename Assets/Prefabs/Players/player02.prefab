@@ -703,8 +703,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Arm: {fileID: 6365010888527489503}
-  Axis: {fileID: 7744565490069726778}
-  speed: 1
+  preSpeed: -20
+  toScale: {x: 1, y: 1, z: 1}
 --- !u!1 &5900256557064039989
 GameObject:
   m_ObjectHideFlags: 0
@@ -804,7 +804,7 @@ GameObject:
   - component: {fileID: 1649235448841795579}
   m_Layer: 0
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Attacker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

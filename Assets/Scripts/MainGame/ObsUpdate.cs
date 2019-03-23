@@ -75,8 +75,7 @@ public class ObsUpdate : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-		if (collision.gameObject.CompareTag ("Bullet") || collision.gameObject.CompareTag ("MyBullet")) {
-			Destroy (collision.gameObject);
+		if (collision.gameObject.CompareTag ("Attacker")) {
 			var data = new Dictionary<string,string> ();
 			data ["TYPE"] = "DestroyObs";
 			data ["n"] = id.ToString ();
@@ -85,9 +84,8 @@ public class ObsUpdate : MonoBehaviour
 			Destroy ();
 		} else if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
 			var data = new Dictionary<string,string> ();
-			data ["TYPE"] = "Hit";
+			data ["TYPE"] = "PlayerEliminate";
 			data ["trg"] = so.id;
-			data["damage"] = "10";
 			so.EmitMessage ("ToOwnRoom", data);
 			Debug.Log ("Send:" + id + "破壊");
 			Destroy ();
