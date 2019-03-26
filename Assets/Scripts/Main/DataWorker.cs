@@ -51,11 +51,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			if (hitQue.Count > 0) {
 				d = hitQue.Dequeue ();
 				GameObject g = players [d ["trg"].ToString ()];
-				if (g.GetComponent<PlayerScript> ().state.damage (int.Parse (d ["damage"]))) {
-					if (d ["trg"].ToString ().Equals (GetComponent<SocketObject> ().id)) {
-						disconnectUser (d ["trg"].ToString ());
-					}
-				}
+				g.GetComponent<Rigidbody> ().AddForce (new Vector3(float.Parse(d["x"]),float.Parse(d["y"]),float.Parse(d["z"])),ForceMode.Impulse);
 			}
 
 			if (elimQue.Count > 0) {
@@ -130,7 +126,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 				TitleCamera.SetActive (false);
 				g.GetComponent<PlayerScript> ().isPlayer = true;
 				g.tag = "Player";
-				g.GetComponent<PlayerScript> ().damage = GameObject.Find ("Image");
+				//g.GetComponent<PlayerScript> ().damage = GameObject.Find ("Image");
 			} else {
 				g.GetComponent<PlayerScript> ().cam.SetActive(false);
 				g.tag = "Others";

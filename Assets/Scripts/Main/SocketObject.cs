@@ -223,6 +223,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 
 	public void Hit(SocketIOEvent e)
 	{
+		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
 		GetComponent<DataWorker>().hitQue.Enqueue(new JSONObject(e.data.ToString ()).ToDictionary());
 	}
 
@@ -240,7 +241,8 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	public void Obs(SocketIOEvent e)
 	{
 		Debug.Log ("OBSデータ受信");
-		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().obs = new JSONObject (e.data.ToString ()).ToDictionary ();
+		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
+		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().obs.Enqueue(d["json"]);
 	}
 
 	public void DestroyObs(SocketIOEvent e)

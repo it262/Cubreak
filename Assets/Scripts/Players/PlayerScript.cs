@@ -4,26 +4,23 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour {
 
+	Animator anim;
 	public State state;
 
-	public GameObject cam;
-
+	public GameObject cam,headBone;
 	public static SocketObject so;
 	public static DataWorker dw;
 	public string id,name;
-
-	public GameObject headBone;
+	public bool isPlayer = false;
+	public bool destroy = false;
+	public bool debug = false;
 
     private Vector3 velocity;
 	private float defaultSpeed = 5.0f;
 	private float moveSpeed;
-    public fpsCamera fpsCam;
-
-	public bool isPlayer = false;
-
-	public bool destroy = false;
-	float time = 0;
-	public GameObject damage;
+    private fpsCamera fpsCam;
+	private float time = 0;
+	private Quaternion syncRotBufferV,syncRotBufferH;
 
 	// Use this for initialization
 	void Start () {
@@ -32,6 +29,8 @@ public class PlayerScript : MonoBehaviour {
 		moveSpeed = defaultSpeed;
 		state = new State ();
 		StartCoroutine ("SyncPosition");
+		fpsCam = GetComponent<fpsCamera> ();
+		anim = GetComponent<Animator> ();
 	}
 	
 	// Update is called once per frame
@@ -39,7 +38,7 @@ public class PlayerScript : MonoBehaviour {
 
 		time += Time.deltaTime;
 
-		if (so == null)
+		if (so == null && !debug)
 			return;
 
 		if (!isPlayer) {
@@ -70,7 +69,7 @@ public class PlayerScript : MonoBehaviour {
 			return;
 		}
 
-		if (time > 5) {
+		if (time > 5 && !debug) {
 			var data = new Dictionary<string,string> ();
 			so.EmitMessage ("HeartBeat", data);
 			time = 0;
@@ -107,13 +106,24 @@ public class PlayerScript : MonoBehaviour {
 		velocity = velocity.normalized * moveSpeed * Time.deltaTime;
 
 		if (velocity.magnitude > 0) {
+			anim.SetBool ("Walk",true);
 			transform.position += fpsCam.hRotation * velocity;
+		} else {
+			anim.SetBool ("Walk",false);
 		}
 
+		Attack ();
 
+
+	}
+
+	//Animatorで制御されているボーンを強制的に動作させるLateUpdate
+	void LateUpdate(){
 		headBone.transform.localRotation = fpsCam.vRotation;
 		transform.rotation = fpsCam.hRotation;
 
+		syncRotBufferV = headBone.transform.localRotation;
+		syncRotBufferH = transform.rotation;
 	}
 
 
@@ -125,38 +135,19 @@ public class PlayerScript : MonoBehaviour {
 			destroy = true;
 		}
 	}
-
-	void OnCollisionEnter(Collision collision){
-		/*
-		if (isPlayer) {
-			if (collision.gameObject.CompareTag ("Obstacle")) {
-				var data = new Dictionary<string,string> ();
-				data ["TYPE"] = "Hit";
-				data ["trg"] = id;
-				data["damage"] = "10";
-				so.EmitMessage ("ToOwnRoom", data);
-			}
+		
+	void Attack(){
+		AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo (0);
+		if (Input.GetMouseButton (0)) {
+			anim.SetTrigger ("Attack");
 		}
-		*/
-	}
-
-	public void hitting(){
-		/*
-		if (isPlayer) {
-			damage.GetComponent<Damage> ().a = 1.0f;
-			damage.GetComponent<Damage> ().def += 0.1f;
-			if (damage.GetComponent<Damage> ().def >= 1.0f) {
-				so.GetComponent<DataWorker> ().disconnectUser (id);
-			}
-		}
-		*/
 	}
 
 	IEnumerator SyncPosition(){
-		if (isPlayer) {
+		if (isPlayer && !debug) {
 			Vector3 bPos = transform.position;
-			Quaternion bHead = headBone.transform.localRotation;
-			Quaternion bBody = transform.rotation;
+			Quaternion bHead = syncRotBufferV;
+			Quaternion bBody = syncRotBufferH;
 			while (true) {
 				if (Vector3.Distance (transform.position, bPos) > 0) {
 					var data = new Dictionary<string,string> ();
@@ -169,15 +160,15 @@ public class PlayerScript : MonoBehaviour {
 					bPos = transform.position;
 				}
 
-				if (Quaternion.Angle (transform.rotation, bBody) > 0 || Quaternion.Angle (headBone.transform.localRotation,bHead) > 0) {
+				if (Quaternion.Angle (syncRotBufferH, bBody) > 0 || Quaternion.Angle (syncRotBufferV,bHead) > 0) {
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "Rot";
-					data ["bodyY"] = transform.rotation.eulerAngles.y.ToString();
-					data ["headY"] = headBone.transform.localRotation.eulerAngles.y.ToString();
+					data ["bodyY"] = syncRotBufferH.eulerAngles.y.ToString();
+					data ["headY"] = syncRotBufferV.eulerAngles.y.ToString();
 					so.EmitMessage ("ToOwnRoom", data);
 					Debug.Log ("Rotation送信");
-					bHead = headBone.transform.localRotation;
-					bBody = transform.rotation;
+					bHead = syncRotBufferV;
+					bBody = syncRotBufferH;
 				}
 
 				yield return new WaitForSeconds (0.05f);

@@ -4,41 +4,44 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-	[SerializeField]GameObject Arm;
+	static SocketObject so;
+	[SerializeField]GameObject player;
 
-	public float preSpeed = -20f;
-	public Vector3 toScale = new Vector3(1f,1f,1f);
-	Vector3 preScale;
-
-	float speed;
-	float scale;
-
-	Vector3 buffer;
+	public float forceHeight;
+	public float forcePower;
 
     // Start is called before the first frame update
     void Start()
     {
-		buffer = Arm.transform.localPosition;
-		speed = preSpeed;
-		preScale = Arm.transform.localScale;
+		so = SocketObject.Instance;
     }
 
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetMouseButton (0)) {
-			if (Vector3.Angle (buffer, Arm.transform.localPosition) >= 60) {
-				speed = preSpeed;
-				Arm.transform.localPosition = buffer;
-				Arm.transform.localScale = preScale;
-			} else {
-				Arm.transform.RotateAround (transform.localPosition, Vector3.up, speed=Mathf.Lerp(speed,-1,0.1f));
-				Arm.transform.localScale = Vector3.Lerp (Arm.transform.localScale, toScale, 0.5f);
-			}
-		} else {
-			Arm.transform.localPosition = buffer;
-			Arm.transform.localScale = preScale;
-			speed = preSpeed;
-		}
+
     }
+
+	void OnCollisionEnter(Collision collision){
+		Debug.Log (collision.gameObject.tag);
+		if (player.GetComponent<PlayerScript>().isPlayer && collision.gameObject.CompareTag ("Others")) {
+			Vector3 toVec = getAngleVec (player.transform.position, collision.gameObject.transform.position);
+			toVec += new Vector3 (0, forceHeight, 0);
+			Vector3 vec = toVec * forcePower;
+			//collision.gameObject.GetComponent<Rigidbody> ().AddForce (vec,ForceMode.Impulse);
+			var data = new Dictionary<string,string> ();
+			data ["TYPE"] = "Hit";
+			data ["trg"] = collision.gameObject.GetComponent<PlayerScript> ().id;
+			data ["x"] = vec.x.ToString ();
+			data ["y"] = vec.y.ToString ();
+			data ["z"] = vec.z.ToString ();
+			so.EmitMessage ("ToOwnRoom", data);
+		}
+	}
+
+	Vector3 getAngleVec(Vector3 from,Vector3 to){
+		Vector3 fromVec = new Vector3 (from.x, 0, from.z);
+		Vector3 toVec = new Vector3 (to.x, 0, to.z);
+		return Vector3.Normalize (toVec - fromVec);
+	}
 }

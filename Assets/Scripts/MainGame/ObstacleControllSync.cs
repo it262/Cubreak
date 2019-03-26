@@ -7,6 +7,8 @@ public class ObstacleControllSync : MonoBehaviour {
 	static SocketObject so;
 	static DataWorker dw;
 
+	JsonInJson jj;
+
 	public GameObject obstaclePrefab,SummonPref;
 
 	public Material emit;
@@ -21,12 +23,13 @@ public class ObstacleControllSync : MonoBehaviour {
 	public float speed;
 
 	private int _Y = 30;
+	[SerializeField] int FirstObsMax = 10;
 
 	bool FPComplete = false;
 	bool send = false;
 
 	public Dictionary<string,string> first = new Dictionary<string,string>();
-	public Dictionary<string,string> obs = new Dictionary<string,string>();
+	public Queue<string> obs = new Queue<string>();
 	public Dictionary<string,string> state = new Dictionary<string,string>();//0:完了 1:処理中
 
 	public Queue<Dictionary<string,string>> victim = new Queue<Dictionary<string,string>>();
@@ -43,6 +46,7 @@ public class ObstacleControllSync : MonoBehaviour {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
 		StartCoroutine("SendObsData");
+		jj = new JsonInJson ();
 	}
 
 	// Update is called once per frame
@@ -74,7 +78,8 @@ public class ObstacleControllSync : MonoBehaviour {
 				stateSync (1);
 				var data = new Dictionary<string,string> ();
 				data ["TYPE"] = "FirstObs";
-				for (int i = 0; i < 10; i++) {
+				data ["max"] = FirstObsMax.ToString ();
+					for (int i = 0; i < FirstObsMax; i++) {
 					xTarget = (int)Random.Range (0, stage.GetComponent<Stage> ().xSection);
 					zTarget = (int)Random.Range (0, stage.GetComponent<Stage> ().zSection);
 					targetSection = stage.GetComponent<Stage> ().TargetSection (xTarget, zTarget);
@@ -93,8 +98,8 @@ public class ObstacleControllSync : MonoBehaviour {
 		if(first.Count > 0){
 			
 			stateSync(1);
-
-			for (int i = 0; i < 10; i++) {
+			int max = int.Parse (first ["max"]);
+			for (int i = 0; i < max; i++) {
 				string x = "x"+i;
 				string z = "z"+i;
 				GameObject obs = (GameObject)Instantiate (obstaclePrefab,
@@ -162,35 +167,31 @@ public class ObstacleControllSync : MonoBehaviour {
 		if (obs.Count > 0) {
 			//if (isnt_There ("Obstacle")) {
 			//stateSync(1);
-			if (obs.ContainsKey ("xTarget" + idCounter.ToString ())) {
-				int xT = int.Parse (obs ["xTarget" + idCounter.ToString ()]);
-				int zT = int.Parse (obs ["zTarget" + idCounter.ToString ()]);
-				int xW = int.Parse (obs ["x_width" + idCounter.ToString ()]);
-				int yW = int.Parse (obs ["y_width" + idCounter.ToString ()]);
-				int zW = int.Parse (obs ["z_width" + idCounter.ToString ()]);
-				string colorData = obs ["color" + idCounter.ToString ()];
+			var dic = jj.PicJson(obs.Dequeue());
+			Debug.Log (dic.Count);
 
-				obs.Remove (obs ["xTarget" + idCounter.ToString ()]);
-				obs.Remove (obs ["zTarget" + idCounter.ToString ()]);
-				obs.Remove (obs ["x_width" + idCounter.ToString ()]);
-				obs.Remove (obs ["y_width" + idCounter.ToString ()]);
-				obs.Remove (obs ["z_width" + idCounter.ToString ()]);
-				obs.Remove (obs ["color" + idCounter.ToString ()]);
+			int n = int.Parse (dic["n"]);
+				int xT = int.Parse (dic ["xTarget"]);
+				int zT = int.Parse (dic ["zTarget"]);
+				int xW = int.Parse (dic ["x_width"]);
+				int yW = int.Parse (dic ["y_width"]);
+				int zW = int.Parse (dic ["z_width"]);
+				string colorData = dic ["color"];
 
 				targetSection = stage.GetComponent<Stage> ().TargetSection (xT, zT);
 				int x_width = xW;
 				int y_width = yW;
 				int z_width = zW;
 				char[] c = colorData.ToCharArray ();
-				int cnt = 0;
+				int cnt = 0;//色変更用
 				for (int i = 0; i < x_width; i++) {
 					for (int j = 0; j < z_width; j++) {
 						for (int k = 0; k < y_width; k++) {
 							GameObject obs = (GameObject)Instantiate (obstaclePrefab,
 								                 new Vector3 (targetSection.x + i, _Y - j, targetSection.y/*z*/ - k),
 								                 Quaternion.identity);
-							obstacle.Add (idCounter, obs);
-							obs.GetComponent<ObsUpdate> ().id = idCounter++;
+							obstacle.Add (n, obs);
+							obs.GetComponent<ObsUpdate> ().id = n++;
 							Color color = SettingColor (obs, int.Parse (c [cnt++].ToString ()));
 							GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
 							summon.GetComponent<ParticleSystem> ().startColor = color;
@@ -204,7 +205,6 @@ public class ObstacleControllSync : MonoBehaviour {
 				//return;
 			}
 		}
-	}
 
 	bool isMaster(){
 		bool master = false;
@@ -277,8 +277,12 @@ public class ObstacleControllSync : MonoBehaviour {
 	IEnumerator SendObsData(){
 			while (true) {
 			if (isMaster () && FPComplete) {
+				/*
 				var data = new Dictionary<string,string> ();
 				data ["TYPE"] = "Obs";
+				data ["n"] = idCounter.ToString ();
+				string json;
+
 				data ["xTarget"+idCounter.ToString()] = ((int)Random.Range (0, stage.GetComponent<Stage> ().xSection)).ToString ();
 				data ["zTarget"+idCounter.ToString()] = ((int)Random.Range (0, stage.GetComponent<Stage> ().zSection)).ToString ();
 				int x_width = (int)Random.Range (1, 3);
@@ -294,6 +298,35 @@ public class ObstacleControllSync : MonoBehaviour {
 				}
 				data ["color"+idCounter.ToString()] = s;
 				so.EmitMessage ("ToOwnRoom", data);
+				idCounter++;
+				*/
+
+				var data = new Dictionary<string,string> ();
+				data ["TYPE"] = "Obs";
+
+				var json = new Dictionary<string,string> ();
+				json ["n"] = idCounter.ToString ();
+				json ["xTarget"] = ((int)Random.Range (0, stage.GetComponent<Stage> ().xSection)).ToString ();
+				json ["zTarget"] = ((int)Random.Range (0, stage.GetComponent<Stage> ().zSection)).ToString ();
+				int x_width = (int)Random.Range (1, 3);
+				int y_width = (int)Random.Range (1, 2);
+				int z_width = (int)Random.Range (1, 3);
+				int total = x_width + y_width + zTarget;
+				json ["total"] = total.ToString ();
+				json ["x_width"] = x_width.ToString ();
+				json ["y_width"] = y_width.ToString ();
+				json ["z_width"] = z_width.ToString ();
+				int max = x_width * y_width * z_width;
+				string s = "";
+				for (int i = 0; i < max; i++) {
+					s += ((int)Random.Range (0, 5)).ToString ();
+				}
+				json ["color"] = s;
+
+				data ["json"] = jj.InJson(json);
+				so.EmitMessage ("ToOwnRoom", data);
+				idCounter += total;
+
 			}
 			yield return new WaitForSeconds (SendObsInterval);
 		}
