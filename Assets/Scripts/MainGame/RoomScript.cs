@@ -218,6 +218,7 @@ public class RoomScript : MonoBehaviour {
 									var data = new Dictionary<string,string> ();
 									data ["to"] = roomName;
 									data ["name"] = so.name;
+									data ["max"] = dw.MAX.ToString();
 									so.EmitMessage ("Quick", data);
 									hit = true;
 									break;
@@ -231,6 +232,7 @@ public class RoomScript : MonoBehaviour {
 					var data = new Dictionary<string,string> ();
 					data ["to"] = "JOIN";
 					data ["name"] = so.name;
+					data ["max"] = dw.MAX.ToString();
 					so.EmitMessage ("Quick", data);
 				}
 				dw.wait = true;

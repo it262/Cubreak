@@ -277,29 +277,6 @@ public class ObstacleControllSync : MonoBehaviour {
 	IEnumerator SendObsData(){
 			while (true) {
 			if (isMaster () && FPComplete) {
-				/*
-				var data = new Dictionary<string,string> ();
-				data ["TYPE"] = "Obs";
-				data ["n"] = idCounter.ToString ();
-				string json;
-
-				data ["xTarget"+idCounter.ToString()] = ((int)Random.Range (0, stage.GetComponent<Stage> ().xSection)).ToString ();
-				data ["zTarget"+idCounter.ToString()] = ((int)Random.Range (0, stage.GetComponent<Stage> ().zSection)).ToString ();
-				int x_width = (int)Random.Range (1, 3);
-				int y_width = (int)Random.Range (1, 2);
-				int z_width = (int)Random.Range (1, 3);
-				data ["x_width"+idCounter.ToString()] = x_width.ToString ();
-				data ["y_width"+idCounter.ToString()] = y_width.ToString ();
-				data ["z_width"+idCounter.ToString()] = z_width.ToString ();
-				int max = x_width * y_width * z_width;
-				string s = "";
-				for (int i = 0; i < max; i++) {
-					s += ((int)Random.Range (0, 5)).ToString ();
-				}
-				data ["color"+idCounter.ToString()] = s;
-				so.EmitMessage ("ToOwnRoom", data);
-				idCounter++;
-				*/
 
 				var data = new Dictionary<string,string> ();
 				data ["TYPE"] = "Obs";

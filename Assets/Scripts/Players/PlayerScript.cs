@@ -119,6 +119,8 @@ public class PlayerScript : MonoBehaviour {
 
 	//Animatorで制御されているボーンを強制的に動作させるLateUpdate
 	void LateUpdate(){
+		if (GetComponent<DeathCam> ().die)
+			return;
 		headBone.transform.localRotation = fpsCam.vRotation;
 		transform.rotation = fpsCam.hRotation;
 

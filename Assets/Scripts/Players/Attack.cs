@@ -22,7 +22,7 @@ public class Attack : MonoBehaviour
 
     }
 
-	void OnCollisionEnter(Collision collision){
+	void OnTriggerEnter(Collider collision){
 		Debug.Log (collision.gameObject.tag);
 		if (player.GetComponent<PlayerScript>().isPlayer && collision.gameObject.CompareTag ("Others")) {
 			Vector3 toVec = getAngleVec (player.transform.position, collision.gameObject.transform.position);

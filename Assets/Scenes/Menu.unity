@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.45110136, g: 0.45110136, b: 0.45110136, a: 1}
+  m_IndirectSpecularColor: {r: 0.5773768, g: 0.5773976, b: 0.5773768, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -306,9 +306,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 40
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -333,13 +333,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 196483640}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &196483644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1534,7 +1534,7 @@ PrefabInstance:
         type: 3}
       propertyPath: PlayerPrefab
       value: 
-      objectReference: {fileID: 8191484777504523946, guid: 635d9962949fa244c995a004c5d3514a,
+      objectReference: {fileID: 314246873125926618, guid: 85a4334c285522642bafabb3a9698e14,
         type: 3}
     - target: {fileID: 114575006882513960, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8,
         type: 3}
@@ -1567,6 +1567,11 @@ PrefabInstance:
       propertyPath: Menu
       value: 
       objectReference: {fileID: 1257161493}
+    - target: {fileID: 114575006882513960, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8,
+        type: 3}
+      propertyPath: MAX
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 0}

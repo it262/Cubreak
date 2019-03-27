@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
-	public int MAX = 2;
+	public int MAX = 1;
 
 	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText;
 

@@ -107,8 +107,8 @@ MonoBehaviour:
   ObsController: {fileID: 5255899952393898438, guid: 453a1e0801b278e489e5fc40949b0879,
     type: 3}
   debug: 0
-  half_zSection: 50
-  half_xSection: 50
+  half_zSection: 25
+  half_xSection: 25
   zSection: 0
   xSection: 0
   spawnPoints: []

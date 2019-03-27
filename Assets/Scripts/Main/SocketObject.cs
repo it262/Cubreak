@@ -152,7 +152,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 		Dictionary<string,string> d = new JSONObject (e.data.ToString()).ToDictionary();
 		if (id.Equals("")) {
 			id = d ["id"];
-			GetComponent<DataWorker> ().MAX = int.Parse(d["max"]);
+			//GetComponent<DataWorker> ().MAX = int.Parse(d["max"]);
 			Debug.Log ("[SocketIO] ID received: " + e.name + " " + e.data);
 		}
 		//ルーム情報のリクエスト
