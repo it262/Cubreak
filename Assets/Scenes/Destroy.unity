@@ -214,6 +214,16 @@ PrefabInstance:
       propertyPath: debris.Array.data[4]
       value: 
       objectReference: {fileID: 1512917174}
+    - target: {fileID: 8382463918770404466, guid: 85a4334c285522642bafabb3a9698e14,
+        type: 3}
+      propertyPath: die
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4796307589864941320, guid: 85a4334c285522642bafabb3a9698e14,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85a4334c285522642bafabb3a9698e14, type: 3}
 --- !u!1 &475917414 stripped
@@ -318,6 +328,21 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &475917423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475917414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0af006d63602c43439133797b3cb90c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  forceHeight: 0
+  forcePower: 0
 --- !u!1 &505212604
 GameObject:
   m_ObjectHideFlags: 0

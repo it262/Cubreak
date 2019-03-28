@@ -19,9 +19,12 @@ public class Attack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+		RaycastHit hit;
+		if (Physics.Raycast (GetComponent<PlayerScript> ().cam.transform.position, Camera.main.transform.forward, out hit, 10.0f)) {
+			Debug.Log (hit.collider.gameObject.name);
+		}
     }
-
+	/*
 	void OnTriggerEnter(Collider collision){
 		Debug.Log (collision.gameObject.tag);
 		if (player.GetComponent<PlayerScript>().isPlayer && collision.gameObject.CompareTag ("Others")) {
@@ -44,4 +47,5 @@ public class Attack : MonoBehaviour
 		Vector3 toVec = new Vector3 (to.x, 0, to.z);
 		return Vector3.Normalize (toVec - fromVec);
 	}
+	*/
 }
