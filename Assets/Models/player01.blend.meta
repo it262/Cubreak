@@ -17,6 +17,13 @@ ModelImporter:
     100022: "\u5186\u67F1"
     100024: Master_003
     100026: "\u7403_004"
+    100028: Body
+    100030: Eye
+    100032: Foot
+    100034: Hand_L
+    100036: Hand_R
+    100038: Head
+    100040: Switch
     400000: Master
     400002: Master_001
     400004: Master_002
@@ -31,6 +38,13 @@ ModelImporter:
     400022: "\u5186\u67F1"
     400024: Master_003
     400026: "\u7403_004"
+    400028: Body
+    400030: Eye
+    400032: Foot
+    400034: Hand_L
+    400036: Hand_R
+    400038: Head
+    400040: Switch
     2100000: unnamed
     2100002: "\u30DE\u30C6\u30EA\u30A2\u30EB_002"
     4300000: "\u7403_003"
@@ -39,6 +53,13 @@ ModelImporter:
     4300006: "\u7403"
     4300008: "\u5186\u67F1"
     4300010: "\u7403_004"
+    4300012: Foot
+    4300014: Body
+    4300016: Switch
+    4300018: Hand_R
+    4300020: Hand_L
+    4300022: Eye
+    4300024: Head
     7400000: Default Take
     7400002: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2Action"
     7400004: Walk_001
@@ -50,6 +71,13 @@ ModelImporter:
     13700006: "\u7403_003"
     13700008: "\u5186\u67F1"
     13700010: "\u7403_004"
+    13700012: Body
+    13700014: Eye
+    13700016: Foot
+    13700018: Hand_L
+    13700020: Hand_R
+    13700022: Head
+    13700024: Switch
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

@@ -29,7 +29,9 @@ public class Attack : MonoBehaviour
 	IEnumerator AttackByTime(){
 		while(true){
 			RaycastHit hit;
+			//Debug.Log (Camera.main.transform.forward);
 			if (Input.GetMouseButton(0) && Physics.Raycast (GetComponent<PlayerScript> ().cam.transform.position, Camera.main.transform.forward, out hit, attackRange)) {
+				Debug.Log (hit.collider.gameObject.tag);
 				if (hit.collider.gameObject.CompareTag ("Others")) {
 					/*
 					Vector3 toVec = getAngleVec (transform.position, hit.collider.gameObject.transform.position);
@@ -43,7 +45,7 @@ public class Attack : MonoBehaviour
 					data ["z"] = vec.z.ToString ();
 					so.EmitMessage ("ToOwnRoom", data);
 					*/
-					Debug.Log (hit.collider.gameObject.tag);
+					//Debug.Log (hit.collider.gameObject.tag);
 					yield return new WaitForSeconds (attackSpeed);
 				}
 			}

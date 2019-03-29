@@ -340,9 +340,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0af006d63602c43439133797b3cb90c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   forceHeight: 0
   forcePower: 0
+  attackSpeed: 1
+  attackRange: 5
 --- !u!1 &505212604
 GameObject:
   m_ObjectHideFlags: 0
@@ -536,7 +537,7 @@ GameObject:
   - component: {fileID: 921000219}
   m_Layer: 0
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: Others
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

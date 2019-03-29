@@ -126,6 +126,8 @@ public class PlayerScript : MonoBehaviour {
 
 		syncRotBufferV = headBone.transform.localRotation;
 		syncRotBufferH = transform.rotation;
+
+		//transform.Rotate(new Vector3(180f,0,0));
 	}
 
 
