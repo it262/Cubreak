@@ -5,40 +5,49 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
 	static SocketObject so;
-	[SerializeField]GameObject player;
 
 	public float forceHeight;
 	public float forcePower;
+	public float attackSpeed;
+	public float attackRange;
+
+	private float time;
 
     // Start is called before the first frame update
     void Start()
     {
 		so = SocketObject.Instance;
+		StartCoroutine (AttackByTime());
     }
 
     // Update is called once per frame
     void Update()
     {
-		RaycastHit hit;
-		if (Physics.Raycast (GetComponent<PlayerScript> ().cam.transform.position, Camera.main.transform.forward, out hit, 10.0f)) {
-			Debug.Log (hit.collider.gameObject.name);
-		}
+
     }
-	/*
-	void OnTriggerEnter(Collider collision){
-		Debug.Log (collision.gameObject.tag);
-		if (player.GetComponent<PlayerScript>().isPlayer && collision.gameObject.CompareTag ("Others")) {
-			Vector3 toVec = getAngleVec (player.transform.position, collision.gameObject.transform.position);
-			toVec += new Vector3 (0, forceHeight, 0);
-			Vector3 vec = toVec * forcePower;
-			//collision.gameObject.GetComponent<Rigidbody> ().AddForce (vec,ForceMode.Impulse);
-			var data = new Dictionary<string,string> ();
-			data ["TYPE"] = "Hit";
-			data ["trg"] = collision.gameObject.GetComponent<PlayerScript> ().id;
-			data ["x"] = vec.x.ToString ();
-			data ["y"] = vec.y.ToString ();
-			data ["z"] = vec.z.ToString ();
-			so.EmitMessage ("ToOwnRoom", data);
+
+	IEnumerator AttackByTime(){
+		while(true){
+			RaycastHit hit;
+			if (Input.GetMouseButton(0) && Physics.Raycast (GetComponent<PlayerScript> ().cam.transform.position, Camera.main.transform.forward, out hit, attackRange)) {
+				if (hit.collider.gameObject.CompareTag ("Others")) {
+					/*
+					Vector3 toVec = getAngleVec (transform.position, hit.collider.gameObject.transform.position);
+					toVec += new Vector3 (0, forceHeight, 0);
+					Vector3 vec = toVec * forcePower;
+					var data = new Dictionary<string,string> ();
+					data ["TYPE"] = "Hit";
+					data ["trg"] = hit.collider.gameObject.GetComponent<PlayerScript> ().id;
+					data ["x"] = vec.x.ToString ();
+					data ["y"] = vec.y.ToString ();
+					data ["z"] = vec.z.ToString ();
+					so.EmitMessage ("ToOwnRoom", data);
+					*/
+					Debug.Log (hit.collider.gameObject.tag);
+					yield return new WaitForSeconds (attackSpeed);
+				}
+			}
+			yield return null;
 		}
 	}
 
@@ -47,5 +56,5 @@ public class Attack : MonoBehaviour
 		Vector3 toVec = new Vector3 (to.x, 0, to.z);
 		return Vector3.Normalize (toVec - fromVec);
 	}
-	*/
+
 }
