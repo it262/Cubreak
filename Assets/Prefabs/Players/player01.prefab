@@ -935,7 +935,7 @@ Transform:
   m_GameObject: {fileID: 2047813217}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.0001211, y: 1.33, z: -2.4135938}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 154481600}
   - {fileID: 1357222778}
@@ -1009,8 +1009,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0af006d63602c43439133797b3cb90c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceHeight: 0
-  forcePower: 0
+  forceHeight: 2
+  forcePower: 5
   attackSpeed: 1
   attackRange: 10
 --- !u!114 &2047813221
@@ -1049,6 +1049,8 @@ MonoBehaviour:
   isPlayer: 0
   destroy: 0
   debug: 0
+  impact: {x: 0, y: 0, z: 0}
+  jumpPower: 5
 --- !u!114 &2047813225
 MonoBehaviour:
   m_ObjectHideFlags: 0

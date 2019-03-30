@@ -223,6 +223,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 
 	public void Hit(SocketIOEvent e)
 	{
+		Debug.Log ("Hit!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
 		GetComponent<DataWorker>().hitQue.Enqueue(new JSONObject(e.data.ToString ()).ToDictionary());
 	}

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
-	public int MAX = 1;
+	public int MAX =2;
 
 	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText;
 
@@ -51,7 +51,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			if (hitQue.Count > 0) {
 				d = hitQue.Dequeue ();
 				GameObject g = players [d ["trg"].ToString ()];
-				g.GetComponent<Rigidbody> ().AddForce (new Vector3(float.Parse(d["x"]),float.Parse(d["y"]),float.Parse(d["z"])),ForceMode.Impulse);
+				//g.GetComponent<Rigidbody> ().AddForce (new Vector3(float.Parse(d["x"]),float.Parse(d["y"]),float.Parse(d["z"])),ForceMode.Impulse);
+				g.GetComponent<PlayerScript> ().impact = new Vector3 (float.Parse (d ["x"]), float.Parse (d ["y"]), float.Parse (d ["z"]));
 			}
 
 			if (elimQue.Count > 0) {
