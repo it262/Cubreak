@@ -7,6 +7,7 @@ public class Stage : MonoBehaviour {
 
 	static DataWorker dw;
 
+	[SerializeField]GameObject Obs;
 	public GameObject ObsController;
 
 	public bool debug = false;
@@ -15,6 +16,8 @@ public class Stage : MonoBehaviour {
     public int half_xSection = 10;
     public int zSection;
     public int xSection;
+	public int half_xHole;
+	public int half_zHole;
     float zScale;
     float xScale;
     int[] zGridArray;
@@ -32,7 +35,36 @@ public class Stage : MonoBehaviour {
         zScale = zSection / 10.0f;
         xScale = xSection / 10.0f;
         
-        transform.localScale = new Vector3(xScale*10, 1f, zScale*10);
+		float startX = Obs.transform.localScale.x * half_xSection;
+		float startZ = Obs.transform.localScale.z * half_zSection;
+        //transform.localScale = new Vector3(xScale*10, 1f, zScale*10);
+		for (int i = 0; i < xSection; i++) {
+			for (int j = 0; j < zSection; j++) {
+				if (((half_xSection - half_xHole) > i || (half_zSection - half_zHole) > j) ||
+					((half_xSection + half_xHole) < i || (half_zSection + half_zHole) < j)) {
+					GameObject g = (GameObject)Instantiate (Obs, new Vector3 (
+						              startX - Obs.transform.localScale.x / 2 - Obs.transform.localScale.x * i,
+						              0,
+						              startZ - Obs.transform.localScale.z / 2 - Obs.transform.localScale.z * j), 
+						              Quaternion.identity);
+					g.transform.parent = transform;
+				}
+			}
+		}
+
+		MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter> ();
+		CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+		int k = 0;
+		while(k<meshFilters.Length){
+			combine[k].mesh = meshFilters[k].sharedMesh;
+			combine[k].transform = meshFilters[k].transform.localToWorldMatrix;
+			meshFilters[k].gameObject.SetActive(false);
+			k++;
+		}
+		transform.GetComponent<MeshFilter>().mesh = new Mesh();
+		transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
+		transform.GetComponent<MeshCollider> ().sharedMesh = transform.GetComponent<MeshFilter> ().mesh;
+		transform.gameObject.SetActive(true);
 
         //targetObstacleを求めるための座標を格納する配列を作る。
         zGridArray = new int[zSection + 1];

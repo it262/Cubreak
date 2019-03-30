@@ -17,7 +17,7 @@ public class fpsCamera : MonoBehaviour {
         Cursor.SetCursor(cursor, new Vector2(cursor.width / 2, cursor.height / 2), CursorMode.ForceSoftware);
 
         vRotation = Quaternion.identity;
-        hRotation = Quaternion.identity;
+        //hRotation = Quaternion.identity;
     }
 
 	// Update is called once per frame

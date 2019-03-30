@@ -24,6 +24,8 @@ public class PlayerScript : MonoBehaviour {
 	private float time = 0;
 	private Quaternion syncRotBufferV,syncRotBufferH;
 	private bool isGroubded = true;
+	private Quaternion bufferHead, bufferBody;
+	private Vector3 toPos;
 
 	// Use this for initialization
 	void Start () {
@@ -34,6 +36,9 @@ public class PlayerScript : MonoBehaviour {
 		StartCoroutine ("SyncPosition");
 		fpsCam = GetComponent<fpsCamera> ();
 		anim = GetComponent<Animator> ();
+		toPos = transform.position;
+		transform.LookAt (new Vector3(0,transform.position.y,0));
+		fpsCam.hRotation = transform.rotation;
 	}
 	
 	// Update is called once per frame
@@ -51,12 +56,14 @@ public class PlayerScript : MonoBehaviour {
 				dw.heatbeat.Remove (id);
 			}
 
-			if (dw.posSync.ContainsKey (id)) {
-				Vector3 toPos = dw.posSync [id];
-				transform.position = toPos;
-				dw.posSync.Remove (id);
 
+			if (dw.posSync.ContainsKey (id)) {
+				toPos = dw.posSync [id];
+				//transform.position = toPos;
+				dw.posSync.Remove (id);
 			}
+
+			transform.position = Vector3.Lerp (transform.position, toPos, 0.5f);
 
 			//rot -> LateUpdate()
 
@@ -139,18 +146,18 @@ public class PlayerScript : MonoBehaviour {
 			syncRotBufferV = headBone.transform.localRotation;
 			syncRotBufferH = transform.rotation;
 		} else {
-			if (dw.rotSync.ContainsKey (id)) {
+			if (dw!=null&& dw.rotSync.ContainsKey (id)) {
 				Vector2 toRot = dw.rotSync [id];
 				Quaternion head = Quaternion.Euler (0, toRot.x, 0);
 				Quaternion body = Quaternion.Euler (0, toRot.y, 0);
 
-				headBone.transform.localRotation = head;
-				transform.rotation = body;
+				bufferHead = head;
+				bufferBody = body;
 				dw.rotSync.Remove (id);
 			}
+			headBone.transform.localRotation = Quaternion.Lerp(headBone.transform.localRotation, bufferHead,0.5f);
+			transform.rotation = Quaternion.Lerp(transform.rotation, bufferBody,0.5f);
 		}
-
-		//transform.Rotate(new Vector3(180f,0,0));
 	}
 
 
@@ -176,7 +183,7 @@ public class PlayerScript : MonoBehaviour {
 			Quaternion bHead = syncRotBufferV;
 			Quaternion bBody = syncRotBufferH;
 			while (true) {
-				if (Vector3.Distance (transform.position, bPos) > 0) {
+				if (Vector3.Distance (transform.position, bPos) > 0.1f) {
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "Pos";
 					data ["x"] = transform.position.x.ToString ();
@@ -187,7 +194,7 @@ public class PlayerScript : MonoBehaviour {
 					bPos = transform.position;
 				}
 
-				if (Quaternion.Angle (syncRotBufferH, bBody) > 0 || Quaternion.Angle (syncRotBufferV,bHead) > 0) {
+				if (Quaternion.Angle (syncRotBufferH, bBody) > 0.1f || Quaternion.Angle (syncRotBufferV,bHead) > 0.1f) {
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "Rot";
 					data ["bodyY"] = syncRotBufferH.eulerAngles.y.ToString();

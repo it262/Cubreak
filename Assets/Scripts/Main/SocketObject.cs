@@ -105,6 +105,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 				socket.On ("Rot", Rot);
 				socket.On ("Hit", Hit);
 				socket.On ("PlayerEliminate", PlayerEliminate);
+				socket.On ("PushSwitch", PushSwitch);
 				socket.On ("FirstObs", FirstObs);
 				socket.On ("Obs", Obs);
 				socket.On ("DestroyObs", DestroyObs);
@@ -231,6 +232,11 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	public void PlayerEliminate(SocketIOEvent e){
 		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
 		GetComponent<DataWorker> ().elimQue.Enqueue (new JSONObject(e.data.ToString ()).ToDictionary());
+	}
+
+	public void PushSwitch(SocketIOEvent e){
+		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
+		GetComponent<DataWorker> ().pushSwitch.Add (d ["trg"], true);
 	}
 
 	public void FirstObs(SocketIOEvent e)

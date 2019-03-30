@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.5773768, g: 0.5773976, b: 0.5773768, a: 1}
+  m_IndirectSpecularColor: {r: 0.45445168, g: 0.45445168, b: 0.45445168, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -563,7 +563,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: TEST PROJECT
+  m_text: CUBRAKE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cc0dd1b6a65081847a004b00f65d0e99, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 3440334087165c943ab96524975d423f, type: 2}
@@ -632,12 +632,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: -23.253542}
   m_textInfo:
     textComponent: {fileID: 556720201}
-    characterCount: 12
+    characterCount: 7
     spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
+    spaceCount: 0
+    wordCount: 1
     linkCount: 0
-    lineCount: 2
+    lineCount: 1
     pageCount: 1
     materialCount: 1
   m_havePropertiesChanged: 0
@@ -1534,7 +1534,7 @@ PrefabInstance:
         type: 3}
       propertyPath: PlayerPrefab
       value: 
-      objectReference: {fileID: 314246873125926618, guid: 85a4334c285522642bafabb3a9698e14,
+      objectReference: {fileID: 2047813217, guid: 635d9962949fa244c995a004c5d3514a,
         type: 3}
     - target: {fileID: 114575006882513960, guid: 010d39cbd03ee4c99a746c1f8ecdc0d8,
         type: 3}
@@ -6424,7 +6424,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1788317925}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 7.9, z: 1.7}
+  m_LocalPosition: {x: 0, y: 7.9, z: 1.8}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children:
   - {fileID: 556720200}

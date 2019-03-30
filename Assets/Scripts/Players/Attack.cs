@@ -42,16 +42,20 @@ public class Attack : MonoBehaviour
 					data ["y"] = vec.y.ToString ();
 					data ["z"] = vec.z.ToString ();
 					so.EmitMessage ("ToOwnRoom", data);
-					yield return new WaitForSeconds (attackSpeed);
-				} else if (hit.collider.gameObject.CompareTag ("fallenObstacle")) {
+				} else if (hit.collider.gameObject.CompareTag ("fallenObstacle") || hit.collider.gameObject.CompareTag ("Obstacle")) {
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "DestroyObs";
 					data ["n"] = hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString ();
 					so.EmitMessage ("ToOwnRoom", data);
 					Debug.Log ("Send:" + hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString () + "破壊");
 					hit.collider.gameObject.GetComponent<ObsUpdate>().Destroy ();
-					yield return new WaitForSeconds (attackSpeed);
+				}else if(hit.collider.gameObject.CompareTag ("Switch")){
+					var data = new Dictionary<string,string> ();
+					data ["TYPE"] = "PushSwitch";
+					data ["trg"] = hit.collider.gameObject.transform.parent.gameObject.GetComponent<PlayerScript> ().id;
+					so.EmitMessage ("ToOwnRoom", data);
 				}
+				yield return new WaitForSeconds (attackSpeed);
 			}
 			yield return null;
 		}

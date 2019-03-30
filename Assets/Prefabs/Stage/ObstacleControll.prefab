@@ -76,4 +76,5 @@ MonoBehaviour:
   targetSection: {x: 0, y: 0}
   stage: {fileID: 0}
   speed: 0
-  SendObsInterval: 0.1
+  FirstObsMax: 10
+  SendObsInterval: 1

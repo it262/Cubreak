@@ -14,6 +14,8 @@ TagManager:
   - ChangeColorArea_Start
   - ChangeColorArea
   - Attacker
+  - Fire
+  - Switch
   layers:
   - Default
   - TransparentFX

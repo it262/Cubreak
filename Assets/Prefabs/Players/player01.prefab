@@ -794,9 +794,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1769789220}
   - component: {fileID: 1769789221}
+  - component: {fileID: 2577980971508109375}
   m_Layer: 0
   m_Name: Switch
-  m_TagString: Untagged
+  m_TagString: Switch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -832,7 +833,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1947b72c0808c924ca6dc04569eadbde, type: 3}
+  - {fileID: 2100000, guid: cced191f8a7f4b84eb6e3e7853b9e0bb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -870,6 +871,19 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.547157, y: 0.000011831522, z: 0.058634937}
     m_Extent: {x: 0.09730142, y: 0.3107608, z: 0.31075874}
   m_DirtyAABB: 0
+--- !u!135 &2577980971508109375
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1769789219}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.6753412
+  m_Center: {x: 0.000025570356, y: -3.5681105, z: 1.3}
 --- !u!1 &1972883830
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,7 +1007,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1
+  m_Radius: 0.8
   m_Height: 3.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.8, z: 0}
@@ -1012,7 +1026,7 @@ MonoBehaviour:
   forceHeight: 2
   forcePower: 5
   attackSpeed: 1
-  attackRange: 10
+  attackRange: 3
 --- !u!114 &2047813221
 MonoBehaviour:
   m_ObjectHideFlags: 0

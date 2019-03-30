@@ -111,7 +111,7 @@ public class ObstacleControllSync : MonoBehaviour {
 				Color color = SettingColor (obs, int.Parse (first ["color" + i]));
 				GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
 				summon.GetComponent<ParticleSystem> ().startColor = color;
-				Destroy (summon, 3f);
+				Destroy (summon, 2f);
 
 			}
 
@@ -195,7 +195,7 @@ public class ObstacleControllSync : MonoBehaviour {
 							Color color = SettingColor (obs, int.Parse (c [cnt++].ToString ()));
 							GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
 							summon.GetComponent<ParticleSystem> ().startColor = color;
-							Destroy (summon, 3f);
+							Destroy (summon, 2f);
 						}
 					}
 				}

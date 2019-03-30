@@ -31,6 +31,7 @@ public class ObsUpdate : MonoBehaviour
             float dis = hit.distance;
             if (dis <= 0.5)
             {
+				Debug.Log (hit.transform.gameObject.tag);
 				if (hit.transform.gameObject.CompareTag ("Stage")) {
 					transform.position = new Vector3 (
 						transform.position.x,
@@ -75,7 +76,9 @@ public class ObsUpdate : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-		if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
+		if (collision.gameObject.CompareTag ("Attacker")) {
+			
+		} else if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
 			var data = new Dictionary<string,string> ();
 			data ["TYPE"] = "PlayerEliminate";
 			data ["trg"] = so.id;

@@ -14,6 +14,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public Dictionary<string,Vector3> posSync = new Dictionary<string,Vector3>();
 	public Dictionary<string,Vector2> rotSync = new Dictionary<string,Vector2>();
 	public Dictionary<string,bool> heatbeat = new Dictionary<string,bool>();
+	public Dictionary<string,bool> pushSwitch = new Dictionary<string,bool>();
 	public Queue<Dictionary<string,string>> chatQue = new Queue<Dictionary<string,string>>();
 	public Queue<Dictionary<string,string>> roomQue = new Queue<Dictionary<string,string>>();
 	public Queue<Dictionary<string,string>> hitQue = new Queue<Dictionary<string,string>>();
@@ -58,6 +59,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			if (elimQue.Count > 0) {
 				d = elimQue.Dequeue ();
 				if (d ["trg"].ToString ().Equals (GetComponent<SocketObject> ().id)) {
+					//死亡
 					MenuSetting ();
 				} else {
 					exclusion (d ["trg"].ToString ());
