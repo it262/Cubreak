@@ -14,6 +14,8 @@ public class PlayerScript : MonoBehaviour {
 	public bool isPlayer = false;
 	public bool destroy = false;
 	public bool debug = false;
+	public Vector3 impact;
+	public float jumpPower;
 
     private Vector3 velocity;
 	private float defaultSpeed = 5.0f;
@@ -21,6 +23,7 @@ public class PlayerScript : MonoBehaviour {
     private fpsCamera fpsCam;
 	private float time = 0;
 	private Quaternion syncRotBufferV,syncRotBufferH;
+	private bool isGroubded = true;
 
 	// Use this for initialization
 	void Start () {
@@ -55,15 +58,7 @@ public class PlayerScript : MonoBehaviour {
 
 			}
 
-			if (dw.rotSync.ContainsKey (id)) {
-				Vector2 toRot = dw.rotSync [id];
-				Quaternion head = Quaternion.Euler (0, toRot.x, 0);
-				Quaternion body = Quaternion.Euler (0, toRot.y, 0);
-
-				headBone.transform.localRotation = head;
-				transform.rotation = body;
-				dw.rotSync.Remove (id);
-			}
+			//rot -> LateUpdate()
 
 			exitPlayer ();
 			return;
@@ -78,6 +73,24 @@ public class PlayerScript : MonoBehaviour {
 
 		if (transform.position.y < -10f) {
 			dw.disconnectUser (id);
+		}
+
+		if (impact != Vector3.zero) {
+			GetComponent<Rigidbody> ().AddForce (impact, ForceMode.Impulse);
+			impact = Vector3.zero;
+			return;
+		}
+
+		RaycastHit hit;
+		if (Physics.Raycast (transform.position, Vector3.down, out hit, 3f)) {
+			if (hit.collider.gameObject.CompareTag ("Stage") || hit.collider.gameObject.CompareTag ("fallenObstacle")) {
+				Debug.Log ("地上！");
+				if (Input.GetKeyDown (KeyCode.Space)) {
+					GetComponent<Rigidbody> ().AddForce (new Vector3 (0, jumpPower, 0), ForceMode.Impulse);
+				}
+			} else {
+				Debug.Log("空中！");
+			}
 		}
 
 
@@ -113,19 +126,29 @@ public class PlayerScript : MonoBehaviour {
 		}
 
 		Attack ();
-
-
 	}
 
 	//Animatorで制御されているボーンを強制的に動作させるLateUpdate
 	void LateUpdate(){
 		if (GetComponent<DeathCam> ().die)
 			return;
-		headBone.transform.localRotation = fpsCam.vRotation;
-		transform.rotation = fpsCam.hRotation;
+		if (isPlayer) {
+			headBone.transform.localRotation = fpsCam.vRotation;
+			transform.rotation = fpsCam.hRotation;
 
-		syncRotBufferV = headBone.transform.localRotation;
-		syncRotBufferH = transform.rotation;
+			syncRotBufferV = headBone.transform.localRotation;
+			syncRotBufferH = transform.rotation;
+		} else {
+			if (dw.rotSync.ContainsKey (id)) {
+				Vector2 toRot = dw.rotSync [id];
+				Quaternion head = Quaternion.Euler (0, toRot.x, 0);
+				Quaternion body = Quaternion.Euler (0, toRot.y, 0);
+
+				headBone.transform.localRotation = head;
+				transform.rotation = body;
+				dw.rotSync.Remove (id);
+			}
+		}
 
 		//transform.Rotate(new Vector3(180f,0,0));
 	}

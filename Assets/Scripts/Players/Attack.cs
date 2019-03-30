@@ -29,11 +29,9 @@ public class Attack : MonoBehaviour
 	IEnumerator AttackByTime(){
 		while(true){
 			RaycastHit hit;
-			//Debug.Log (Camera.main.transform.forward);
 			if (Input.GetMouseButton(0) && Physics.Raycast (GetComponent<PlayerScript> ().cam.transform.position, Camera.main.transform.forward, out hit, attackRange)) {
 				Debug.Log (hit.collider.gameObject.tag);
 				if (hit.collider.gameObject.CompareTag ("Others")) {
-					/*
 					Vector3 toVec = getAngleVec (transform.position, hit.collider.gameObject.transform.position);
 					toVec += new Vector3 (0, forceHeight, 0);
 					Vector3 vec = toVec * forcePower;
@@ -44,8 +42,14 @@ public class Attack : MonoBehaviour
 					data ["y"] = vec.y.ToString ();
 					data ["z"] = vec.z.ToString ();
 					so.EmitMessage ("ToOwnRoom", data);
-					*/
-					//Debug.Log (hit.collider.gameObject.tag);
+					yield return new WaitForSeconds (attackSpeed);
+				} else if (hit.collider.gameObject.CompareTag ("fallenObstacle")) {
+					var data = new Dictionary<string,string> ();
+					data ["TYPE"] = "DestroyObs";
+					data ["n"] = hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString ();
+					so.EmitMessage ("ToOwnRoom", data);
+					Debug.Log ("Send:" + hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString () + "破壊");
+					hit.collider.gameObject.GetComponent<ObsUpdate>().Destroy ();
 					yield return new WaitForSeconds (attackSpeed);
 				}
 			}

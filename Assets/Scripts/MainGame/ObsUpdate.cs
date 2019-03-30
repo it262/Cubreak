@@ -75,14 +75,7 @@ public class ObsUpdate : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-		if (collision.gameObject.CompareTag ("Attacker")) {
-			var data = new Dictionary<string,string> ();
-			data ["TYPE"] = "DestroyObs";
-			data ["n"] = id.ToString ();
-			so.EmitMessage ("ToOwnRoom", data);
-			Debug.Log ("Send:" + id + "破壊");
-			Destroy ();
-		} else if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
+		if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
 			var data = new Dictionary<string,string> ();
 			data ["TYPE"] = "PlayerEliminate";
 			data ["trg"] = so.id;
