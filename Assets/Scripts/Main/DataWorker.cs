@@ -22,6 +22,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 	public JSONObject roomState;
 	public Dictionary<string,GameObject> players = new Dictionary<string,GameObject> ();
+	public GameObject me;
 
 	public bool playing = false;
 
@@ -130,6 +131,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 				g.GetComponent<PlayerScript> ().isPlayer = true;
 				g.tag = "Player";
 				//g.GetComponent<PlayerScript> ().damage = GameObject.Find ("Image");
+				me = g;
 			} else {
 				g.GetComponent<PlayerScript> ().cam.SetActive(false);
 				g.tag = "Others";
@@ -184,6 +186,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		leady = false;
 		wait = false;
 		myRoom = null;
+		me = null;
 		posSync.Clear ();
 		rotSync.Clear ();
 		heatbeat.Clear ();

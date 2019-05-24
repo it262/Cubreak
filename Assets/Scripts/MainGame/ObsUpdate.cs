@@ -13,6 +13,7 @@ public class ObsUpdate : MonoBehaviour
 	public int id;
 
 	public GameObject particle;
+	public string type;
 
     // Use this for initialization
     void Start()

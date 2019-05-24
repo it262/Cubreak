@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.46334296, g: 0.46332753, b: 0.46334296, a: 1}
+  m_IndirectSpecularColor: {r: 0.44828844, g: 0.44828844, b: 0.44828844, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -886,6 +886,7 @@ GameObject:
   - component: {fileID: 658454740}
   - component: {fileID: 658454739}
   - component: {fileID: 658454743}
+  - component: {fileID: 658454744}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -988,6 +989,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   content: {fileID: 0}
   pref: {fileID: 1526539304563840, guid: c1ce4242a1fb51545a3e159ef226ce0e, type: 3}
+--- !u!114 &658454744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658454738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a052474c56fb73e4cb2608a327c7d1d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackUI: {fileID: 669452440}
+  DefenceUI: {fileID: 1694096749}
+  SpeedUI: {fileID: 1200161987}
 --- !u!1 &669452440
 GameObject:
   m_ObjectHideFlags: 0
@@ -1486,10 +1502,10 @@ MonoBehaviour:
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 0
+  m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
-  m_FillOrigin: 1
+  m_FillOrigin: 0
   m_UseSpriteMesh: 0
 --- !u!222 &895123073
 CanvasRenderer:
@@ -2008,7 +2024,7 @@ MonoBehaviour:
   m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
-  m_FillOrigin: 1
+  m_FillOrigin: 0
   m_UseSpriteMesh: 0
 --- !u!222 &1200161991
 CanvasRenderer:
@@ -2555,10 +2571,10 @@ MonoBehaviour:
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 0
+  m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
-  m_FillOrigin: 1
+  m_FillOrigin: 0
   m_UseSpriteMesh: 0
 --- !u!222 &1694096753
 CanvasRenderer:
