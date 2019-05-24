@@ -187,13 +187,13 @@ public class ObstacleControllSync : MonoBehaviour {
 				for (int i = 0; i < x_width; i++) {
 					for (int j = 0; j < z_width; j++) {
 						for (int k = 0; k < y_width; k++) {
-							GameObject obs = (GameObject)Instantiate (obstaclePrefab,
+							GameObject o = (GameObject)Instantiate (obstaclePrefab,
 								                 new Vector3 (targetSection.x + i, _Y - j, targetSection.y/*z*/ - k),
 								                 Quaternion.identity);
-							obstacle.Add (n, obs);
-							obs.GetComponent<ObsUpdate> ().id = n++;
-							Color color = SettingColor (obs, int.Parse (c [cnt++].ToString ()));
-							GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
+							obstacle.Add (n, o);
+							o.GetComponent<ObsUpdate> ().id = n++;
+							Color color = SettingColor (o, int.Parse (c [cnt++].ToString ()));
+							GameObject summon = (GameObject)Instantiate (SummonPref, o.transform.position, Quaternion.identity);
 							summon.GetComponent<ParticleSystem> ().startColor = color;
 							Destroy (summon, 2f);
 						}
