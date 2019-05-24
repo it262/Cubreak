@@ -23,6 +23,11 @@ public class EnhancedUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if (dw.leady) {
+			transform.localPosition = new Vector3(0,0,0);
+		} else {
+			transform.localPosition = new Vector3(-200,0,0);
+		}
 		if (!so.id.Equals("") && dw.players.ContainsKey (so.id)) {
 			state = dw.players [so.id].GetComponent<PlayerScript> ().state;
 			AttackUI.GetComponent<filledImage>().changeTargetAmount(state.atk);
