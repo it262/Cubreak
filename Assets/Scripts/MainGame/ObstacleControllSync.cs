@@ -126,25 +126,26 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	void ObsUpdate(){
 		if (victim.Count > 0) {
+			Debug.Log ("Receive:"+victim.Peek()["n"] + "破壊");
 			var v = victim.Dequeue ();
-			Debug.Log ("Receive:"+v["n"] + "破壊");
-			GameObject trgOBS = obstacle [int.Parse (v ["n"])];
-			switch (trgOBS.GetComponent<ObsUpdate> ().type) {
-			case 1:
-				dw.players [v ["attacker"].ToString ()].GetComponent<PlayerScript> ().state.atk_plus ();
+			var trgObs = obstacle [int.Parse (v ["n"])];
+			switch(trgObs.GetComponent<ObsUpdate>().type){
+			case "atk":
+				dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.atk_plus();
 				break;
-				case2:
-				dw.players [v ["attacker"].ToString ()].GetComponent<PlayerScript> ().state.dif_plus ();
+			case "dif":
+				dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.dif_plus();
 				break;
-				case3:
-				dw.players [v ["attacker"].ToString ()].GetComponent<PlayerScript> ().state.spd_plus ();
+			case "spd":
+				dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.spd_plus();
 				break;
-				case4:
-				dw.players [v ["attacker"].ToString ()].GetComponent<PlayerScript> ().state.life_plus ();
+			case "life":
+				dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.life_plus();
+				break;
+			default:
 				break;
 			}
-			
-			trgOBS.GetComponent<ObsUpdate>().Destroy();
+			trgObs.GetComponent<ObsUpdate>().Destroy();
 		}
 
 		/*
@@ -260,30 +261,35 @@ public class ObstacleControllSync : MonoBehaviour {
 			//ノーマル
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 0, 1));
+			obs.GetComponent<ObsUpdate>().type = "normal";
 			return new Color (1,0,1);
 			break;
 		case 1:
 			//atk
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 0, 0));
+			obs.GetComponent<ObsUpdate>().type = "atk";
 			return new Color (1,0,0);
 			break;
 		case 2:
 			//dif
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 0, 1));
+			obs.GetComponent<ObsUpdate>().type = "dif";
 			return new Color (0,0,1);
 			break;
 		case 3:
 			//spd
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 1, 0));
+			obs.GetComponent<ObsUpdate>().type = "spd";
 			return new Color (1,1,0);
 			break;
 		case 4:
 			//hp
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 1, 0));
+			obs.GetComponent<ObsUpdate>().type = "life";
 			return new Color (0,1,0);
 			break;
 		}

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
 	static SocketObject so;
+	static DataWorker dw;
 
 	public float forceHeight;
 	public float forcePower;
@@ -17,6 +18,7 @@ public class Attack : MonoBehaviour
     void Start()
     {
 		so = SocketObject.Instance;
+		dw = DataWorker.Instance;
 		StartCoroutine (AttackByTime());
     }
 
@@ -34,7 +36,7 @@ public class Attack : MonoBehaviour
 				if (hit.collider.gameObject.CompareTag ("Others")) {
 					Vector3 toVec = getAngleVec (transform.position, hit.collider.gameObject.transform.position);
 					toVec += new Vector3 (0, forceHeight, 0);
-					float power = (forcePower - hit.collider.gameObject.GetComponent<PlayerScript> ().state.dif);
+					float power = (dw.me.GetComponent<PlayerScript>().state.atk - hit.collider.gameObject.GetComponent<PlayerScript> ().state.dif);
 					if (power <= 0)
 						power = 1;
 					Vector3 vec = toVec * power;
@@ -49,10 +51,11 @@ public class Attack : MonoBehaviour
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "DestroyObs";
 					data ["n"] = hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString ();
-					data ["attacker"] = GetComponent<PlayerScript>().id;
+
+					data ["attacker"] = so.id.ToString ();
 					so.EmitMessage ("ToOwnRoom", data);
 					Debug.Log ("Send:" + hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString () + "破壊");
-					hit.collider.gameObject.GetComponent<ObsUpdate>().Destroy ();
+					//hit.collider.gameObject.GetComponent<ObsUpdate>().Destroy ();
 				}else if(hit.collider.gameObject.CompareTag ("Switch")){
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "PushSwitch";
@@ -60,6 +63,7 @@ public class Attack : MonoBehaviour
 					so.EmitMessage ("ToOwnRoom", data);
 				}
 				yield return new WaitForSeconds (attackSpeed/GetComponent<PlayerScript>().state.spd);
+
 			}
 			yield return null;
 		}

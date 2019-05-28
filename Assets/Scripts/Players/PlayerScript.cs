@@ -123,7 +123,8 @@ public class PlayerScript : MonoBehaviour {
 		}
 
 
-		velocity = velocity.normalized * moveSpeed * Time.deltaTime;
+		//velocity = velocity.normalized * moveSpeed * Time.deltaTime;
+		velocity = velocity.normalized * state.spd * Time.deltaTime;
 
 		if (velocity.magnitude > 0) {
 			anim.SetBool ("Walk",true);
