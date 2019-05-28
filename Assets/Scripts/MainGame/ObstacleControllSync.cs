@@ -126,8 +126,25 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	void ObsUpdate(){
 		if (victim.Count > 0) {
-			Debug.Log ("Receive:"+victim.Peek()["n"] + "破壊");
-			obstacle [int.Parse(victim.Dequeue() ["n"])].GetComponent<ObsUpdate>().Destroy();
+			var v = victim.Dequeue ();
+			Debug.Log ("Receive:"+v["n"] + "破壊");
+			GameObject trgOBS = obstacle [int.Parse (v ["n"])];
+			switch (trgOBS.GetComponent<ObsUpdate> ().type) {
+			case 1:
+				dw.players [v ["attacker"].ToString ()].GetComponent<PlayerScript> ().state.atk_plus ();
+				break;
+				case2:
+				dw.players [v ["attacker"].ToString ()].GetComponent<PlayerScript> ().state.dif_plus ();
+				break;
+				case3:
+				dw.players [v ["attacker"].ToString ()].GetComponent<PlayerScript> ().state.spd_plus ();
+				break;
+				case4:
+				dw.players [v ["attacker"].ToString ()].GetComponent<PlayerScript> ().state.life_plus ();
+				break;
+			}
+			
+			trgOBS.GetComponent<ObsUpdate>().Destroy();
 		}
 
 		/*
@@ -240,31 +257,37 @@ public class ObstacleControllSync : MonoBehaviour {
 	Color SettingColor(GameObject obs,int n){
 		switch (n) {
 		case 0:
+			//ノーマル
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 0, 1));
 			return new Color (1,0,1);
 			break;
 		case 1:
+			//atk
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 0, 0));
 			return new Color (1,0,0);
 			break;
 		case 2:
+			//dif
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 0, 1));
 			return new Color (0,0,1);
 			break;
 		case 3:
+			//spd
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 1, 0));
 			return new Color (1,1,0);
 			break;
 		case 4:
+			//hp
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 1, 0));
 			return new Color (0,1,0);
 			break;
 		}
+		obs.GetComponent<ObsUpdate> ().type = n;
 		return new Color (0,0,0);
 	}
 

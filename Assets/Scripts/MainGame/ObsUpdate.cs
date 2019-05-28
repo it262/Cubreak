@@ -9,6 +9,7 @@ public class ObsUpdate : MonoBehaviour
     public LayerMask mask;
 	private float preSpeed = 0;
     public float speed;
+	public int type;
 
 	public int id;
 
