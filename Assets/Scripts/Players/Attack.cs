@@ -7,6 +7,8 @@ public class Attack : MonoBehaviour
 	static SocketObject so;
 	static DataWorker dw;
 
+	PlayerScript mine;
+
 	public float forceHeight;
 	public float forcePower;
 	public float attackSpeed;
@@ -19,24 +21,25 @@ public class Attack : MonoBehaviour
     {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
+		mine = GetComponent<PlayerScript> ();
 		StartCoroutine (AttackByTime());
     }
 
     // Update is called once per frame
     void Update()
     {
-		forcePower = GetComponent<PlayerScript> ().state.atk;
+		
     }
 
 	IEnumerator AttackByTime(){
 		while(true){
 			RaycastHit hit;
-			if (Input.GetMouseButton(0) && Physics.Raycast (GetComponent<PlayerScript> ().cam.transform.position, Camera.main.transform.forward, out hit, attackRange)) {
+			if (Input.GetMouseButton(0) && Physics.Raycast (mine.cam.transform.position, Camera.main.transform.forward, out hit, attackRange)) {
 				Debug.Log (hit.collider.gameObject.tag);
 				if (hit.collider.gameObject.CompareTag ("Others")) {
 					Vector3 toVec = getAngleVec (transform.position, hit.collider.gameObject.transform.position);
 					toVec += new Vector3 (0, forceHeight, 0);
-					float power = (dw.me.GetComponent<PlayerScript>().state.atk - hit.collider.gameObject.GetComponent<PlayerScript> ().state.dif);
+					float power = (mine.state.atk - hit.collider.gameObject.GetComponent<PlayerScript> ().state.dif);
 					if (power <= 0)
 						power = 1;
 					Vector3 vec = toVec * power;
@@ -51,7 +54,6 @@ public class Attack : MonoBehaviour
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "DestroyObs";
 					data ["n"] = hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString ();
-
 					data ["attacker"] = so.id.ToString ();
 					so.EmitMessage ("ToOwnRoom", data);
 					Debug.Log ("Send:" + hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString () + "破壊");
@@ -62,7 +64,7 @@ public class Attack : MonoBehaviour
 					data ["trg"] = hit.collider.gameObject.transform.parent.gameObject.GetComponent<PlayerScript> ().id;
 					so.EmitMessage ("ToOwnRoom", data);
 				}
-				yield return new WaitForSeconds (attackSpeed/GetComponent<PlayerScript>().state.spd);
+				yield return new WaitForSeconds (attackSpeed/mine.state.spd);
 
 			}
 			yield return null;

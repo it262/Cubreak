@@ -98,7 +98,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 					Debug.Log ("Waiting...[" + players.Count + "/" + MAX + "]");
 				}
 			}*/
-			if (leady && myRoom != null && myRoom.cnt == MAX) {
+			if (myRoom != null && myRoom.cnt == MAX) {
 				players.Clear ();
 				foreach (KeyValuePair<string,string> member in myRoom.member) {
 					players.Add (member.Key, null);

@@ -27,6 +27,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	bool FPComplete = false;
 	bool send = false;
+	bool isServer = false;
 
 	public Dictionary<string,string> first = new Dictionary<string,string>();
 	public Queue<string> obs = new Queue<string>();
@@ -59,6 +60,7 @@ public class ObstacleControllSync : MonoBehaviour {
 			return;
 
 		if (dw.leady && !FPComplete) {
+			isServer = dw.me.GetComponent<PlayerScript> ().id.Equals (so.id);
 			FirstProcessing ();
 			return;
 		}
@@ -70,7 +72,7 @@ public class ObstacleControllSync : MonoBehaviour {
 	void FirstProcessing(){
 		//obstacleの初期配置
 		if(!send){
-			if (isMaster()) {
+			if (isServer) {
 				foreach (string check in state.Values) {
 					if (check.Equals ("1"))
 						return;
@@ -148,40 +150,6 @@ public class ObstacleControllSync : MonoBehaviour {
 			trgObs.GetComponent<ObsUpdate>().Destroy();
 		}
 
-		/*
-		if (isnt_There ("Obstacle")) {
-			stateSync(0);
-		}
-		/*
-		if (!send) {
-			if (isMaster()) {
-				if (isnt_There ("Obstacle")) {
-					if (!dw.players.Count.Equals (state.Count)) {
-						List<string> keys = new List<string> ();
-						foreach (string id in state.Keys) {
-							keys.Add (id);
-						}
-						foreach (string id in keys) {
-							if (!dw.players.ContainsKey (id)) {
-								state.Remove (id);
-							}
-						}
-					}
-					foreach (KeyValuePair<string,string> check in state) {
-						Debug.Log (check.Key + ":" + (check.Value.Equals ("0") ? "完了" : "設置中"));
-						if (check.Value.Equals ("1")) {
-							Debug.Log ("他プレイヤーの設置完了待ち...");
-							return;
-						}
-					}
-					//イテレータ SendObsData
-					send = true;
-					Debug.Log ("送信完了");
-				}
-				return;
-			}
-		}
-		*/
 		if (obs.Count > 0) {
 			//if (isnt_There ("Obstacle")) {
 			//stateSync(1);
@@ -223,17 +191,6 @@ public class ObstacleControllSync : MonoBehaviour {
 				//return;
 			}
 		}
-
-	bool isMaster(){
-		bool master = false;
-		foreach (string key in dw.players.Keys) {
-			if (key.Equals (so.id)) {
-				master = true;
-			}
-			break;
-		}
-		return master;
-	}
 
 	void stateSync(int s){
 		var data = new Dictionary<string,string> ();
@@ -293,7 +250,6 @@ public class ObstacleControllSync : MonoBehaviour {
 			return new Color (0,1,0);
 			break;
 		}
-		obs.GetComponent<ObsUpdate> ().type = n;
 		return new Color (0,0,0);
 	}
 
@@ -305,7 +261,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	IEnumerator SendObsData(){
 			while (true) {
-			if (isMaster () && FPComplete) {
+			if (isServer && FPComplete) {
 
 				var data = new Dictionary<string,string> ();
 				data ["TYPE"] = "Obs";

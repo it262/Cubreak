@@ -10,14 +10,19 @@ public class EnhancedUIController : MonoBehaviour
 
 	public static SocketObject so;
 	public static DataWorker dw;
+	PlayerScript mine;
 	State state;
 
-    public GameObject AttackUI, DefenceUI, SpeedUI;
+    public GameObject AttackUI, DiffenceUI, SpeedUI;
+	filledImage a,d,s;
     // Start is called before the first frame update
     void Start()
     {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
+		a = AttackUI.GetComponent<filledImage> ();
+		d = DiffenceUI.GetComponent<filledImage> ();
+		s = SpeedUI.GetComponent<filledImage> ();
     }
 
     // Update is called once per frame
@@ -28,11 +33,12 @@ public class EnhancedUIController : MonoBehaviour
 		} else {
 			transform.localPosition = new Vector3(-200,0,0);
 		}
-		if (!so.id.Equals("") && dw.players.ContainsKey (so.id)) {
-			state = dw.players [so.id].GetComponent<PlayerScript> ().state;
-			AttackUI.GetComponent<filledImage>().changeTargetAmount(state.atk);
-			DefenceUI.GetComponent<filledImage>().changeTargetAmount(state.dif);
-			SpeedUI.GetComponent<filledImage>().changeTargetAmount(state.spd);
+		if (!so.id.Equals("") && dw.me != null) {
+			if (mine == null) {
+				mine = dw.me.GetComponent<PlayerScript> ();
+			}
+			state = mine.state;
+			fillUpdate ();
 		}
         
     }
@@ -43,9 +49,7 @@ public class EnhancedUIController : MonoBehaviour
         defence -= 2f;
         speed -= 1f;
 
-        AttackUI.GetComponent<filledImage>().changeTargetAmount(attack);
-        DefenceUI.GetComponent<filledImage>().changeTargetAmount(defence);
-        SpeedUI.GetComponent<filledImage>().changeTargetAmount(speed);
+		fillUpdate ();
     }
 
     public void ClickDefence()
@@ -54,9 +58,7 @@ public class EnhancedUIController : MonoBehaviour
         defence += 2f;
         speed -= 2f;
 
-        AttackUI.GetComponent<filledImage>().changeTargetAmount(attack);
-        DefenceUI.GetComponent<filledImage>().changeTargetAmount(defence);
-        SpeedUI.GetComponent<filledImage>().changeTargetAmount(speed);
+		fillUpdate ();
     }
 
     public void ClickSpeed()
@@ -65,8 +67,12 @@ public class EnhancedUIController : MonoBehaviour
         defence -= 1f;
         speed += 2f;
 
-        AttackUI.GetComponent<filledImage>().changeTargetAmount(attack);
-        DefenceUI.GetComponent<filledImage>().changeTargetAmount(defence);
-        SpeedUI.GetComponent<filledImage>().changeTargetAmount(speed);
+		fillUpdate ();
     }
+
+	void fillUpdate(){
+		a.changeTargetAmount(attack);
+		d.changeTargetAmount(defence);
+		s.changeTargetAmount(speed);
+	}
 }
