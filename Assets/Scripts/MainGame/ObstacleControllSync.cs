@@ -46,7 +46,6 @@ public class ObstacleControllSync : MonoBehaviour {
 		// -> FirstProcessing()
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
-		StartCoroutine("SendObsData");
 		jj = new JsonInJson ();
 	}
 
@@ -121,6 +120,7 @@ public class ObstacleControllSync : MonoBehaviour {
 			stateSync(0);
 			FPComplete = true;
 			send = false;
+			StartCoroutine("SendObsData");
 			Debug.Log ("初期オブジェクト設置完了");
 		}
 

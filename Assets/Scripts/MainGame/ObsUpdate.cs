@@ -81,12 +81,22 @@ public class ObsUpdate : MonoBehaviour
 		if (collision.gameObject.CompareTag ("Attacker")) {
 			
 		} else if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
+			if (collision.gameObject.GetComponent<PlayerScript> ().isPlayer) {
+				var data = new Dictionary<string,string> ();
+				data ["TYPE"] = "DestroyObs";
+				data ["n"] = id.ToString ();
+				data ["attacker"] = so.id.ToString ();
+				so.EmitMessage ("ToOwnRoom", data);
+				Debug.Log ("Send:" +id.ToString () + "破壊");
+			}
+			/*
 			var data = new Dictionary<string,string> ();
 			data ["TYPE"] = "PlayerEliminate";
 			data ["trg"] = so.id;
 			so.EmitMessage ("ToOwnRoom", data);
 			Debug.Log ("Send:" + id + "破壊");
 			Destroy ();
+			*/
 		}
     }
 
