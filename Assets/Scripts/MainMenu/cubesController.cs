@@ -65,7 +65,7 @@ public class CubesController : MonoBehaviour {
 	public void CubeSetting(){
 		for (int i = 0; i < _X; i++) {
 			for (int j = 0; j < _Z; j++) {
-				GameObject g = (GameObject)Instantiate(cube, new Vector3 (-7 + i, 1, 5 - j),Quaternion.identity);
+				GameObject g = (GameObject)Instantiate(cube, new Vector3 (-(_X/2) + i, 1, (_Z/2) - j),Quaternion.identity);
 				g.transform.parent = this.gameObject.transform;
 				cubes.Add(g);
 				SettingColor (g,Random.Range(0,5));
