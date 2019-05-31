@@ -131,23 +131,28 @@ public class ObstacleControllSync : MonoBehaviour {
 			Debug.Log ("Receive:"+victim.Peek()["n"] + "破壊");
 			var v = victim.Dequeue ();
 			var trgObs = obstacle [int.Parse (v ["n"])];
-			switch(trgObs.GetComponent<ObsUpdate>().type){
-			case "atk":
-				dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.atk_plus();
-				break;
-			case "dif":
-				dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.dif_plus();
-				break;
-			case "spd":
-				dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.spd_plus();
-				break;
-			case "life":
-				dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.life_plus();
-				break;
-			default:
-				break;
+			if (trgObs != null) {
+				switch (trgObs.GetComponent<ObsUpdate> ().type) {
+				case "atk":
+					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.atk_plus ();
+					break;
+				case "dif":
+					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.dif_plus ();
+					break;
+				case "spd":
+					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.spd_plus ();
+					break;
+				/*
+				 * case "life":
+					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.life_plus ();
+					break;
+					*/
+				default:
+					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.black_minus();
+					break;
+				}
+				trgObs.GetComponent<ObsUpdate> ().Destroy ();
 			}
-			trgObs.GetComponent<ObsUpdate>().Destroy();
 		}
 
 		if (obs.Count > 0) {
@@ -173,15 +178,18 @@ public class ObstacleControllSync : MonoBehaviour {
 				for (int i = 0; i < x_width; i++) {
 					for (int j = 0; j < z_width; j++) {
 						for (int k = 0; k < y_width; k++) {
+						if (!obstacle.ContainsKey (n)) {
 							GameObject o = (GameObject)Instantiate (obstaclePrefab,
-								                 new Vector3 (targetSection.x + i, _Y - j, targetSection.y/*z*/ - k),
-								                 Quaternion.identity);
+								               new Vector3 (targetSection.x + i, _Y - j, targetSection.y/*z*/ - k),
+								               Quaternion.identity);
 							obstacle.Add (n, o);
-							o.GetComponent<ObsUpdate> ().id = n++;
+							o.GetComponent<ObsUpdate> ().id = n;
 							Color color = SettingColor (o, int.Parse (c [cnt++].ToString ()));
 							GameObject summon = (GameObject)Instantiate (SummonPref, o.transform.position, Quaternion.identity);
 							summon.GetComponent<ParticleSystem> ().startColor = color;
 							Destroy (summon, 2f);
+							n++;
+						}
 						}
 					}
 				}
@@ -217,9 +225,9 @@ public class ObstacleControllSync : MonoBehaviour {
 		case 0:
 			//ノーマル
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
-				new Color (1, 0, 1));
+				new Color (0, 0, 0));
 			obs.GetComponent<ObsUpdate>().type = "normal";
-			return new Color (1,0,1);
+			return new Color (0,0,0);
 			break;
 		case 1:
 			//atk
@@ -245,9 +253,9 @@ public class ObstacleControllSync : MonoBehaviour {
 		case 4:
 			//hp
 			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
-				new Color (0, 1, 0));
+				new Color (0, 0, 0));
 			obs.GetComponent<ObsUpdate>().type = "life";
-			return new Color (0,1,0);
+			return new Color (0,0,0);
 			break;
 		}
 		return new Color (0,0,0);

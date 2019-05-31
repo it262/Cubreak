@@ -35,6 +35,12 @@ public class State{
 		life += 10;
 	}
 
+	public void black_minus(){
+		spd -= (spd > 1) ? Random.Range(0,1) : 0;
+		atk -= (atk > 1) ? Random.Range(0,1) : 0;
+		dif -= (dif > 1) ? Random.Range(0,1) : 0;
+	}
+
 	//Dead → true
 	public bool damage(int d){
 		life -= d;

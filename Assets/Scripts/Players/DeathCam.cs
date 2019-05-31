@@ -25,6 +25,7 @@ public class DeathCam : MonoBehaviour
 		if (dw == null)
 			return;
 		if (dw.pushSwitch.ContainsKey (GetComponent<PlayerScript> ().id)) {
+			dw.Exping = true;
 			if (end) {
 				dw.pushSwitch.Remove (GetComponent<PlayerScript> ().id);
 				if (GetComponent<PlayerScript> ().isPlayer) {

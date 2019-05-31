@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
-	public int MAX = 1;
+	public int MAX = 2;
 
 	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText;
 
@@ -25,6 +25,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public GameObject me;
 
 	public bool playing = false;
+
+	public bool Exping = false;
 
 	public Room myRoom;
 
@@ -76,7 +78,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			*/
 
 
-			if ((MAX!=1) &&(players.Count == 1)) {
+			if (!Exping && (MAX!=1) &&(players.Count == 1)) {
 				score += 300;
 				MenuSetting ();
 			}

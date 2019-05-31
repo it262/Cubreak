@@ -38,11 +38,11 @@ public class EnhancedUIController : MonoBehaviour
 				mine = dw.me.GetComponent<PlayerScript> ();
 			}
 			state = mine.state;
-			fillUpdate ();
+			fillUpdate (state);
 		}
         
     }
-
+	/*
     public void ClickAttack()
     {
         attack += 2f;
@@ -69,10 +69,10 @@ public class EnhancedUIController : MonoBehaviour
 
 		fillUpdate ();
     }
-
-	void fillUpdate(){
-		a.changeTargetAmount(attack);
-		d.changeTargetAmount(defence);
-		s.changeTargetAmount(speed);
+*/
+	void fillUpdate(State state){
+		a.changeTargetAmount(state.atk);
+		d.changeTargetAmount(state.dif);
+		s.changeTargetAmount(state.spd);
 	}
 }
