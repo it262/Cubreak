@@ -9,7 +9,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	JsonInJson jj;
 
-	public GameObject obstaclePrefab,SummonPref;
+	public GameObject obstaclePrefab,SummonPref,DestroyPlane;
 
 	public Material emit;
 
@@ -47,6 +47,8 @@ public class ObstacleControllSync : MonoBehaviour {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
 		jj = new JsonInJson ();
+		GameObject g = Instantiate (DestroyPlane, new Vector3 (0, -10, 0), Quaternion.identity);
+		g.GetComponent<DestroyPlane> ().ocs = this;
 	}
 
 	// Update is called once per frame
