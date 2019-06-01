@@ -47,7 +47,7 @@ public class ObstacleControllSync : MonoBehaviour {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
 		jj = new JsonInJson ();
-		GameObject g = Instantiate (DestroyPlane, new Vector3 (0, -10, 0), Quaternion.identity);
+		GameObject g = Instantiate (DestroyPlane, new Vector3 (0, -50, 0), Quaternion.identity);
 		g.GetComponent<DestroyPlane> ().ocs = this;
 	}
 
