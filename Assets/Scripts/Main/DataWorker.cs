@@ -39,6 +39,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 	// Use this for initialization
 	void Start () {
+		Object o = (Object)this;
+		Debug.Log (o);
 	}
 	
 	// Update is called once per frame

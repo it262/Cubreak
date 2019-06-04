@@ -42,7 +42,7 @@ public class Attack : MonoBehaviour
 					float power = (mine.state.atk - hit.collider.gameObject.GetComponent<PlayerScript> ().state.dif);
 					if (power <= 0)
 						power = 1;
-					Vector3 vec = toVec * power;
+					Vector3 vec = toVec * (1+power*0.1f);
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "Hit";
 					data ["trg"] = hit.collider.gameObject.GetComponent<PlayerScript> ().id;

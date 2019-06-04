@@ -16,15 +16,23 @@ public class ObsUpdate : MonoBehaviour
 	public GameObject particle;
 	public string type;
 
+	bool falling = true;
+
     // Use this for initialization
     void Start()
     {
 		so = SocketObject.Instance;
     }
 
+	/*
     // Update is called once per frame
     void Update()
     {
+
+			if (transform.position.y < -10f)
+				Destroy (gameObject);
+
+		/*
         Ray ray = new Ray(transform.position, -transform.up);
         RaycastHit hit;
 
@@ -67,20 +75,20 @@ public class ObsUpdate : MonoBehaviour
 		}
 
         //Debug.DrawRay(ray.origin, ray.direction, Color.red, Mathf.Infinity);
-    }
 
+    }
+	*/
+
+	/*
     //落とす関数。今回は簡略化。
     private void fallen()
     {
 		preSpeed += 0.1f;
 		transform.Translate(0, -preSpeed * Time.deltaTime, 0);
     }
-
     private void OnCollisionEnter(Collision collision)
     {
-		if (collision.gameObject.CompareTag ("Attacker")) {
-			
-		} else if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
+		if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
 			if (collision.gameObject.GetComponent<PlayerScript> ().isPlayer) {
 				var data = new Dictionary<string,string> ();
 				data ["TYPE"] = "DestroyObs";
@@ -89,20 +97,25 @@ public class ObsUpdate : MonoBehaviour
 				so.EmitMessage ("ToOwnRoom", data);
 				Debug.Log ("Send:" +id.ToString () + "破壊");
 			}
-			/*
 			var data = new Dictionary<string,string> ();
 			data ["TYPE"] = "PlayerEliminate";
 			data ["trg"] = so.id;
 			so.EmitMessage ("ToOwnRoom", data);
 			Debug.Log ("Send:" + id + "破壊");
 			Destroy ();
-			*/
+
 		}
     }
 
+	private void OnCollisionExit(Collision collision){
+
+	}
+*/
+
 	public void Destroy(){
 		particle.GetComponent<Renderer> ().material = GetComponent<Renderer> ().material;
-		Instantiate (particle, transform.position, Quaternion.identity);
+		GameObject p = Instantiate (particle, transform.position, Quaternion.identity);
+		Destroy (p, 2f);
 		Destroy(this.gameObject);
 	}
 }
