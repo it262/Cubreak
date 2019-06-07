@@ -49,6 +49,7 @@ public class ObstacleControllSync : MonoBehaviour {
 		jj = new JsonInJson ();
 		GameObject g = Instantiate (DestroyPlane, new Vector3 (0, -50, 0), Quaternion.identity);
 		g.GetComponent<DestroyPlane> ().ocs = this;
+		g.transform.parent = dw.GameInstance.transform;
 	}
 
 	// Update is called once per frame
@@ -111,9 +112,11 @@ public class ObstacleControllSync : MonoBehaviour {
 				obs.gameObject.tag = "fallenObstacle";
 				obstacle.Add (idCounter, obs);
 				obs.GetComponent<ObsUpdate> ().id = idCounter++;
+				obs.transform.parent = dw.GameInstance.transform;
 				Color color = SettingColor (obs, int.Parse (first ["color" + i]));
 				GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
 				summon.GetComponent<ParticleSystem> ().startColor = color;
+				summon.transform.parent = dw.GameInstance.transform;
 				Destroy (summon, 2f);
 
 			}
@@ -186,9 +189,11 @@ public class ObstacleControllSync : MonoBehaviour {
 								               Quaternion.identity);
 							obstacle.Add (n, o);
 							o.GetComponent<ObsUpdate> ().id = n;
+							o.transform.parent = dw.GameInstance.transform;
 							Color color = SettingColor (o, int.Parse (c [cnt++].ToString ()));
 							GameObject summon = (GameObject)Instantiate (SummonPref, o.transform.position, Quaternion.identity);
 							summon.GetComponent<ParticleSystem> ().startColor = color;
+							summon.transform.parent = dw.GameInstance.transform;
 							Destroy (summon, 2f);
 							n++;
 						}
