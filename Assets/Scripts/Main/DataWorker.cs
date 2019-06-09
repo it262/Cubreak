@@ -37,7 +37,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public int score;
 
 	public GameObject InstanceStage,InstanceObsCon;
-	public GameObject Menu;
+	public GameObject Menu,Enhanced;
 
 	// Use this for initialization
 	void Start () {
@@ -125,7 +125,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		cubesController.GetComponent<CubesController> ().GameStart ();
 		InstanceStage = (GameObject)Instantiate (StagePrefab,Vector3.zero,Quaternion.identity);
 		InstanceStage.transform.parent = GameInstance.transform;
-	}
+        Enhanced.SetActive(true);
+    }
 
 	public void PlayerCreate(GameObject obCon,List<Vector2> pos){
 		int cnt = 1;
