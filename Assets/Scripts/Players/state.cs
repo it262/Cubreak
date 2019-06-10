@@ -10,9 +10,9 @@ public class State{
 	public int life;
 
 	public State(){
-		atk = 5;
-		dif = 5;
-		spd = 5;
+		atk = 50;
+		dif = 50;
+		spd = 50;
 		life = 50;
 	}
 

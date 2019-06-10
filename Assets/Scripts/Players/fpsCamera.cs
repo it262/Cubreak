@@ -9,6 +9,8 @@ public class fpsCamera : MonoBehaviour {
     public Quaternion vRotation;
     public Quaternion hRotation;
 
+	public GameObject owner;
+
     // Use this for initialization
     void Start()
     {
@@ -23,7 +25,7 @@ public class fpsCamera : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (!transform.root.gameObject.GetComponent<PlayerScript>().isPlayer)
+		if (!owner.GetComponent<PlayerScript>().isPlayer)
 			return;
 		
         float sensitivity = 5f; // いわゆるマウス感度

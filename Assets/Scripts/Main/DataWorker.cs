@@ -9,7 +9,9 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 	public int MAX = 2;
 
-	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText;
+	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText,GameInstancePrefab;
+
+	public GameObject GameInstance;
 
 	public Dictionary<string,Vector3> posSync = new Dictionary<string,Vector3>();
 	public Dictionary<string,Vector2> rotSync = new Dictionary<string,Vector2>();
@@ -35,7 +37,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public int score;
 
 	public GameObject InstanceStage,InstanceObsCon;
-	public GameObject Menu;
+	public GameObject Menu,Enhanced;
 
 	// Use this for initialization
 	void Start () {
@@ -79,7 +81,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			}
 			*/
 
-
+			Debug.Log (players.Count);
 			if (!Exping && (MAX!=1) &&(players.Count == 1)) {
 				score += 300;
 				MenuSetting ();
@@ -116,12 +118,15 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	}
 
 	void GameSettings(){
+		GameInstance = (GameObject)Instantiate (GameInstancePrefab);
 		TitleText.SetActive (false);
 		TitleCamera.SetActive (false);
 		sphereController.SetActive (false);
 		cubesController.GetComponent<CubesController> ().GameStart ();
 		InstanceStage = (GameObject)Instantiate (StagePrefab,Vector3.zero,Quaternion.identity);
-	}
+		InstanceStage.transform.parent = GameInstance.transform;
+        Enhanced.SetActive(true);
+    }
 
 	public void PlayerCreate(GameObject obCon,List<Vector2> pos){
 		int cnt = 1;
@@ -142,9 +147,11 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			}
 			g.GetComponent<PlayerScript> ().id = data.Key;
 			g.GetComponent<PlayerScript> ().name = data.Value;
+			g.transform.parent = GameInstance.transform;
 			players.Add (data.Key, g);
 		}
 		leady = true;
+
 	}
 
 	void MenuSetting(){
@@ -158,6 +165,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		TitleCamera.SetActive (true);
 		TitleText.SetActive (true);
 		sphereController.SetActive (true);
+		cubesController.SetActive (true);
 		cubesController.GetComponent<CubesController> ().CubeSetting ();
 		Menu.SetActive (true);
 	}
@@ -185,10 +193,13 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		GetComponent<SocketObject>().EmitMessage ("Quick", data);
 		Debug.Log ("[DataWorker]退室しました");
 
+		Destroy (GameInstance);
+
 		playing = false;
 		searching = false;
 		leady = false;
 		wait = false;
+		Exping = false;
 		myRoom = null;
 		me = null;
 		posSync.Clear ();

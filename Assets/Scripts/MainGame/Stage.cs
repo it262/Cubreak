@@ -82,6 +82,7 @@ public class Stage : MonoBehaviour {
 		GameObject obs = (GameObject)Instantiate (ObsController, Vector3.zero, Quaternion.identity);
 		obs.GetComponent<ObstacleControllSync> ().stage = this.gameObject;
 		dw.InstanceObsCon = obs;
+		obs.transform.parent = dw.GameInstance.transform;
 
 		List<Vector2> spawnPoints = new List<Vector2> ();
 		spawnPoints.Add (TargetSection(0,0));

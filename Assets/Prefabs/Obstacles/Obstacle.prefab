@@ -110,7 +110,7 @@ MonoBehaviour:
     m_Bits: 512
   speed: 10
   id: 0
-  particle: {fileID: 58, guid: 0d4811bb5a2509b4fbb3d7e0f7878ff4, type: 3}
+  particle: {fileID: 59, guid: 0d4811bb5a2509b4fbb3d7e0f7878ff4, type: 3}
   type: 
 --- !u!54 &1449283425854804375
 Rigidbody:

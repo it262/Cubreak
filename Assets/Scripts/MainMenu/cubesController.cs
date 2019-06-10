@@ -80,5 +80,6 @@ public class CubesController : MonoBehaviour {
 			Destroy (c);
 		}
 		cubes.Clear ();
+		this.gameObject.SetActive (false);
 	}
 }

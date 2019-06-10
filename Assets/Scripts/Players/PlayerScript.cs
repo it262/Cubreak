@@ -39,6 +39,7 @@ public class PlayerScript : MonoBehaviour {
 		toPos = transform.position;
 		transform.LookAt (new Vector3(0,transform.position.y,0));
 		fpsCam.hRotation = transform.rotation;
+		fpsCam.GetComponent<fpsCamera> ().owner = gameObject;
 	}
 	
 	// Update is called once per frame

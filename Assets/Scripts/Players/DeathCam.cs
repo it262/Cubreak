@@ -12,11 +12,14 @@ public class DeathCam : MonoBehaviour
 
 	[SerializeField]GameObject explosion;
 
+	PlayerScript ps;
+
     // Start is called before the first frame update
     void Start()
     {
 		dw = DataWorker.Instance;
 		cam = GetComponent<PlayerScript> ().cam;
+		ps = GetComponent<PlayerScript> ();
     }
 
     // Update is called once per frame
@@ -24,18 +27,18 @@ public class DeathCam : MonoBehaviour
     {
 		if (dw == null)
 			return;
-		if (dw.pushSwitch.ContainsKey (GetComponent<PlayerScript> ().id)) {
-			dw.Exping = true;
+		if (dw.pushSwitch.ContainsKey (ps.id)) {
 			if (end) {
-				dw.pushSwitch.Remove (GetComponent<PlayerScript> ().id);
-				if (GetComponent<PlayerScript> ().isPlayer) {
+				dw.pushSwitch.Remove (ps.id);
+				if (ps.isPlayer) {
 					Destroy (cam);
-					dw.disconnectUser (GetComponent<PlayerScript> ().id);
+					dw.disconnectUser (ps.id);
 				}
 			}
 			if (GetComponent<PlayerScript> ().isPlayer) {
-				if (cam.transform.parent != null) {
-					cam.transform.parent = null;
+				if (cam.transform.parent != dw.GameInstance.transform) {
+					dw.Exping = true;
+					cam.transform.parent = dw.GameInstance.transform;
 					cam.transform.position = transform.position + new Vector3 (0, 5f, -5f);
 					//GetComponent<PlayerScript> ().enabled = false;
 					GetComponent<Rigidbody> ().useGravity = false;
@@ -47,6 +50,7 @@ public class DeathCam : MonoBehaviour
 			} else {
 				if (!die) {
 					StartCoroutine (dead ());
+					dw.Exping = false;
 					die = true;
 				}
 			}
@@ -55,6 +59,7 @@ public class DeathCam : MonoBehaviour
 
 	IEnumerator dead(){
 		GameObject g = (GameObject)Instantiate (explosion,transform.position,Quaternion.identity);
+		g.transform.parent = dw.GameInstance.transform;
 		Destroy (g, 5f);
 		GetComponent<AudioSource> ().Play ();
 		yield return new WaitForSeconds (5f);

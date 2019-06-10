@@ -28,11 +28,7 @@ public class EnhancedUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (dw.leady) {
-			transform.localPosition = new Vector3(0,0,0);
-		} else {
-			transform.localPosition = new Vector3(-200,0,0);
-		}
+        this.gameObject.SetActive(dw.playing);
 		if (!so.id.Equals("") && dw.me != null) {
 			if (mine == null) {
 				mine = dw.me.GetComponent<PlayerScript> ();
