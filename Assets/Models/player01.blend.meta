@@ -24,6 +24,7 @@ ModelImporter:
     100036: Hand_R
     100038: Head
     100040: Switch
+    100042: Player
     400000: Master
     400002: Master_001
     400004: Master_002
@@ -45,6 +46,7 @@ ModelImporter:
     400036: Hand_R
     400038: Head
     400040: Switch
+    400042: Player
     2100000: unnamed
     2100002: "\u30DE\u30C6\u30EA\u30A2\u30EB_002"
     4300000: "\u7403_003"
@@ -60,6 +62,7 @@ ModelImporter:
     4300020: Hand_L
     4300022: Eye
     4300024: Head
+    4300026: Player
     7400000: Default Take
     7400002: "\u30A2\u30FC\u30DE\u30C1\u30E5\u30A2Action"
     7400004: Walk_001
@@ -78,6 +81,7 @@ ModelImporter:
     13700020: Hand_R
     13700022: Head
     13700024: Switch
+    13700026: Player
     2186277476908879412: ImportLogs
   externalObjects: {}
   materials:

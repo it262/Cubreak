@@ -56,12 +56,14 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 			//回転同期
 
+            /*
 			if (hitQue.Count > 0) {
 				d = hitQue.Dequeue ();
 				GameObject g = players [d ["trg"].ToString ()];
 				//g.GetComponent<Rigidbody> ().AddForce (new Vector3(float.Parse(d["x"]),float.Parse(d["y"]),float.Parse(d["z"])),ForceMode.Impulse);
 				g.GetComponent<PlayerScript> ().impact = new Vector3 (float.Parse (d ["x"]), float.Parse (d ["y"]), float.Parse (d ["z"]));
 			}
+            */
 
 			if (elimQue.Count > 0) {
 				d = elimQue.Dequeue ();

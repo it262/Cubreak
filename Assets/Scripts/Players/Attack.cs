@@ -36,20 +36,39 @@ public class Attack : MonoBehaviour
 			RaycastHit hit;
 			if (Input.GetMouseButton(0) && Physics.Raycast (mine.cam.transform.position, Camera.main.transform.forward, out hit, attackRange)) {
 				Debug.Log (hit.collider.gameObject.tag);
-				if (hit.collider.gameObject.CompareTag ("Others")) {
-					Vector3 toVec = getAngleVec (transform.position, hit.collider.gameObject.transform.position);
+				if (hit.collider.gameObject.CompareTag ("OthersAvater")) {
+                    GameObject paret = hit.transform.parent.gameObject;
+                    /*
+					Vector3 toVec = getAngleVec (transform.position, paret.transform.position);
 					toVec += new Vector3 (0, forceHeight, 0);
 					float power = (mine.state.atk - hit.collider.gameObject.GetComponent<PlayerScript> ().state.dif);
 					if (power <= 0)
 						power = 1;
 					Vector3 vec = toVec * (1+power*0.1f);
+                    */
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "Hit";
-					data ["trg"] = hit.collider.gameObject.GetComponent<PlayerScript> ().id;
-					data ["x"] = vec.x.ToString ();
-					data ["y"] = vec.y.ToString ();
-					data ["z"] = vec.z.ToString ();
-					so.EmitMessage ("ToOwnRoom", data);
+					data ["trg"] = paret.GetComponent<PlayerScript> ().id;
+					//data ["x"] = vec.x.ToString ();
+					//data ["y"] = vec.y.ToString ();
+					//data ["z"] = vec.z.ToString ();
+
+                    var mf = hit.transform.GetComponent<SkinnedMeshRenderer>();
+                    //var mc = hit.transform.GetComponent<MeshCollider>();
+
+                    //検出したオブジェクトのローカル座標に変換
+                    Vector3 start = mf.transform.worldToLocalMatrix.MultiplyPoint(Camera.main.transform.position);
+                    Vector3 end = mf.transform.worldToLocalMatrix.MultiplyPoint(hit.point);
+
+                    data["startX"] = start.x.ToString();
+                    data["startY"] = start.y.ToString();
+                    data["startZ"] = start.z.ToString();
+                    data["endX"] = end.x.ToString();
+                    data["endY"] = end.y.ToString();
+                    data["endZ"] = end.z.ToString();
+
+
+                    so.EmitMessage ("ToOwnRoom", data);
 				} else if (hit.collider.gameObject.CompareTag ("fallenObstacle") || hit.collider.gameObject.CompareTag ("Obstacle")) {
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "DestroyObs";

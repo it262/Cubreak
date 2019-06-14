@@ -101,9 +101,8 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 				socket.On ("Leady", Leady);
 				socket.On ("GameStart", GameStart);
 				socket.On ("Message", Message);
-				socket.On ("Pos", Pos);
-				socket.On ("Rot", Rot);
-				socket.On ("Hit", Hit);
+                socket.On("Transform", Trans);
+                socket.On ("Hit", Hit);
 				socket.On ("PlayerEliminate", PlayerEliminate);
 				socket.On ("PushSwitch", PushSwitch);
 				socket.On ("FirstObs", FirstObs);
@@ -208,6 +207,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 		GetComponent<DataWorker>().chatQue.Enqueue(new JSONObject(e.data.ToString ()).ToDictionary());
 	}
 
+    /*
 	public void Pos(SocketIOEvent e)
 	{
 		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
@@ -221,8 +221,17 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 		GetComponent<DataWorker>().rotSync.Add(d["id"],new Vector2(float.Parse(d["headY"]),float.Parse(d["bodyY"])));
         Debug.Log("ローテーション受信");
     }
+    */
 
-	public void Hit(SocketIOEvent e)
+    public void Trans(SocketIOEvent e)
+    {
+        Dictionary<string, string> d = new JSONObject(e.data.ToString()).ToDictionary();
+        GetComponent<DataWorker>().posSync.Add(d["id"], new Vector3(float.Parse(d["x"]), float.Parse(d["y"]), float.Parse(d["z"])));
+        GetComponent<DataWorker>().rotSync.Add(d["id"], new Vector2(float.Parse(d["headY"]), float.Parse(d["bodyY"])));
+        Debug.Log("Transform受信");
+    }
+
+    public void Hit(SocketIOEvent e)
 	{
 		Debug.Log ("Hit!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();

@@ -16,6 +16,7 @@ TagManager:
   - Attacker
   - Fire
   - Switch
+  - OthersAvater
   layers:
   - Default
   - TransparentFX

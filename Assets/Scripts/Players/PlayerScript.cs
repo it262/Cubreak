@@ -27,6 +27,9 @@ public class PlayerScript : MonoBehaviour {
 	private Quaternion bufferHead, bufferBody;
 	private Vector3 toPos;
 
+    [SerializeField]
+    private GameObject avater;
+
 	// Use this for initialization
 	void Start () {
 		so = SocketObject.Instance;
@@ -40,6 +43,8 @@ public class PlayerScript : MonoBehaviour {
 		transform.LookAt (new Vector3(0,transform.position.y,0));
 		fpsCam.hRotation = transform.rotation;
 		fpsCam.GetComponent<fpsCamera> ().owner = gameObject;
+
+        //avater.GetComponent<MeshCollider>().sharedMesh = avater.GetComponent<SkinnedMeshRenderer>().sharedMesh;
 	}
 	
 	// Update is called once per frame
@@ -185,17 +190,19 @@ public class PlayerScript : MonoBehaviour {
 			Quaternion bHead = syncRotBufferV;
 			Quaternion bBody = syncRotBufferH;
 			while (true) {
-				if (Vector3.Distance (transform.position, bPos) > 0.1f) {
+				if (Vector3.Distance (transform.position, bPos) > 0.1f || Quaternion.Angle(syncRotBufferH, bBody) > 0.1f || Quaternion.Angle(syncRotBufferV, bHead) > 0.1f) {
 					var data = new Dictionary<string,string> ();
-					data ["TYPE"] = "Pos";
+					data ["TYPE"] = "Transform";
 					data ["x"] = transform.position.x.ToString ();
 					data ["y"] = transform.position.y.ToString ();
 					data ["z"] = transform.position.z.ToString ();
-					so.EmitMessage ("ToOwnRoom", data);
+                    data["bodyY"] = syncRotBufferH.eulerAngles.y.ToString();
+                    data["headY"] = syncRotBufferV.eulerAngles.y.ToString();
+                    so.EmitMessage ("ToOwnRoom", data);
 					Debug.Log ("Position送信");
 					bPos = transform.position;
 				}
-
+                /*
 				if (Quaternion.Angle (syncRotBufferH, bBody) > 0.1f || Quaternion.Angle (syncRotBufferV,bHead) > 0.1f) {
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "Rot";
@@ -206,6 +213,7 @@ public class PlayerScript : MonoBehaviour {
 					bHead = syncRotBufferV;
 					bBody = syncRotBufferH;
 				}
+                */
 
 				yield return new WaitForSeconds (0.05f);
 			}
