@@ -48,6 +48,8 @@ public class TransMesh : MonoBehaviour
 
         start = end = Vector3.zero;
 
+        ps.model = this;
+
     }
     // Update is called once per frame
     void Update()

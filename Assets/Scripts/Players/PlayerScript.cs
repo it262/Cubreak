@@ -30,6 +30,8 @@ public class PlayerScript : MonoBehaviour {
     [SerializeField]
     private GameObject avater;
 
+    public TransMesh model;
+
 	// Use this for initialization
 	void Start () {
 		so = SocketObject.Instance;

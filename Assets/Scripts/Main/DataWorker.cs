@@ -62,8 +62,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
                 var g = players[d["trg"]];
                 Vector3 start = new Vector3(float.Parse(d["startX"]), float.Parse(d["startY"]), float.Parse(d["startZ"]));
                 Vector3 end = new Vector3(float.Parse(d["endX"]), float.Parse(d["endY"]), float.Parse(d["endZ"]));
-                g.GetComponent<TransMesh>().start = start;
-                g.GetComponent<TransMesh>().end = end;
+                g.GetComponent<PlayerScript>().model.start = start;
+                g.GetComponent<PlayerScript>().model.end = end;
             }
 
             if (elimQue.Count > 0) {
@@ -138,6 +138,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 				me = g;
 			} else {
 				g.GetComponent<PlayerScript> ().cam.SetActive(false);
+                g.GetComponent<Attack>().enabled = false;
 				g.tag = "Others";
 			}
 			g.GetComponent<PlayerScript> ().id = data.Key;
