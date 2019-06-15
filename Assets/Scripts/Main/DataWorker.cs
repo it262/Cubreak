@@ -52,20 +52,21 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 			Dictionary<string,string> d;
 
-			//位置同期
+            //位置同期
 
-			//回転同期
+            //回転同期
 
-            /*
-			if (hitQue.Count > 0) {
-				d = hitQue.Dequeue ();
-				GameObject g = players [d ["trg"].ToString ()];
-				//g.GetComponent<Rigidbody> ().AddForce (new Vector3(float.Parse(d["x"]),float.Parse(d["y"]),float.Parse(d["z"])),ForceMode.Impulse);
-				g.GetComponent<PlayerScript> ().impact = new Vector3 (float.Parse (d ["x"]), float.Parse (d ["y"]), float.Parse (d ["z"]));
-			}
-            */
+            if (hitQue.Count > 0)
+            {
+                d = hitQue.Dequeue();
+                var g = players[d["trg"]];
+                Vector3 start = new Vector3(float.Parse(d["startX"]), float.Parse(d["startY"]), float.Parse(d["startZ"]));
+                Vector3 end = new Vector3(float.Parse(d["endX"]), float.Parse(d["endY"]), float.Parse(d["endZ"]));
+                g.GetComponent<TransMesh>().start = start;
+                g.GetComponent<TransMesh>().end = end;
+            }
 
-			if (elimQue.Count > 0) {
+            if (elimQue.Count > 0) {
 				d = elimQue.Dequeue ();
 				if (d ["trg"].ToString ().Equals (GetComponent<SocketObject> ().id)) {
 					//死亡
@@ -74,14 +75,6 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 					exclusion (d ["trg"].ToString ());
 				}
 			}
-
-			/*
-			//チャットデータ更新
-			if (chatQue.Count > 0) {
-				d = chatQue.Dequeue ();
-				chatText.GetComponent<ChatScript> ().setMessage (d ["name"].ToString (), d ["message"].ToString ());
-			}
-			*/
 
 			Debug.Log (players.Count);
 			if (!Exping && (MAX!=1) &&(players.Count == 1)) {

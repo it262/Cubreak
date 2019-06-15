@@ -16,6 +16,8 @@ public class Attack : MonoBehaviour
 
 	private float time;
 
+    [SerializeField] LayerMask layerMask;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,7 +36,7 @@ public class Attack : MonoBehaviour
 	IEnumerator AttackByTime(){
 		while(true){
 			RaycastHit hit;
-			if (Input.GetMouseButton(0) && Physics.Raycast (mine.cam.transform.position, Camera.main.transform.forward, out hit, attackRange)) {
+			if (Input.GetMouseButton(0) && Physics.Raycast (mine.cam.transform.position, Camera.main.transform.forward, out hit, attackRange,layerMask)) {
 				Debug.Log (hit.collider.gameObject.tag);
 				if (hit.collider.gameObject.CompareTag ("OthersAvater")) {
                     GameObject paret = hit.transform.parent.gameObject;
@@ -46,19 +48,16 @@ public class Attack : MonoBehaviour
 						power = 1;
 					Vector3 vec = toVec * (1+power*0.1f);
                     */
-					var data = new Dictionary<string,string> ();
-					data ["TYPE"] = "Hit";
-					data ["trg"] = paret.GetComponent<PlayerScript> ().id;
-					//data ["x"] = vec.x.ToString ();
-					//data ["y"] = vec.y.ToString ();
-					//data ["z"] = vec.z.ToString ();
 
                     var mf = hit.transform.GetComponent<SkinnedMeshRenderer>();
-                    //var mc = hit.transform.GetComponent<MeshCollider>();
 
                     //検出したオブジェクトのローカル座標に変換
                     Vector3 start = mf.transform.worldToLocalMatrix.MultiplyPoint(Camera.main.transform.position);
                     Vector3 end = mf.transform.worldToLocalMatrix.MultiplyPoint(hit.point);
+
+                    var data = new Dictionary<string,string> ();
+					data ["TYPE"] = "Hit";
+					data ["trg"] = paret.GetComponent<PlayerScript> ().id;
 
                     data["startX"] = start.x.ToString();
                     data["startY"] = start.y.ToString();

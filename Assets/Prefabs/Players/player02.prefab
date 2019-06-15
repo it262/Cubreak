@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1720834224}
   - component: {fileID: 3127057030369932327}
   - component: {fileID: 8003867418513716658}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: player02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,6 +91,9 @@ MonoBehaviour:
   forcePower: 5
   attackSpeed: 1
   attackRange: 3
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 5120
 --- !u!114 &1720834226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,9 +413,9 @@ GameObject:
   - component: {fileID: 127023525395967082}
   - component: {fileID: 8871117448689441063}
   - component: {fileID: 5575802057086302306}
-  - component: {fileID: 2300616129612989587}
-  - component: {fileID: 3321847335663750964}
-  m_Layer: 0
+  - component: {fileID: 8867887745586144230}
+  - component: {fileID: 2620899428448367895}
+  m_Layer: 12
   m_Name: Player
   m_TagString: OthersAvater
   m_Icon: {fileID: 0}
@@ -426,8 +429,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 854480107965750728}
-  m_LocalRotation: {x: 1, y: -0, z: 0, w: -0.000000075500154}
-  m_LocalPosition: {x: -0, y: -1.5832447, z: -0.00000006920582}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 1.5, z: 0}
   m_LocalScale: {x: 0.46015382, y: 0.46015382, z: 0.46015382}
   m_Children: []
   m_Father: {fileID: 5021962257798199225}
@@ -450,8 +453,8 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1947b72c0808c924ca6dc04569eadbde, type: 3}
-  - {fileID: 2100002, guid: 1947b72c0808c924ca6dc04569eadbde, type: 3}
+  - {fileID: 2100000, guid: 313115dc1568af448b24d126839adfd3, type: 2}
+  - {fileID: 2100000, guid: 8cfd25d5c202c0243883fe8d0e22193c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -486,7 +489,7 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 7786043164822967756}
   m_AABB:
-    m_Center: {x: -0.052747846, y: 0.0190081, z: 0.74770683}
+    m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0.853636, y: 1.2195146, z: 1.6109843}
   m_DirtyAABB: 0
 --- !u!64 &5575802057086302306
@@ -503,7 +506,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 0}
---- !u!114 &2300616129612989587
+--- !u!114 &8867887745586144230
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -512,14 +515,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 854480107965750728}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15fb16277c45a994496f8dee75e63aad, type: 3}
+  m_Script: {fileID: 11500000, guid: 9611b42f451a1f4499d5b3ac59d5f7f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
   originMesh: {fileID: 4300026, guid: 1947b72c0808c924ca6dc04569eadbde, type: 3}
---- !u!54 &3321847335663750964
+  mat: {fileID: 2100000, guid: 313115dc1568af448b24d126839adfd3, type: 2}
+  effect: {fileID: 100018, guid: a40b64bf23366dc42a892af2c6ff6140, type: 3}
+  start: {x: 0, y: 0, z: 0}
+  end: {x: 0, y: 0, z: 0}
+--- !u!54 &2620899428448367895
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -530,10 +534,10 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!1 &1075687443948218024
 GameObject:

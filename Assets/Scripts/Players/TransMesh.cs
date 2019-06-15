@@ -15,6 +15,17 @@ public class TransMesh : MonoBehaviour
     MeshCollider mc;
     Vector3[] test;
 
+
+    [SerializeField] Mesh originMesh;
+
+    [SerializeField] Material mat;
+
+    [SerializeField] GameObject effect;
+
+    Mesh copyMesh;
+
+    public Vector3 start, end;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,46 +33,44 @@ public class TransMesh : MonoBehaviour
         dw = DataWorker.Instance;
         ps = transform.parent.GetComponent<PlayerScript>();
 
+        copyMesh = Instantiate(originMesh);
         mf = GetComponent<SkinnedMeshRenderer>();
         mc = GetComponent<MeshCollider>();
-        test = mf.sharedMesh.vertices;
-        
+        mf.sharedMesh = copyMesh;
+        mf.sharedMesh.RecalculateBounds();
+        mf.sharedMesh.RecalculateNormals();
+        mc.sharedMesh = mf.sharedMesh;
+
+        for(int i=0; i<GetComponent<Renderer>().sharedMaterials.Length; i++)
+        {
+            GetComponent<Renderer>().sharedMaterials[i] = mat;
+        }
+
+        start = end = Vector3.zero;
+
     }
     // Update is called once per frame
     void Update()
     {
-        if (dw.hitQue.Count > 0 && ps.id.Equals(dw.hitQue.Peek()["trg"]))
+        if (start != Vector3.zero && end != Vector3.zero)
         {
-            d = dw.hitQue.Dequeue();
-            Vector3 start = new Vector3(float.Parse(d["startX"]), float.Parse(d["startY"]), float.Parse(d["startZ"]));
-            Vector3 end = new Vector3(float.Parse(d["endX"]), float.Parse(d["endY"]), float.Parse(d["endZ"]));
+            Vector3 startW = mf.transform.localToWorldMatrix.MultiplyPoint(start);
+            Vector3 endW = mf.transform.localToWorldMatrix.MultiplyPoint(end);
             transformMesh(start, end);
-        }
-
-        /*
-        if (Input.GetMouseButton(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (ps.isPlayer)
             {
-                mf = hit.transform.GetComponent<MeshFilter>();
-                mc = hit.transform.GetComponent<MeshCollider>();
-
-                //検出したオブジェクトのローカル座標に変換
-                Vector3 start = mf.transform.worldToLocalMatrix.MultiplyPoint(Camera.main.transform.position);
-                Vector3 end = mf.transform.worldToLocalMatrix.MultiplyPoint(hit.point);
-
-
-                transformMesh(start,end);
+                ps.impact = (endW - startW).normalized;
             }
-        }*/
+            Destroy(Instantiate(effect, endW, Quaternion.identity), 5);
+            start = end = Vector3.zero;
+            return;
+        }
     }
 
-    private void transformMesh(Vector3 start,Vector3 end)
+    private void transformMesh(Vector3 start, Vector3 end)
     {
         //ローカル座標を受け取る
-        test = mf.sharedMesh.vertices;
+        test = copyMesh.vertices;
         for (int i = 0; i < test.Length; i++)
         {
             Vector3 transPoint = test[i];
@@ -73,6 +82,15 @@ public class TransMesh : MonoBehaviour
         }
         mf.sharedMesh.vertices = test;
         mf.sharedMesh.RecalculateBounds();    //メッシュコンポーネントのプロパティboundsを再計算する
+        mf.sharedMesh.RecalculateNormals();
         mc.sharedMesh = mf.sharedMesh;
+    }
+
+    void OnDrawGizmos()
+    {
+        Vector3 s = mf.transform.localToWorldMatrix.MultiplyPoint(start);
+        Vector3 e = mf.transform.localToWorldMatrix.MultiplyPoint(end);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(s, e);
     }
 }

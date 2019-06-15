@@ -70,10 +70,19 @@ public class PlayerScript : MonoBehaviour {
 			}
 
 			transform.position = Vector3.Lerp (transform.position, toPos, 0.5f);
+            //rot -> LateUpdate()
 
-			//rot -> LateUpdate()
+            if (Vector3.Distance(transform.position,toPos) > 0.1f)
+            {
+                anim.SetBool("Walk", true);
+            }
+            else
+            {
+                transform.position = toPos;
+                anim.SetBool("Walk", false);
+            }
 
-			exitPlayer ();
+            exitPlayer ();
 			return;
 		}
 
@@ -199,22 +208,11 @@ public class PlayerScript : MonoBehaviour {
                     data["bodyY"] = syncRotBufferH.eulerAngles.y.ToString();
                     data["headY"] = syncRotBufferV.eulerAngles.y.ToString();
                     so.EmitMessage ("ToOwnRoom", data);
-					Debug.Log ("Position送信");
+					Debug.Log ("Transform送信");
 					bPos = transform.position;
-				}
-                /*
-				if (Quaternion.Angle (syncRotBufferH, bBody) > 0.1f || Quaternion.Angle (syncRotBufferV,bHead) > 0.1f) {
-					var data = new Dictionary<string,string> ();
-					data ["TYPE"] = "Rot";
-					data ["bodyY"] = syncRotBufferH.eulerAngles.y.ToString();
-					data ["headY"] = syncRotBufferV.eulerAngles.y.ToString();
-					so.EmitMessage ("ToOwnRoom", data);
-					Debug.Log ("Rotation送信");
-					bHead = syncRotBufferV;
-					bBody = syncRotBufferH;
-				}
-                */
-
+                    bHead = syncRotBufferV;
+                    bBody = syncRotBufferH;
+                }
 				yield return new WaitForSeconds (0.05f);
 			}
 		}
