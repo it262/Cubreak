@@ -9,13 +9,6 @@ public class Attack : MonoBehaviour
 
 	PlayerScript mine;
 
-	public float forceHeight;
-	public float forcePower;
-	public float attackSpeed;
-	public float attackRange;
-
-	private float time;
-
     [SerializeField] LayerMask layerMask;
 
     // Start is called before the first frame update
@@ -27,16 +20,10 @@ public class Attack : MonoBehaviour
 		StartCoroutine (AttackByTime());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-		
-    }
-
 	IEnumerator AttackByTime(){
 		while(true){
 			RaycastHit hit;
-			if (Input.GetMouseButton(0) && Physics.Raycast (mine.cam.transform.position, Camera.main.transform.forward, out hit, attackRange,layerMask)) {
+			if (Input.GetMouseButton(0) && Physics.Raycast (mine.cam.transform.position, Camera.main.transform.forward, out hit, mine.pd.attackRange,layerMask)) {
 				Debug.Log (hit.collider.gameObject.tag);
 				if (hit.collider.gameObject.CompareTag ("OthersAvater")) {
                     GameObject paret = hit.transform.parent.gameObject;
@@ -46,7 +33,7 @@ public class Attack : MonoBehaviour
                     Vector3 end = mf.transform.worldToLocalMatrix.MultiplyPoint(hit.point);
                     var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "Hit";
-					data ["trg"] = paret.GetComponent<PlayerScript> ().id;
+					data ["trg"] = paret.GetComponent<PlayerScript> ().pd.id;
                     data["startX"] = start.x.ToString();
                     data["startY"] = start.y.ToString();
                     data["startZ"] = start.z.ToString();
@@ -65,10 +52,10 @@ public class Attack : MonoBehaviour
 				}else if(hit.collider.gameObject.CompareTag ("Switch")){
 					var data = new Dictionary<string,string> ();
 					data ["TYPE"] = "PushSwitch";
-					data ["trg"] = hit.collider.gameObject.transform.parent.gameObject.GetComponent<PlayerScript> ().id;
+					data ["trg"] = hit.collider.gameObject.transform.parent.gameObject.GetComponent<PlayerScript> ().pd.id;
 					so.EmitMessage ("ToOwnRoom", data);
 				}
-				yield return new WaitForSeconds (attackSpeed/mine.state.spd);
+				yield return new WaitForSeconds (mine.pd.getAttackSpeed());
 
 			}
 			yield return null;

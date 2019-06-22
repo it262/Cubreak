@@ -9,7 +9,7 @@ public class fpsCamera : MonoBehaviour {
     public Quaternion vRotation;
     public Quaternion hRotation;
 
-	public GameObject owner;
+    public PlayerScript ps;
 
     // Use this for initialization
     void Start()
@@ -20,12 +20,13 @@ public class fpsCamera : MonoBehaviour {
 
         vRotation = Quaternion.identity;
         //hRotation = Quaternion.identity;
+        ps = GetComponent<PlayerScript>();
     }
 
 	// Update is called once per frame
 	void Update () {
 
-		if (!owner.GetComponent<PlayerScript>().isPlayer)
+		if (!ps.pd.isPlayer)
 			return;
 		
         float sensitivity = 5f; // いわゆるマウス感度

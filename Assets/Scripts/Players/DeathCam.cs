@@ -27,15 +27,15 @@ public class DeathCam : MonoBehaviour
     {
 		if (dw == null)
 			return;
-		if (dw.pushSwitch.ContainsKey (ps.id)) {
+		if (dw.pushSwitch.ContainsKey (ps.pd.id)) {
 			if (end) {
-				dw.pushSwitch.Remove (ps.id);
-				if (ps.isPlayer) {
+				dw.pushSwitch.Remove (ps.pd.id);
+				if (ps.pd.isPlayer) {
 					Destroy (cam);
-					dw.disconnectUser (ps.id);
+					dw.disconnectUser (ps.pd.id);
 				}
 			}
-			if (GetComponent<PlayerScript> ().isPlayer) {
+			if (ps.pd.isPlayer) {
 				if (cam.transform.parent != dw.GameInstance.transform) {
 					dw.Exping = true;
 					cam.transform.parent = dw.GameInstance.transform;

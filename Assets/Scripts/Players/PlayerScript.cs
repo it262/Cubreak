@@ -4,23 +4,20 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour {
 
-	Animator anim;
-	public State state;
+    public static SocketObject so;
+    public static DataWorker dw;
 
-	public GameObject cam,headBone;
-	public static SocketObject so;
-	public static DataWorker dw;
-	public string id,name;
-	public bool isPlayer = false;
+    Animator anim;
+	public PlayerData pd;
+    private fpsCamera fpsCam;
+
+    public GameObject cam,headBone;
+	
 	public bool destroy = false;
 	public bool debug = false;
-	public Vector3 impact;
+
 	public float jumpPower;
 
-    private Vector3 velocity;
-	private float defaultSpeed = 5.0f;
-	private float moveSpeed;
-    private fpsCamera fpsCam;
 	private float time = 0;
 	private Quaternion syncRotBufferV,syncRotBufferH;
 	private bool isGroubded = true;
@@ -36,16 +33,13 @@ public class PlayerScript : MonoBehaviour {
 	void Start () {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
-		moveSpeed = defaultSpeed;
-		state = new State ();
+		//pd = new PlayerData ();
 		StartCoroutine ("SyncPosition");
 		fpsCam = GetComponent<fpsCamera> ();
 		anim = GetComponent<Animator> ();
 		toPos = transform.position;
 		transform.LookAt (new Vector3(0,transform.position.y,0));
 		fpsCam.hRotation = transform.rotation;
-		fpsCam.GetComponent<fpsCamera> ().owner = gameObject;
-
         //avater.GetComponent<MeshCollider>().sharedMesh = avater.GetComponent<SkinnedMeshRenderer>().sharedMesh;
 	}
 	
@@ -57,18 +51,18 @@ public class PlayerScript : MonoBehaviour {
 		if (so == null && !debug)
 			return;
 
-		if (!isPlayer) {
+		if (!pd.isPlayer) {
 			
-			if (dw.heatbeat.ContainsKey (id)) {
+			if (dw.heatbeat.ContainsKey (pd.id)) {
 				destroy = false;
-				dw.heatbeat.Remove (id);
+				dw.heatbeat.Remove (pd.id);
 			}
 
 
-			if (dw.posSync.ContainsKey (id)) {
-				toPos = dw.posSync [id];
+			if (dw.posSync.ContainsKey (pd.id)) {
+				toPos = dw.posSync [pd.id];
 				//transform.position = toPos;
-				dw.posSync.Remove (id);
+				dw.posSync.Remove (pd.id);
 			}
 
 			transform.position = Vector3.Lerp (transform.position, toPos, 0.5f);
@@ -88,21 +82,17 @@ public class PlayerScript : MonoBehaviour {
 			return;
 		}
 
+        if (Input.GetMouseButtonDown(0))
+            CameraController.Instance.transform.parent = cam.transform;
+
 		if (time > 5 && !debug) {
 			var data = new Dictionary<string,string> ();
 			so.EmitMessage ("HeartBeat", data);
 			time = 0;
 		}
 		
-
 		if (transform.position.y < -10f) {
-			dw.disconnectUser (id);
-		}
-
-		if (impact != Vector3.zero) {
-			GetComponent<Rigidbody> ().AddForce (impact, ForceMode.Impulse);
-			impact = Vector3.zero;
-			return;
+			dw.disconnectUser (pd.id);
 		}
 
 		RaycastHit hit;
@@ -119,9 +109,9 @@ public class PlayerScript : MonoBehaviour {
 
 
 		//左shiftでスニーク（？）
-		moveSpeed = (Input.GetKey (KeyCode.LeftShift)) ? 1.0f : defaultSpeed;
+		//moveSpeed = (Input.GetKey (KeyCode.LeftShift)) ? 1.0f : defaultSpeed;
 
-		velocity = Vector3.zero;
+		Vector3 velocity = Vector3.zero;
 
 		if (Input.GetKey (KeyCode.W)) {
 			velocity.z += 1;
@@ -139,9 +129,7 @@ public class PlayerScript : MonoBehaviour {
 			velocity.x += 1;
 		}
 
-
-		//velocity = velocity.normalized * moveSpeed * Time.deltaTime;
-		velocity = velocity.normalized * (1+state.spd*0.1f) * Time.deltaTime;
+		velocity = velocity.normalized * pd.getMoveSpeed() * Time.deltaTime;
 
 		if (velocity.magnitude > 0) {
 			anim.SetBool ("Walk",true);
@@ -157,21 +145,22 @@ public class PlayerScript : MonoBehaviour {
 	void LateUpdate(){
 		if (GetComponent<DeathCam> ().die)
 			return;
-		if (isPlayer) {
+		if (pd.isPlayer) {
 			headBone.transform.localRotation = fpsCam.vRotation;
 			transform.rotation = fpsCam.hRotation;
 
 			syncRotBufferV = headBone.transform.localRotation;
 			syncRotBufferH = transform.rotation;
 		} else {
-			if (dw!=null&& dw.rotSync.ContainsKey (id)) {
-				Vector2 toRot = dw.rotSync [id];
+            Debug.Log(pd.id);
+			if (dw!=null&& dw.rotSync.ContainsKey (pd.id)) {
+				Vector2 toRot = dw.rotSync [pd.id];
 				Quaternion head = Quaternion.Euler (0, toRot.x, 0);
 				Quaternion body = Quaternion.Euler (0, toRot.y, 0);
 
 				bufferHead = head;
 				bufferBody = body;
-				dw.rotSync.Remove (id);
+				dw.rotSync.Remove (pd.id);
 			}
 			headBone.transform.localRotation = Quaternion.Lerp(headBone.transform.localRotation, bufferHead,0.5f);
 			transform.rotation = Quaternion.Lerp(transform.rotation, bufferBody,0.5f);
@@ -181,7 +170,7 @@ public class PlayerScript : MonoBehaviour {
 
 	void exitPlayer(){
 		if (time > 10 && destroy) {
-			dw.exclusion (id);
+			dw.exclusion (pd.id);
 		} else if (time > 10 && !destroy) {
 			time = 0;
 			destroy = true;
@@ -196,7 +185,7 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 	IEnumerator SyncPosition(){
-		if (isPlayer && !debug) {
+		if (pd.isPlayer && !debug) {
 			Vector3 bPos = transform.position;
 			Quaternion bHead = syncRotBufferV;
 			Quaternion bBody = syncRotBufferH;

@@ -25,6 +25,7 @@ public class TransMesh : MonoBehaviour
     Mesh copyMesh;
 
     public Vector3 start, end;
+    public GameObject target;
 
     // Start is called before the first frame update
     void Start()
@@ -59,13 +60,13 @@ public class TransMesh : MonoBehaviour
             Vector3 startW = mf.transform.localToWorldMatrix.MultiplyPoint(start);
             Vector3 endW = mf.transform.localToWorldMatrix.MultiplyPoint(end);
             transformMesh(start, end);
-            if (ps.isPlayer)
+            if (ps.pd.isPlayer)
             {
-                ps.impact = (endW - startW).normalized;
+                Vector3 impact = (endW - startW).normalized;
+                GetComponent<Rigidbody>().AddForce(ps.pd.getImpactVector(impact,target.GetComponent<PlayerScript>().pd), ForceMode.Impulse);
             }
             Destroy(Instantiate(effect, endW, Quaternion.identity), 5);
             start = end = Vector3.zero;
-            return;
         }
     }
 
@@ -88,11 +89,10 @@ public class TransMesh : MonoBehaviour
         mc.sharedMesh = mf.sharedMesh;
     }
 
-    void OnDrawGizmos()
+    public void setImpactData(Vector3 start,Vector3 end,GameObject target)
     {
-        Vector3 s = mf.transform.localToWorldMatrix.MultiplyPoint(start);
-        Vector3 e = mf.transform.localToWorldMatrix.MultiplyPoint(end);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(s, e);
+        this.start = start;
+        this.end = end;
+        this.target = target;
     }
 }

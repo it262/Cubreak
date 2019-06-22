@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
+    CameraController cc;
+    [SerializeField] GameObject titleCamerapos;
+
 	public int MAX = 2;
 
 	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText,GameInstancePrefab;
@@ -43,6 +46,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	void Start () {
 		Object o = (Object)this;
 		Debug.Log (o);
+        cc = CameraController.Instance;
+        cc.transform.parent = titleCamerapos.transform;
 	}
 	
 	// Update is called once per frame
@@ -52,18 +57,14 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 			Dictionary<string,string> d;
 
-            //位置同期
-
-            //回転同期
-
             if (hitQue.Count > 0)
             {
                 d = hitQue.Dequeue();
                 var g = players[d["trg"]];
                 Vector3 start = new Vector3(float.Parse(d["startX"]), float.Parse(d["startY"]), float.Parse(d["startZ"]));
                 Vector3 end = new Vector3(float.Parse(d["endX"]), float.Parse(d["endY"]), float.Parse(d["endZ"]));
-                g.GetComponent<PlayerScript>().model.start = start;
-                g.GetComponent<PlayerScript>().model.end = end;
+                g.GetComponent<PlayerScript>().model.setImpactData(start, end, g);
+
             }
 
             if (elimQue.Count > 0) {
@@ -115,7 +116,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	void GameSettings(){
 		GameInstance = (GameObject)Instantiate (GameInstancePrefab);
 		TitleText.SetActive (false);
-		TitleCamera.SetActive (false);
+		//TitleCamera.SetActive (false);
 		sphereController.SetActive (false);
 		cubesController.GetComponent<CubesController> ().GameStart ();
 		InstanceStage = (GameObject)Instantiate (StagePrefab,Vector3.zero,Quaternion.identity);
@@ -127,38 +128,41 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		int cnt = 1;
 		players.Clear ();
 		foreach (KeyValuePair<string,string> data in myRoom.member) {
-			Debug.Log ("Player"+(cnt++)+"：" + data.Key+"("+data.Value+")");
 			obCon.GetComponent<ObstacleControllSync> ().state.Add (data.Key, "0");
 			GameObject g = (GameObject)Instantiate (PlayerPrefab,new Vector3(pos[cnt-1].x,5,pos[cnt-1].y),Quaternion.identity);
+            PlayerScript ps = g.GetComponent<PlayerScript>();
+            ps.pd = new PlayerData();
 			if (GetComponent<SocketObject> ().id.Equals (data.Key)) {
-				TitleCamera.SetActive (false);
-				g.GetComponent<PlayerScript> ().isPlayer = true;
+				//TitleCamera.SetActive (false);
+				ps.pd.isPlayer = true;
+                cc.transform.parent = ps.cam.transform;
 				g.tag = "Player";
 				//g.GetComponent<PlayerScript> ().damage = GameObject.Find ("Image");
 				me = g;
 			} else {
-				g.GetComponent<PlayerScript> ().cam.SetActive(false);
+				ps.cam.SetActive(false);
                 g.GetComponent<Attack>().enabled = false;
 				g.tag = "Others";
 			}
-			g.GetComponent<PlayerScript> ().id = data.Key;
-			g.GetComponent<PlayerScript> ().name = data.Value;
+			ps.pd.id = data.Key;
+			ps.pd.name = data.Value;
 			g.transform.parent = GameInstance.transform;
 			players.Add (data.Key, g);
-		}
+            Debug.Log("Player" + (cnt++) + "：" + ps.pd.id + "(" + ps.pd.name + ")");
+        }
 		leady = true;
-
-	}
+    }
 
 	void MenuSetting(){
-		Destroy (InstanceStage);
+        cc.transform.parent = titleCamerapos.transform;
+        Destroy (InstanceStage);
 		InstanceObsCon.GetComponent<ObstacleControllSync> ().DestroyAll ();
 		Destroy (InstanceObsCon);
 		foreach (GameObject data in players.Values) {
 			Destroy (data);
 		}
 		DataClear ();
-		TitleCamera.SetActive (true);
+		//TitleCamera.SetActive (true);
 		TitleText.SetActive (true);
 		sphereController.SetActive (true);
 		cubesController.SetActive (true);

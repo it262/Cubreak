@@ -11,7 +11,7 @@ public class EnhancedUIController : MonoBehaviour
 	public static SocketObject so;
 	public static DataWorker dw;
 	PlayerScript mine;
-	State state;
+	PlayerData pd;
 
     public GameObject AttackUI, DiffenceUI, SpeedUI;
 	filledImage a,d,s;
@@ -33,8 +33,8 @@ public class EnhancedUIController : MonoBehaviour
 			if (mine == null) {
 				mine = dw.me.GetComponent<PlayerScript> ();
 			}
-			state = mine.state;
-			fillUpdate (state);
+			pd = mine.pd;
+			fillUpdate (pd);
 		}
         
     }
@@ -66,7 +66,7 @@ public class EnhancedUIController : MonoBehaviour
 		fillUpdate ();
     }
 */
-	void fillUpdate(State state){
+	void fillUpdate(PlayerData state){
 		a.changeTargetAmount(state.atk);
 		d.changeTargetAmount(state.dif);
 		s.changeTargetAmount(state.spd);

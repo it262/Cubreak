@@ -62,7 +62,7 @@ public class ObstacleControllSync : MonoBehaviour {
 			return;
 
 		if (dw.leady && !FPComplete) {
-			isServer = dw.me.GetComponent<PlayerScript> ().id.Equals (so.id);
+			isServer = dw.me.GetComponent<PlayerScript> ().pd.id.Equals (so.id);
 			FirstProcessing ();
 			return;
 		}
@@ -132,30 +132,13 @@ public class ObstacleControllSync : MonoBehaviour {
 	}
 
 	void ObsUpdate(){
+
 		if (victim.Count > 0) {
 			Debug.Log ("Receive:"+victim.Peek()["n"] + "破壊");
 			var v = victim.Dequeue ();
 			var trgObs = obstacle [int.Parse (v ["n"])];
 			if (trgObs != null) {
-				switch (trgObs.GetComponent<ObsUpdate> ().type) {
-				case "atk":
-					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.atk_plus ();
-					break;
-				case "dif":
-					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.dif_plus ();
-					break;
-				case "spd":
-					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.spd_plus ();
-					break;
-				/*
-				 * case "life":
-					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.life_plus ();
-					break;
-					*/
-				default:
-					dw.players [v ["attacker"]].GetComponent<PlayerScript> ().state.black_minus();
-					break;
-				}
+                dw.players[v["attacker"]].GetComponent<PlayerScript>().pd.changeState(trgObs.GetComponent<ObsUpdate>().type);
 				trgObs.GetComponent<ObsUpdate> ().Destroy ();
 			}
 		}
