@@ -4,8 +4,11 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UniRx;
 
 public class DataWorker : SingletonMonoBehavior<DataWorker> {
+
+    static GameManager gm;
 
     CameraController cc;
     [SerializeField] GameObject titleCamerapos;
@@ -25,17 +28,15 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public Queue<Dictionary<string,string>> hitQue = new Queue<Dictionary<string,string>>();
 	public Queue<Dictionary<string,string>> elimQue = new Queue<Dictionary<string,string>>();
 
+    public string RoomMaster;
+
 	public JSONObject roomState;
 	public Dictionary<string,GameObject> players = new Dictionary<string,GameObject> ();
 	public GameObject me;
 
-	public bool playing = false;
-
 	public bool Exping = false;
 
 	public Room myRoom;
-
-	public bool searching,leady,wait;
 
 	public int score;
 
@@ -48,12 +49,20 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		Debug.Log (o);
         cc = CameraController.Instance;
         cc.transform.parent = titleCamerapos.transform;
-	}
+
+        gm = GameManager.Instance;
+
+        gm._GameState
+            .DistinctUntilChanged()
+            .Where(x => x == GameState.RoomSettingComp)
+            .Subscribe(_ =>PlayerListSet());
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
-		if (playing) {
+		if (GameManager.Instance._GameState.Value == GameState.Playing) {
 
 			Dictionary<string,string> d;
 
@@ -100,18 +109,31 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 					Debug.Log ("Waiting...[" + players.Count + "/" + MAX + "]");
 				}
 			}*/
-			if (myRoom != null && myRoom.cnt == MAX) {
-				players.Clear ();
-				foreach (KeyValuePair<string,string> member in myRoom.member) {
-					players.Add (member.Key, null);
-				}
-				playing = true;
-				Debug.Log ("Start[ルーム名：" + myRoom.roomName + "/人数：" + players.Count + "]");
-				searching = false;
-				GameSettings ();
-			}
+
+			
 		}	
 	}
+
+    void PlayerListSet()
+    {
+        Debug.Log("ルームエラー");
+        if (myRoom != null && myRoom.cnt == MAX && players.Count == 0)
+        {
+            Debug.Log("ルームエラー");
+            players.Clear();
+            foreach (KeyValuePair<string, string> member in myRoom.member)
+            {
+                players.Add(member.Key, null);
+            }
+            //playing = true;
+            Debug.Log("Start[ルーム名：" + myRoom.roomName + "/人数：" + players.Count + "]");
+            GameSettings();
+        }
+        else
+        {
+            Debug.Log("ルームエラー");
+        }
+    }
 
 	void GameSettings(){
 		GameInstance = (GameObject)Instantiate (GameInstancePrefab);
@@ -122,6 +144,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		InstanceStage = (GameObject)Instantiate (StagePrefab,Vector3.zero,Quaternion.identity);
 		InstanceStage.transform.parent = GameInstance.transform;
         Enhanced.SetActive(true);
+        Menu.SetActive(false);
     }
 
 	public void PlayerCreate(GameObject obCon,List<Vector2> pos){
@@ -135,9 +158,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			if (GetComponent<SocketObject> ().id.Equals (data.Key)) {
 				//TitleCamera.SetActive (false);
 				ps.pd.isPlayer = true;
-                cc.transform.parent = ps.cam.transform;
 				g.tag = "Player";
-				//g.GetComponent<PlayerScript> ().damage = GameObject.Find ("Image");
 				me = g;
 			} else {
 				ps.cam.SetActive(false);
@@ -150,10 +171,11 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			players.Add (data.Key, g);
             Debug.Log("Player" + (cnt++) + "：" + ps.pd.id + "(" + ps.pd.name + ")");
         }
-		leady = true;
+        gm._GameState.Value = GameState.DefaultObstacleSetting;
     }
 
 	void MenuSetting(){
+        Enhanced.SetActive(false);
         cc.transform.parent = titleCamerapos.transform;
         Destroy (InstanceStage);
 		InstanceObsCon.GetComponent<ObstacleControllSync> ().DestroyAll ();
@@ -195,10 +217,10 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 		Destroy (GameInstance);
 
-		playing = false;
-		searching = false;
-		leady = false;
-		wait = false;
+        gm._GameState.Value = GameState.None;
+
+        RoomMaster = null;
+
 		Exping = false;
 		myRoom = null;
 		me = null;

@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public class ObstacleControllSync : MonoBehaviour {
 
 	static SocketObject so;
 	static DataWorker dw;
+    static GameManager gm;
 
 	JsonInJson jj;
 
@@ -25,9 +27,7 @@ public class ObstacleControllSync : MonoBehaviour {
 	private int _Y = 30;
 	[SerializeField] int FirstObsMax = 10;
 
-	bool FPComplete = false;
 	bool send = false;
-	bool isServer = false;
 
 	public Dictionary<string,string> first = new Dictionary<string,string>();
 	public Queue<string> obs = new Queue<string>();
@@ -46,11 +46,17 @@ public class ObstacleControllSync : MonoBehaviour {
 		// -> FirstProcessing()
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
+        gm = GameManager.Instance;
 		jj = new JsonInJson ();
 		GameObject g = Instantiate (DestroyPlane, new Vector3 (0, -50, 0), Quaternion.identity);
 		g.GetComponent<DestroyPlane> ().ocs = this;
 		g.transform.parent = dw.GameInstance.transform;
-	}
+
+       gm._GameState
+            .DistinctUntilChanged()
+            .Where(x => x == GameState.DefaultObstacleSetting)
+            .Subscribe(_ => SendDefaultObstacle());
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -61,47 +67,45 @@ public class ObstacleControllSync : MonoBehaviour {
 		if (stage.GetComponent<Stage>().debug)
 			return;
 
-		if (dw.leady && !FPComplete) {
-			isServer = dw.me.GetComponent<PlayerScript> ().pd.id.Equals (so.id);
-			FirstProcessing ();
-			return;
-		}
+        
+        if (gm._GameState.Value == GameState.DefaultObstacleSetting)
+            ReceiveDefaultObstacle();
 
-		//obstacleがフィールド上になかったら新しいobstacleを召喚する。
-		ObsUpdate();
+        //obstacleがフィールド上になかったら新しいobstacleを召喚する。
+        if (gm._GameState.Value == GameState.Playing)
+		    ObsUpdate();
 	}
 
-	void FirstProcessing(){
+    void SendDefaultObstacle()
+    {
+        if (dw.RoomMaster.Equals(dw.me.GetComponent<PlayerScript>().pd.id))
+        {
+            var data = new Dictionary<string, string>();
+            data["TYPE"] = "FirstObs";
+            data["max"] = FirstObsMax.ToString();
+            if (stage == null)
+                stage = GameObject.Find("Stage(Clone)");
+            for (int i = 0; i < FirstObsMax; i++)
+            {
+                xTarget = (int)Random.Range(0, stage.GetComponent<Stage>().xSection);
+                zTarget = (int)Random.Range(0, stage.GetComponent<Stage>().zSection);
+                targetSection = stage.GetComponent<Stage>().TargetSection(xTarget, zTarget);
+
+                data["x" + i] = targetSection[0].ToString();
+                data["z" + i] = targetSection[1].ToString();
+                data["color" + i] = ((int)Random.Range(0, 5)).ToString();//0:normal 1:attack 2:diffence 3:speed 4:heal
+
+            }
+            so.EmitMessage("ToOwnRoom", data);
+            Debug.Log("オブジェクト初期位置送信完了");
+            return;
+        }
+    }
+
+
+    void ReceiveDefaultObstacle(){
 		//obstacleの初期配置
-		if(!send){
-			if (isServer) {
-				foreach (string check in state.Values) {
-					if (check.Equals ("1"))
-						return;
-				}
-				stateSync (1);
-				var data = new Dictionary<string,string> ();
-				data ["TYPE"] = "FirstObs";
-				data ["max"] = FirstObsMax.ToString ();
-					for (int i = 0; i < FirstObsMax; i++) {
-					xTarget = (int)Random.Range (0, stage.GetComponent<Stage> ().xSection);
-					zTarget = (int)Random.Range (0, stage.GetComponent<Stage> ().zSection);
-					targetSection = stage.GetComponent<Stage> ().TargetSection (xTarget, zTarget);
-
-					data ["x" + i] = targetSection [0].ToString ();
-					data ["z" + i] = targetSection [1].ToString ();
-					data ["color" + i] = ((int)Random.Range (0,5)).ToString();//0:normal 1:attack 2:diffence 3:speed 4:heal
-
-				}
-				so.EmitMessage ("ToOwnRoom", data);
-				Debug.Log ("オブジェクト初期位置送信完了");
-				send = true;
-				return;
-			}
-		}
 		if(first.Count > 0){
-			
-			stateSync(1);
 			int max = int.Parse (first ["max"]);
 			for (int i = 0; i < max; i++) {
 				string x = "x"+i;
@@ -120,14 +124,13 @@ public class ObstacleControllSync : MonoBehaviour {
 				Destroy (summon, 2f);
 
 			}
-
 			first.Clear ();
-			stateSync(0);
-			FPComplete = true;
-			send = false;
 			StartCoroutine("SendObsData");
 			Debug.Log ("初期オブジェクト設置完了");
-		}
+            gm._GameState.Value = GameState.Playing;
+            CameraController.Instance.transform.parent = dw.me.GetComponent<PlayerScript>().cam.transform;
+
+        }
 
 	}
 
@@ -199,6 +202,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
 
 	//targetTagが"いない"時にtrueを返す。フィールド上にobstacleが残っているかどうかを判定するのに使う。
+    /*
 	bool isnt_There(string targetTag) {
 		if (!FPComplete)
 			return false;
@@ -209,6 +213,7 @@ public class ObstacleControllSync : MonoBehaviour {
 			return false;
 		}
 	}
+    */
 
 	Color SettingColor(GameObject obs,int n){
 		switch (n) {
@@ -259,7 +264,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	IEnumerator SendObsData(){
 			while (true) {
-			if (isServer && FPComplete) {
+			if (dw.RoomMaster.Equals(dw.me.GetComponent<PlayerScript>().pd.id) && gm._GameState.Value == GameState.Playing) {
 
 				var data = new Dictionary<string,string> ();
 				data ["TYPE"] = "Obs";

@@ -101,7 +101,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 				socket.On ("Leady", Leady);
 				socket.On ("GameStart", GameStart);
 				socket.On ("Message", Message);
-                socket.On("Transform", Trans);
+                socket.On ("Transform", Trans);
                 socket.On ("Hit", Hit);
 				socket.On ("PlayerEliminate", PlayerEliminate);
 				socket.On ("PushSwitch", PushSwitch);
@@ -182,19 +182,22 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 
 	public void Quick(SocketIOEvent e){
 		GetComponent<DataWorker>().roomState = e.data;
-		GetComponent<DataWorker> ().wait = false;
+        GameManager.Instance._GameState.Value = GameState.CheckRoomData;
 	}
 
 	public void Leady(SocketIOEvent e){
-		GetComponent<DataWorker>().leady = true;
-		GetComponent<DataWorker> ().wait = false;
 		var data = new JSONObject (e.data.ToString ());
 		Room r = new Room (data ["name"].ToString());
-		foreach (KeyValuePair<string,string> d in data ["sockets"].ToDictionary()) {
+        var dw = GetComponent<DataWorker>();
+        dw.RoomMaster = null;
+        foreach (KeyValuePair<string,string> d in data ["sockets"].ToDictionary()) {
+            if (dw.RoomMaster == null)
+                dw.RoomMaster = d.Key;
 			r.member.Add(d.Key,d.Value);
 		}
 		r.cnt = int.Parse (data["length"].ToString ());
-		GetComponent<DataWorker> ().myRoom = r;
+		dw.myRoom = r;
+        GameManager.Instance._GameState.Value = GameState.RoomDataUpdate;
 		Debug.Log ("[入室]"+r.roomName);
 	}
 		

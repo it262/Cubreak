@@ -6,6 +6,7 @@ public class PlayerScript : MonoBehaviour {
 
     public static SocketObject so;
     public static DataWorker dw;
+    static GameManager gm;
 
     Animator anim;
 	public PlayerData pd;
@@ -33,6 +34,7 @@ public class PlayerScript : MonoBehaviour {
 	void Start () {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
+        gm = GameManager.Instance;
 		//pd = new PlayerData ();
 		StartCoroutine ("SyncPosition");
 		fpsCam = GetComponent<fpsCamera> ();
@@ -50,6 +52,9 @@ public class PlayerScript : MonoBehaviour {
 
 		if (so == null && !debug)
 			return;
+
+        if (gm._GameState.Value != GameState.Playing)
+            return;
 
 		if (!pd.isPlayer) {
 			

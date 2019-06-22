@@ -86,6 +86,7 @@ MonoBehaviour:
   Obs: {fileID: 1852128250489852503, guid: a19130cc964f7c7418677225950a1c76, type: 3}
   ObsController: {fileID: 5255899952393898438, guid: 453a1e0801b278e489e5fc40949b0879,
     type: 3}
+  CamPos: {fileID: 1305011257537771465, guid: 70fc4eb1918909a4aa814ae5b3a78d6a, type: 3}
   debug: 0
   half_zSection: 15
   half_xSection: 15

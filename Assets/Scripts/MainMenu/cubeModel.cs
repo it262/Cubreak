@@ -6,6 +6,7 @@ public class CubeModel : MonoBehaviour {
 
 	static SocketObject so;
 	static DataWorker dw;
+    static GameManager gm;
 	IntermittentChaos IChaos;
 
     Color color = new Color();
@@ -21,6 +22,7 @@ public class CubeModel : MonoBehaviour {
 	void Start () {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
+        gm = GameManager.Instance;
 		IChaos = new IntermittentChaos ();
 		StartCoroutine ("Chaos");
 	}
@@ -33,7 +35,7 @@ public class CubeModel : MonoBehaviour {
         if (isEnter || isStart)
         {
 
-			if (!isStart || !dw.searching) {
+			if (!isStart || !(gm._GameState.Value == GameState.RoomSerching)) {
 				
 
 				//intensity = Mathf.Lerp(intensity, 1, 0.1f);
@@ -62,7 +64,7 @@ public class CubeModel : MonoBehaviour {
         gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor",
 			new Color(color.r, color.g, color.b) * intensity);
 
-		if(dw.playing)
+		if(gm._GameState.Value == GameState.Playing)
 			CheckDestroy ();
 
 	}
@@ -93,7 +95,7 @@ public class CubeModel : MonoBehaviour {
 
 	IEnumerator Chaos(){
 		while (true) {
-			if (dw.searching) {
+			if (gm._GameState.Value == GameState.RoomSerching) {
 				chaos = IChaos.getChaos (intensity);
 			}
 			yield return new WaitForSeconds (0.1f);

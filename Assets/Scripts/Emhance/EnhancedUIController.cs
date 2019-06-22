@@ -10,6 +10,7 @@ public class EnhancedUIController : MonoBehaviour
 
 	public static SocketObject so;
 	public static DataWorker dw;
+    static GameManager gm;
 	PlayerScript mine;
 	PlayerData pd;
 
@@ -20,6 +21,7 @@ public class EnhancedUIController : MonoBehaviour
     {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
+        gm = GameManager.Instance;
 		a = AttackUI.GetComponent<filledImage> ();
 		d = DiffenceUI.GetComponent<filledImage> ();
 		s = SpeedUI.GetComponent<filledImage> ();
@@ -28,7 +30,6 @@ public class EnhancedUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.gameObject.SetActive(dw.playing);
 		if (!so.id.Equals("") && dw.me != null) {
 			if (mine == null) {
 				mine = dw.me.GetComponent<PlayerScript> ();
