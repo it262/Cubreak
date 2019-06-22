@@ -9,7 +9,7 @@ public class Stage : MonoBehaviour {
 
 	[SerializeField]GameObject Obs;
 	public GameObject ObsController;
-    [SerializeField] GameObject CamPos;
+    public GameObject CamPos;
 
 	public bool debug = false;
 

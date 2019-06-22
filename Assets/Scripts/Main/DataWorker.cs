@@ -36,6 +36,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 	public bool Exping = false;
 
+    public bool watching = false;
+
 	public Room myRoom;
 
 	public int score;
@@ -78,7 +80,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
             if (elimQue.Count > 0) {
 				d = elimQue.Dequeue ();
-				if (d ["trg"].ToString ().Equals (GetComponent<SocketObject> ().id)) {
+				if (d ["trg"].Equals (GetComponent<SocketObject> ().id)) {
 					//死亡
 					MenuSetting ();
 				} else {
@@ -93,25 +95,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			}
 
 
-		} else {
-
-			//ゲームスタート
-			/*
-			if (players.Count > 0 && startFlug && !playing) {
-				if (players.Count == MAX) {
-					startFlug = false;
-					playing = true;
-					myRoom.playing = true;
-					Debug.Log ("Start[ルーム名：" + myRoom.roomName + "/人数：" + players.Count + "]");
-					SceneManager.LoadScene (1);
-				} else if (roomState == null) {
-					GetComponent<SocketObject> ().EmitMessage ("getRooms", new Dictionary<string,string> ());
-					Debug.Log ("Waiting...[" + players.Count + "/" + MAX + "]");
-				}
-			}*/
-
-			
-		}	
+		}
 	}
 
     void PlayerListSet()
@@ -198,12 +182,16 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		data ["id"] = id;
 		GetComponent<SocketObject> ().EmitMessage ("ToOwnRoom", data);
 		score += (players.Count > 2) ? 150 :(players.Count > 3) ? 50 : 0;
-		MenuSetting ();
 	}
 
 	public void exclusion(string id){
-		if (players.ContainsKey (id)) {
-			Destroy (players [id]);
+        if (players.ContainsKey(id))
+        {
+            if (id.Equals(me.GetComponent<PlayerScript>().pd.id)) {
+            CameraController.Instance.transform.parent = InstanceStage.GetComponent<Stage>().CamPos.transform;
+            watching = true;
+        }
+            Destroy (players [id]);
 			players.Remove (id);
 		}
 	}
@@ -221,6 +209,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
         RoomMaster = null;
 
+        watching = false;
 		Exping = false;
 		myRoom = null;
 		me = null;

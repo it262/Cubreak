@@ -264,7 +264,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	IEnumerator SendObsData(){
 			while (true) {
-			if (dw.RoomMaster.Equals(dw.me.GetComponent<PlayerScript>().pd.id) && gm._GameState.Value == GameState.Playing) {
+			if (!dw.watching && dw.RoomMaster.Equals(dw.me.GetComponent<PlayerScript>().pd.id) && gm._GameState.Value == GameState.Playing) {
 
 				var data = new Dictionary<string,string> ();
 				data ["TYPE"] = "Obs";
