@@ -4,7 +4,7 @@ using UnityEngine;
 using UniRx;
 using System;
 
-public class ObstacleControllSyncServer : MonoBehaviour {
+public class ObstacleControllSyncServer : SingletonMonoBehavior<ObstacleControllSyncServer> {
 
 	static SocketObjectONE so;
 
@@ -17,12 +17,33 @@ public class ObstacleControllSyncServer : MonoBehaviour {
     public int xWidth = 3, yWidth = 2, zWidth = 3;
     public int colorMAX = 5;
 
+    SerialDisposable disposable;
+
     // Use this for initialization
     void Start(){
 		so = SocketObjectONE.Instance;
-        Observable.Interval(TimeSpan.FromSeconds(interval)).Subscribe(_ =>
-            SendObsData()
-        );
+
+        disposable = new SerialDisposable();
+
+        disposable.Disposable = Observable.Interval(TimeSpan.FromSeconds(interval))
+            .Subscribe(_ =>
+                SendObsData()
+            ).AddTo(this);
+
+        this.ObserveEveryValueChanged(x => this.interval)
+            .Skip(1)
+            .Subscribe(_ => Restart());
+
+    }
+
+    void Restart()
+    {
+        Debug.Log("Restart");
+        disposable.Dispose();
+        disposable = new SerialDisposable();
+        disposable.Disposable = Observable.Interval(TimeSpan.FromSeconds(interval)).Subscribe(_ =>
+                SendObsData()
+            ).AddTo(this);
     }
 
     void SendObsData()
