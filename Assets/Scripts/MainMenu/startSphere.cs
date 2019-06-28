@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
 
 public class StartSphere : MonoBehaviour {
 
@@ -20,9 +21,6 @@ public class StartSphere : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-		if (dw.leady)
-			Destroy (this.gameObject);
 
         r = Mathf.Lerp(minimumR, maximumR, t);
         t = speed * Time.deltaTime;

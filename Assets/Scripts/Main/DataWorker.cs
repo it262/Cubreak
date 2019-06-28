@@ -4,8 +4,14 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UniRx;
 
 public class DataWorker : SingletonMonoBehavior<DataWorker> {
+
+    static GameManager gm;
+
+    CameraController cc;
+    [SerializeField] GameObject titleCamerapos;
 
 	public int MAX = 2;
 
@@ -22,17 +28,17 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public Queue<Dictionary<string,string>> hitQue = new Queue<Dictionary<string,string>>();
 	public Queue<Dictionary<string,string>> elimQue = new Queue<Dictionary<string,string>>();
 
+    public string RoomMaster;
+
 	public JSONObject roomState;
 	public Dictionary<string,GameObject> players = new Dictionary<string,GameObject> ();
 	public GameObject me;
 
-	public bool playing = false;
-
 	public bool Exping = false;
 
-	public Room myRoom;
+    public bool watching = false;
 
-	public bool searching,leady,wait;
+	public Room myRoom;
 
 	public int score;
 
@@ -43,43 +49,44 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	void Start () {
 		Object o = (Object)this;
 		Debug.Log (o);
-	}
+        cc = CameraController.Instance;
+        cc.transform.parent = titleCamerapos.transform;
+
+        gm = GameManager.Instance;
+
+        gm._GameState
+            .DistinctUntilChanged()
+            .Where(x => x == GameState.RoomSettingComp)
+            .Subscribe(_ =>PlayerListSet());
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
-		if (playing) {
+		if (GameManager.Instance._GameState.Value == GameState.Playing) {
 
 			Dictionary<string,string> d;
 
-			//位置同期
+            if (hitQue.Count > 0)
+            {
+                d = hitQue.Dequeue();
+                var g = players[d["trg"]];
+                Vector3 start = new Vector3(float.Parse(d["startX"]), float.Parse(d["startY"]), float.Parse(d["startZ"]));
+                Vector3 end = new Vector3(float.Parse(d["endX"]), float.Parse(d["endY"]), float.Parse(d["endZ"]));
+                g.GetComponent<PlayerScript>().model.setImpactData(start, end, g);
 
-			//回転同期
+            }
 
-			if (hitQue.Count > 0) {
-				d = hitQue.Dequeue ();
-				GameObject g = players [d ["trg"].ToString ()];
-				//g.GetComponent<Rigidbody> ().AddForce (new Vector3(float.Parse(d["x"]),float.Parse(d["y"]),float.Parse(d["z"])),ForceMode.Impulse);
-				g.GetComponent<PlayerScript> ().impact = new Vector3 (float.Parse (d ["x"]), float.Parse (d ["y"]), float.Parse (d ["z"]));
-			}
-
-			if (elimQue.Count > 0) {
+            if (elimQue.Count > 0) {
 				d = elimQue.Dequeue ();
-				if (d ["trg"].ToString ().Equals (GetComponent<SocketObject> ().id)) {
+				if (d ["trg"].Equals (GetComponent<SocketObject> ().id)) {
 					//死亡
 					MenuSetting ();
 				} else {
 					exclusion (d ["trg"].ToString ());
 				}
 			}
-
-			/*
-			//チャットデータ更新
-			if (chatQue.Count > 0) {
-				d = chatQue.Dequeue ();
-				chatText.GetComponent<ChatScript> ().setMessage (d ["name"].ToString (), d ["message"].ToString ());
-			}
-			*/
 
 			Debug.Log (players.Count);
 			if (!Exping && (MAX!=1) &&(players.Count == 1)) {
@@ -88,81 +95,80 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			}
 
 
-		} else {
-
-			//ゲームスタート
-			/*
-			if (players.Count > 0 && startFlug && !playing) {
-				if (players.Count == MAX) {
-					startFlug = false;
-					playing = true;
-					myRoom.playing = true;
-					Debug.Log ("Start[ルーム名：" + myRoom.roomName + "/人数：" + players.Count + "]");
-					SceneManager.LoadScene (1);
-				} else if (roomState == null) {
-					GetComponent<SocketObject> ().EmitMessage ("getRooms", new Dictionary<string,string> ());
-					Debug.Log ("Waiting...[" + players.Count + "/" + MAX + "]");
-				}
-			}*/
-			if (myRoom != null && myRoom.cnt == MAX) {
-				players.Clear ();
-				foreach (KeyValuePair<string,string> member in myRoom.member) {
-					players.Add (member.Key, null);
-				}
-				playing = true;
-				Debug.Log ("Start[ルーム名：" + myRoom.roomName + "/人数：" + players.Count + "]");
-				searching = false;
-				GameSettings ();
-			}
-		}	
+		}
 	}
+
+    void PlayerListSet()
+    {
+        Debug.Log("ルームエラー");
+        if (myRoom != null && myRoom.cnt == MAX && players.Count == 0)
+        {
+            Debug.Log("ルームエラー");
+            players.Clear();
+            foreach (KeyValuePair<string, string> member in myRoom.member)
+            {
+                players.Add(member.Key, null);
+            }
+            //playing = true;
+            Debug.Log("Start[ルーム名：" + myRoom.roomName + "/人数：" + players.Count + "]");
+            GameSettings();
+        }
+        else
+        {
+            Debug.Log("ルームエラー");
+        }
+    }
 
 	void GameSettings(){
 		GameInstance = (GameObject)Instantiate (GameInstancePrefab);
 		TitleText.SetActive (false);
-		TitleCamera.SetActive (false);
+		//TitleCamera.SetActive (false);
 		sphereController.SetActive (false);
 		cubesController.GetComponent<CubesController> ().GameStart ();
 		InstanceStage = (GameObject)Instantiate (StagePrefab,Vector3.zero,Quaternion.identity);
 		InstanceStage.transform.parent = GameInstance.transform;
         Enhanced.SetActive(true);
+        Menu.SetActive(false);
     }
 
 	public void PlayerCreate(GameObject obCon,List<Vector2> pos){
 		int cnt = 1;
 		players.Clear ();
 		foreach (KeyValuePair<string,string> data in myRoom.member) {
-			Debug.Log ("Player"+(cnt++)+"：" + data.Key+"("+data.Value+")");
 			obCon.GetComponent<ObstacleControllSync> ().state.Add (data.Key, "0");
 			GameObject g = (GameObject)Instantiate (PlayerPrefab,new Vector3(pos[cnt-1].x,5,pos[cnt-1].y),Quaternion.identity);
+            PlayerScript ps = g.GetComponent<PlayerScript>();
+            ps.pd = new PlayerData();
 			if (GetComponent<SocketObject> ().id.Equals (data.Key)) {
-				TitleCamera.SetActive (false);
-				g.GetComponent<PlayerScript> ().isPlayer = true;
+				//TitleCamera.SetActive (false);
+				ps.pd.isPlayer = true;
 				g.tag = "Player";
-				//g.GetComponent<PlayerScript> ().damage = GameObject.Find ("Image");
 				me = g;
 			} else {
-				g.GetComponent<PlayerScript> ().cam.SetActive(false);
+				ps.cam.SetActive(false);
+                g.GetComponent<Attack>().enabled = false;
 				g.tag = "Others";
 			}
-			g.GetComponent<PlayerScript> ().id = data.Key;
-			g.GetComponent<PlayerScript> ().name = data.Value;
+			ps.pd.id = data.Key;
+			ps.pd.name = data.Value;
 			g.transform.parent = GameInstance.transform;
 			players.Add (data.Key, g);
-		}
-		leady = true;
-
-	}
+            Debug.Log("Player" + (cnt++) + "：" + ps.pd.id + "(" + ps.pd.name + ")");
+        }
+        gm._GameState.Value = GameState.DefaultObstacleSetting;
+    }
 
 	void MenuSetting(){
-		Destroy (InstanceStage);
+        Enhanced.SetActive(false);
+        cc.transform.parent = titleCamerapos.transform;
+        Destroy (InstanceStage);
 		InstanceObsCon.GetComponent<ObstacleControllSync> ().DestroyAll ();
 		Destroy (InstanceObsCon);
 		foreach (GameObject data in players.Values) {
 			Destroy (data);
 		}
 		DataClear ();
-		TitleCamera.SetActive (true);
+		//TitleCamera.SetActive (true);
 		TitleText.SetActive (true);
 		sphereController.SetActive (true);
 		cubesController.SetActive (true);
@@ -176,12 +182,16 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		data ["id"] = id;
 		GetComponent<SocketObject> ().EmitMessage ("ToOwnRoom", data);
 		score += (players.Count > 2) ? 150 :(players.Count > 3) ? 50 : 0;
-		MenuSetting ();
 	}
 
 	public void exclusion(string id){
-		if (players.ContainsKey (id)) {
-			Destroy (players [id]);
+        if (players.ContainsKey(id))
+        {
+            if (id.Equals(me.GetComponent<PlayerScript>().pd.id)) {
+            CameraController.Instance.transform.parent = InstanceStage.GetComponent<Stage>().CamPos.transform;
+            watching = true;
+        }
+            Destroy (players [id]);
 			players.Remove (id);
 		}
 	}
@@ -195,10 +205,11 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 		Destroy (GameInstance);
 
-		playing = false;
-		searching = false;
-		leady = false;
-		wait = false;
+        gm._GameState.Value = GameState.None;
+
+        RoomMaster = null;
+
+        watching = false;
 		Exping = false;
 		myRoom = null;
 		me = null;

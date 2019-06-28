@@ -9,6 +9,7 @@ public class Stage : MonoBehaviour {
 
 	[SerializeField]GameObject Obs;
 	public GameObject ObsController;
+    public GameObject CamPos;
 
 	public bool debug = false;
 
@@ -81,7 +82,8 @@ public class Stage : MonoBehaviour {
 
 		GameObject obs = (GameObject)Instantiate (ObsController, Vector3.zero, Quaternion.identity);
 		obs.GetComponent<ObstacleControllSync> ().stage = this.gameObject;
-		dw.InstanceObsCon = obs;
+        Debug.Log(obs.GetComponent<ObstacleControllSync>().stage);
+        dw.InstanceObsCon = obs;
 		obs.transform.parent = dw.GameInstance.transform;
 
 		List<Vector2> spawnPoints = new List<Vector2> ();
@@ -91,12 +93,15 @@ public class Stage : MonoBehaviour {
 		spawnPoints.Add (TargetSection(xSection-1,0));
 		dw.PlayerCreate (obs,spawnPoints);
 
+        CamPos = Instantiate(CamPos, new Vector3(transform.position.x + 30f, transform.position.y + 10f, 0), Quaternion.identity);
+        CameraController.Instance.transform.parent = CamPos.transform;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        CamPos.transform.RotateAround(transform.position, new Vector3(0, 1, 0), 10 * Time.deltaTime);
+        CamPos.transform.LookAt(transform);
+    }
 
     //obstacleの召喚の起点となるtargetObstacleのx,yを求めるための関数
 	public Vector2 TargetSection(int targetX, int targetZ) {

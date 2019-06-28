@@ -79,6 +79,7 @@ public class CubesController : MonoBehaviour {
 		foreach (GameObject c in cubes) {
 			Destroy (c);
 		}
+        Destroy(sphire);
 		cubes.Clear ();
 		this.gameObject.SetActive (false);
 	}

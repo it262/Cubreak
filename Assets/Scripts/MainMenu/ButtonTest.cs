@@ -7,6 +7,7 @@ public class ButtonTest : MonoBehaviour {
 
 	static SocketObject so;
 	static DataWorker dw;
+    static GameManager gm;
 
 	public GameObject name,room;
 
@@ -16,6 +17,7 @@ public class ButtonTest : MonoBehaviour {
 			so = SocketObject.Instance;
 		if (dw == null)
 			dw = DataWorker.Instance;
+        gm = GameManager.Instance;
 		if (this.gameObject.name.Equals("NameInputField") && so.connecting) {
 			GetComponent<InputField> ().text = SocketObject.Instance.name;
 		}
@@ -24,7 +26,7 @@ public class ButtonTest : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (this.gameObject.name.Equals ("Start")){
-			transform.Find ("Text").gameObject.GetComponent<Text> ().text = (dw.searching)? "Cansel":"Start";
+			transform.Find ("Text").gameObject.GetComponent<Text> ().text = (gm._GameState.Value == GameState.RoomSerching)? "Cansel":"Start";
 			if (!so.connecting || name.GetComponent<Text> ().text.Equals ("")) {
 				GetComponent<Button> ().interactable = false;
 			} else {
@@ -32,7 +34,7 @@ public class ButtonTest : MonoBehaviour {
 			}
 		}
 		if (this.gameObject.name.Equals ("NameInputField")) {
-			GetComponent<InputField> ().interactable = !dw.searching;
+			GetComponent<InputField> ().interactable = (gm._GameState.Value != GameState.RoomSerching);
 		}
 		
 	}
@@ -78,16 +80,13 @@ public class ButtonTest : MonoBehaviour {
 
 	public void roomSearch(){
 		if (so.connecting && so.id != null) {
-			if (!dw.searching) {
-				dw.searching = true;
-				transform.Find ("Text").gameObject.GetComponent<Text> ().text = "Cansel";
+			if (gm._GameState.Value == GameState.None) {
+                gm._GameState.Value = GameState.RoomSerching;
+                transform.Find ("Text").gameObject.GetComponent<Text> ().text = "Cansel";
 			} else {
-				dw.searching = false;
-				dw.leady = false;
-				dw.wait = false;
-
-				//退室処理
-				Debug.Log ("検索中止:[退室]"+dw.myRoom.roomName);
+                gm._GameState.Value = GameState.None;
+                //退室処理
+                Debug.Log ("検索中止:[退室]"+dw.myRoom.roomName);
 				var data = new Dictionary<string,string> ();
 				data ["to"] = "LEAVE";
 				so.EmitMessage ("Quick", data);
