@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
 
-public class StartSphere : MonoBehaviour {
+public class startSphere : MonoBehaviour {
 
 	static DataWorker dw;
 
