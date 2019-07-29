@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeModel : MonoBehaviour {
+public class cubeModel : MonoBehaviour {
 
 	static SocketObject so;
 	static DataWorker dw;

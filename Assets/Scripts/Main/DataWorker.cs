@@ -124,7 +124,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		TitleText.SetActive (false);
 		//TitleCamera.SetActive (false);
 		sphereController.SetActive (false);
-		cubesController.GetComponent<CubesController> ().GameStart ();
+		cubesController.GetComponent<cubesController> ().GameStart ();
 		InstanceStage = (GameObject)Instantiate (StagePrefab,Vector3.zero,Quaternion.identity);
 		InstanceStage.transform.parent = GameInstance.transform;
         Enhanced.SetActive(true);
@@ -172,7 +172,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		TitleText.SetActive (true);
 		sphereController.SetActive (true);
 		cubesController.SetActive (true);
-		cubesController.GetComponent<CubesController> ().CubeSetting ();
+		cubesController.GetComponent<cubesController> ().CubeSetting ();
 		Menu.SetActive (true);
 	}
 

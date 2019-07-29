@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubesController : MonoBehaviour {
+public class cubesController : MonoBehaviour {
 
 	static SocketObject so;
 
@@ -69,8 +69,8 @@ public class CubesController : MonoBehaviour {
 				g.transform.parent = this.gameObject.transform;
 				cubes.Add(g);
 				SettingColor (g,Random.Range(0,5));
-				g.GetComponent<CubeModel> ().setColorDef();
-				g.GetComponent<CubeModel> ().isStart = false;
+				g.GetComponent<cubeModel> ().setColorDef();
+				g.GetComponent<cubeModel> ().isStart = false;
 			}
 		}
 	}
