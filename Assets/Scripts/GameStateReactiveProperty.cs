@@ -20,6 +20,10 @@ public enum GameState
 {
     None,
 
+    Menu,
+
+    ConnectionComp,
+
     RoomSerching,
 
     CheckRoomData,

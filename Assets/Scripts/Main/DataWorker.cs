@@ -8,6 +8,7 @@ using UniRx;
 
 public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
+    SocketObject so;
     static GameManager gm;
 
     CameraController cc;
@@ -47,11 +48,15 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 	// Use this for initialization
 	void Start () {
+        /*
 		Object o = (Object)this;
 		Debug.Log (o);
+
         cc = CameraController.Instance;
         cc.transform.parent = titleCamerapos.transform;
+        */
 
+        so = SocketObject.Instance;
         gm = GameManager.Instance;
 
         gm._GameState
@@ -63,6 +68,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	
 	// Update is called once per frame
 	void Update () {
+
+        Debug.Log(GameManager.Instance._GameState.Value);
 
 		if (GameManager.Instance._GameState.Value == GameState.Playing) {
 
@@ -95,7 +102,26 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			}
 
 
-		}
+        }
+        else
+        {
+            if (gm._GameState.Value == GameState.ConnectionComp && Input.GetKeyDown(KeyCode.Escape))
+            {
+                so.Disconnection();
+                so.id = "";
+                so.name = "";
+                gm._GameState.Value = GameState.Menu;
+            }
+            else if (gm._GameState.Value == GameState.WaitingOtherPlayer && Input.GetKeyDown(KeyCode.Escape))
+            {
+                Debug.Log("検索中止:[退室]" + myRoom.roomName);
+                var data = new Dictionary<string, string>();
+                data["to"] = "LEAVE";
+                so.EmitMessage("Quick", data);
+                myRoom = null;
+                gm._GameState.Value = GameState.ConnectionComp;
+            }
+        }
 	}
 
     void PlayerListSet()
@@ -188,9 +214,9 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
         if (players.ContainsKey(id))
         {
             if (id.Equals(me.GetComponent<PlayerScript>().pd.id)) {
-            CameraController.Instance.transform.parent = InstanceStage.GetComponent<Stage>().CamPos.transform;
-            watching = true;
-        }
+                //CameraController.Instance.transform.parent = InstanceStage.GetComponent<Stage>().CamPos.transform;
+                watching = true;
+            }
             Destroy (players [id]);
 			players.Remove (id);
 		}
@@ -205,7 +231,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 		Destroy (GameInstance);
 
-        gm._GameState.Value = GameState.None;
+        gm._GameState.Value = GameState.ConnectionComp;
 
         RoomMaster = null;
 

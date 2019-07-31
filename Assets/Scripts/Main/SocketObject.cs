@@ -43,6 +43,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 
 	public bool connecting = false;
 
+    /*
 	void Awake(){
 		GameObject[] sockets = GameObject.FindGameObjectsWithTag ("SocketObject");
 		if (sockets.Length > 1) {
@@ -52,6 +53,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.SetCursor (null,Vector2.zero,CursorMode.ForceSoftware);
 	}
+    */
 
 	public void Start() 
 	{
@@ -82,16 +84,15 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 
 	public void Connect(){
 
-		if (!connecting) {
+		if (!connecting && socket == null) {
 			
 			try {
-			
-				GetComponent<SocketIOComponent> ().url = url;
-				GetComponent<SocketIOComponent> ().Standby ();
-
 				socket = GetComponent<SocketIOComponent> ();
 
-				socket.On ("open", SocketOpen);
+                socket.url = url;
+                socket.Standby();
+
+                socket.On ("open", SocketOpen);
 				socket.On ("ID", ReceiveID);
 				socket.On ("UpdateRoom", UpdateRoom);
 				socket.On ("GetRooms", GetRooms);
@@ -119,7 +120,11 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 			} catch (Exception e) {
 				connecting = false;
 			}
-		}
+        }
+        else if(!connecting)
+        {
+            socket.Connect();
+        }
 	}
 
 	public void SocketOpen(SocketIOEvent e)
@@ -154,6 +159,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 			id = d ["id"];
 			//GetComponent<DataWorker> ().MAX = int.Parse(d["max"]);
 			Debug.Log ("[SocketIO] ID received: " + e.name + " " + e.data);
+            GameManager.Instance._GameState.Value = GameState.ConnectionComp;
 		}
 		//ルーム情報のリクエスト
 		//socket.GetComponent<SocketObject> ().EmitMessage ("GetRooms",new Dictionary<string,string>());
@@ -186,16 +192,17 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	}
 
 	public void Leady(SocketIOEvent e){
-		var data = new JSONObject (e.data.ToString ());
-		Room r = new Room (data ["name"].ToString());
+        //var data = new JSONObject (e.data.ToString ());
+        Room r = new Room (e.data.GetField ("name").str);
         var dw = GetComponent<DataWorker>();
         dw.RoomMaster = null;
-        foreach (KeyValuePair<string,string> d in data ["sockets"].ToDictionary()) {
+        var sockets = e.data.GetField("sockets");
+        foreach (string d in sockets.keys) {
             if (dw.RoomMaster == null)
-                dw.RoomMaster = d.Key;
-			r.member.Add(d.Key,d.Value);
+                dw.RoomMaster = d;
+			r.member.Add(d, sockets.GetField(d).str);
 		}
-		r.cnt = int.Parse (data["length"].ToString ());
+		r.cnt = (int)e.data.GetField("length").n;
 		dw.myRoom = r;
         GameManager.Instance._GameState.Value = GameState.RoomDataUpdate;
 		Debug.Log ("[入室]"+r.roomName);
@@ -229,8 +236,8 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
     public void Trans(SocketIOEvent e)
     {
         Dictionary<string, string> d = new JSONObject(e.data.ToString()).ToDictionary();
-        GetComponent<DataWorker>().posSync.Add(d["id"], new Vector3(float.Parse(d["x"]), float.Parse(d["y"]), float.Parse(d["z"])));
-        GetComponent<DataWorker>().rotSync.Add(d["id"], new Vector2(float.Parse(d["headY"]), float.Parse(d["bodyY"])));
+        GetComponent<DataWorker>().posSync.Add(e.data.GetField("id").str, new Vector3(float.Parse(d["x"]), float.Parse(d["y"]), float.Parse(d["z"])));
+        GetComponent<DataWorker>().rotSync.Add(e.data.GetField("id").str, new Vector2(float.Parse(d["headY"]), float.Parse(d["bodyY"])));
         Debug.Log("Transform受信");
     }
 
@@ -285,7 +292,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	}
 
 	public void Disconnection(){
-		socket.Close ();
+        socket.Close();
 		connecting = false;
 		name = "";
 		id = "";
