@@ -18,6 +18,8 @@ public class ObsUpdate : MonoBehaviour
 
 	bool falling = true;
 
+    public GameObject core;
+
     // Use this for initialization
     void Start()
     {
@@ -113,7 +115,7 @@ public class ObsUpdate : MonoBehaviour
 */
 
 	public void Destroy(){
-		particle.GetComponent<Renderer> ().material = GetComponent<Renderer> ().material;
+		particle.GetComponent<Renderer> ().material = core.GetComponent<Renderer>().material;
 		GameObject p = Instantiate (particle, transform.position, Quaternion.identity);
 		Destroy (p, 2f);
 		Destroy(this.gameObject);

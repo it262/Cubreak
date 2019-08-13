@@ -219,35 +219,35 @@ public class ObstacleControllSync : MonoBehaviour {
 		switch (n) {
 		case 0:
 			//ノーマル
-			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
+			obs.GetComponent<ObsUpdate>().core.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 0, 0));
 			obs.GetComponent<ObsUpdate>().type = "normal";
 			return new Color (0,0,0);
 			break;
 		case 1:
 			//atk
-			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
+			obs.GetComponent<ObsUpdate>().core.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 0, 0));
 			obs.GetComponent<ObsUpdate>().type = "atk";
 			return new Color (1,0,0);
 			break;
 		case 2:
 			//dif
-			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
+			obs.GetComponent<ObsUpdate>().core.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 0, 1));
 			obs.GetComponent<ObsUpdate>().type = "dif";
 			return new Color (0,0,1);
 			break;
 		case 3:
 			//spd
-			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
+			obs.GetComponent<ObsUpdate>().core.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (1, 1, 0));
 			obs.GetComponent<ObsUpdate>().type = "spd";
 			return new Color (1,1,0);
 			break;
 		case 4:
 			//hp
-			obs.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
+			obs.GetComponent<ObsUpdate>().core.GetComponent<Renderer> ().material.SetColor ("_EmissionColor",
 				new Color (0, 0, 0));
 			obs.GetComponent<ObsUpdate>().type = "life";
 			return new Color (0,0,0);
@@ -284,7 +284,7 @@ public class ObstacleControllSync : MonoBehaviour {
 				int max = x_width * y_width * z_width;
 				string s = "";
 				for (int i = 0; i < max; i++) {
-					s += ((int)Random.Range (0, 5)).ToString ();
+					s += ((int)Random.Range (0, 4)).ToString ();
 				}
 				json ["color"] = s;
 

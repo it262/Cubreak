@@ -27,11 +27,14 @@ public class TransMesh : MonoBehaviour
     public Vector3 start, end;
     public GameObject target;
 
+    [SerializeField] bool debug = false;
+
     // Start is called before the first frame update
     void Start()
     {
         so = SocketObject.Instance;
         dw = DataWorker.Instance;
+        if(!debug)
         ps = transform.parent.GetComponent<PlayerScript>();
 
         copyMesh = Instantiate(originMesh);
@@ -48,13 +51,16 @@ public class TransMesh : MonoBehaviour
         }
 
         start = end = Vector3.zero;
-
-        ps.model = this;
+        if (!debug)
+            ps.model = this;
 
     }
     // Update is called once per frame
     void Update()
     {
+        if (debug)
+            return;
+
         if (start != Vector3.zero && end != Vector3.zero)
         {
             Vector3 startW = mf.transform.localToWorldMatrix.MultiplyPoint(start);
@@ -63,7 +69,8 @@ public class TransMesh : MonoBehaviour
             if (ps.pd.isPlayer)
             {
                 Vector3 impact = (endW - startW).normalized;
-                GetComponent<Rigidbody>().AddForce(ps.pd.getImpactVector(impact,target.GetComponent<PlayerScript>().pd), ForceMode.Impulse);
+                Debug.Log("impact");
+                transform.parent.gameObject.GetComponent<Rigidbody>().AddForce(ps.pd.getImpactVector(impact, target.GetComponent<PlayerScript>().pd), ForceMode.Impulse);
             }
             Destroy(Instantiate(effect, endW, Quaternion.identity), 5);
             start = end = Vector3.zero;

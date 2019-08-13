@@ -12,11 +12,11 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
     static GameManager gm;
 
     CameraController cc;
-    [SerializeField] GameObject titleCamerapos;
+    [SerializeField] GameObject startCamerapos;
 
 	public int MAX = 2;
 
-	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText,GameInstancePrefab;
+	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText,GameInstancePrefab,MenuStage,DebugPrefab,shutter;
 
 	public GameObject GameInstance;
 
@@ -44,7 +44,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public int score;
 
 	public GameObject InstanceStage,InstanceObsCon;
-	public GameObject Menu,Enhanced;
+	public GameObject Enhanced;
 
 	// Use this for initialization
 	void Start () {
@@ -63,6 +63,18 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
             .DistinctUntilChanged()
             .Where(x => x == GameState.RoomSettingComp)
             .Subscribe(_ =>PlayerListSet());
+
+        /*
+        gm._GameState
+            .DistinctUntilChanged()
+            .Where(x => x == GameState.ConnectionComp)
+            .Subscribe(_ => inactiveShutter());
+
+        gm._GameState
+            .DistinctUntilChanged()
+            .Where(x => x == GameState.Menu)
+            .Subscribe(_ => activeShutter());
+            */
 
     }
 	
@@ -99,7 +111,10 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			if (!Exping && (MAX!=1) &&(players.Count == 1)) {
 				score += 300;
 				MenuSetting ();
-			}
+			}else if(MAX==1 && players.Count == 0)
+            {
+                MenuSetting();
+            }
 
 
         }
@@ -111,6 +126,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
                 so.id = "";
                 so.name = "";
                 gm._GameState.Value = GameState.Menu;
+                RoomScript.Instance.removeMenu01Player();
             }
             else if (gm._GameState.Value == GameState.WaitingOtherPlayer && Input.GetKeyDown(KeyCode.Escape))
             {
@@ -120,6 +136,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
                 so.EmitMessage("Quick", data);
                 myRoom = null;
                 gm._GameState.Value = GameState.ConnectionComp;
+                RoomScript.Instance.removeMenu02Players();
             }
         }
 	}
@@ -148,13 +165,16 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	void GameSettings(){
 		GameInstance = (GameObject)Instantiate (GameInstancePrefab);
 		TitleText.SetActive (false);
-		//TitleCamera.SetActive (false);
-		sphereController.SetActive (false);
-		cubesController.GetComponent<cubesController> ().GameStart ();
+        //TitleCamera.SetActive (false);
+        //sphereController.SetActive (false);
+        //cubesController.GetComponent<cubesController> ().GameStart ();
+        //MenuStage.SetActive(false);
+        //MenuStage.GetComponent<Animator>().SetBool("On", true);
+        //shutter.SetActive(false);
 		InstanceStage = (GameObject)Instantiate (StagePrefab,Vector3.zero,Quaternion.identity);
 		InstanceStage.transform.parent = GameInstance.transform;
         Enhanced.SetActive(true);
-        Menu.SetActive(false);
+        //Menu.SetActive(false);
     }
 
 	public void PlayerCreate(GameObject obCon,List<Vector2> pos){
@@ -181,12 +201,17 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			players.Add (data.Key, g);
             Debug.Log("Player" + (cnt++) + "：" + ps.pd.id + "(" + ps.pd.name + ")");
         }
+        if(myRoom.member.Count == 1)
+        {
+            GameObject g = (GameObject)Instantiate(DebugPrefab, new Vector3(pos[0].x+5, 5, pos[0].y+5), Quaternion.identity);
+            g.transform.localEulerAngles = Vector3.zero;
+        }
         gm._GameState.Value = GameState.DefaultObstacleSetting;
     }
 
 	void MenuSetting(){
         Enhanced.SetActive(false);
-        cc.transform.parent = titleCamerapos.transform;
+        //cc.transform.parent = titleCamerapos.transform;
         Destroy (InstanceStage);
 		InstanceObsCon.GetComponent<ObstacleControllSync> ().DestroyAll ();
 		Destroy (InstanceObsCon);
@@ -194,12 +219,15 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 			Destroy (data);
 		}
 		DataClear ();
-		//TitleCamera.SetActive (true);
-		TitleText.SetActive (true);
-		sphereController.SetActive (true);
-		cubesController.SetActive (true);
-		cubesController.GetComponent<cubesController> ().CubeSetting ();
-		Menu.SetActive (true);
+        //MenuStage.SetActive(true);
+        //CameraController.Instance.transform.parent = null;
+        MenuStage.GetComponent<Animator>().SetBool("On", false);
+        //TitleCamera.SetActive (true);
+        TitleText.SetActive (true);
+		//sphereController.SetActive (true);
+		//cubesController.SetActive (true);
+		//cubesController.GetComponent<cubesController> ().CubeSetting ();
+		//Menu.SetActive (true);
 	}
 
 	public void disconnectUser(string id){
@@ -214,7 +242,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
         if (players.ContainsKey(id))
         {
             if (id.Equals(me.GetComponent<PlayerScript>().pd.id)) {
-                //CameraController.Instance.transform.parent = InstanceStage.GetComponent<Stage>().CamPos.transform;
+                CameraController.Instance.transform.parent = startCamerapos.transform;
+                //Camera.main.transform.parent = null;
                 watching = true;
             }
             Destroy (players [id]);
@@ -250,6 +279,42 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		Cursor.SetCursor (null,Vector2.zero,CursorMode.ForceSoftware);
 
 	}
+
+    public void setPdImpact(string s)
+    {
+        if(me != null)
+        me.GetComponent<PlayerScript>().pd.impact_Restriction = float.Parse(s);
+    }
+
+    public void setPdMoveSpeed(string s)
+    {
+        if (me != null)
+            me.GetComponent<PlayerScript>().pd.moveSpeedRate = float.Parse(s);
+    }
+
+    public void setPdAttackSpeed(string s)
+    {
+        if (me != null)
+            me.GetComponent<PlayerScript>().pd.attackSpeedRate = float.Parse(s);
+    }
+
+    void activeShutter()
+    {
+        shutter.SetActive(true);
+        shutter.GetComponent<Animator>().SetBool("On", false);
+    }
+
+    void inactiveShutter()
+    {
+        shutter.GetComponent<Animator>().SetBool("On", true);
+    }
+
+    public void menuInvisible()
+    {
+        MenuStage.GetComponent<Animator>().SetBool("On", true);
+        CameraController.Instance.transform.parent = startCamerapos.transform;
+    }
+
 }
 
 

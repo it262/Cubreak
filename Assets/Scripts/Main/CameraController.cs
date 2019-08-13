@@ -40,12 +40,22 @@ public class CameraController : SingletonMonoBehavior<CameraController>
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(transform.position);
         if (transform.localPosition != Vector3.zero)
         {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, 0.1f);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, 0.05f);
             if (Vector3.Distance(transform.localPosition, Vector3.zero) < 0.1f)
             {
                 transform.localPosition = Vector3.zero;
+            }
+        }
+
+        if (transform.localEulerAngles != Vector3.zero)
+        {
+            transform.localEulerAngles = Vector3.Lerp(transform.localEulerAngles, Vector3.zero, 0.05f);
+            if (Vector3.Distance(transform.localEulerAngles, Vector3.zero) < 0.1f)
+            {
+                transform.localEulerAngles = Vector3.zero;
             }
         }
 
@@ -71,16 +81,16 @@ public class CameraController : SingletonMonoBehavior<CameraController>
         Menu02.GetComponent<Animator>().SetBool("On", false);
     }
 
-        void setMenu02()
+    void setMenu02()
     {
-            transform.parent = cam_menu2_pos.transform;
+        transform.parent = cam_menu2_pos.transform;
         Menu01.GetComponent<Animator>().SetBool("On", false);
         Menu02.GetComponent<Animator>().SetBool("On", true);
     }
 
     void setMenu03()
     {
-            transform.parent = cam_menu3_pos.transform;
+        transform.parent = cam_menu3_pos.transform;
         Menu01.GetComponent<Animator>().SetBool("On", false);
         Menu02.GetComponent<Animator>().SetBool("On", false);
     }

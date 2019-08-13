@@ -18,6 +18,7 @@ TagManager:
   - Switch
   - OthersAvater
   - FxTemporaire
+  - Debug
   layers:
   - Default
   - TransparentFX

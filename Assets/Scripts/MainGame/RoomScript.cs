@@ -6,13 +6,19 @@ using System.Linq;
 using System;
 using UniRx;
 
-public class RoomScript : MonoBehaviour {
+public class RoomScript : SingletonMonoBehavior<RoomScript> {
 
 	static SocketObject so;
 	static DataWorker dw;
     static GameManager gm;
 
 	[SerializeField]GameObject content,pref;
+    [SerializeField]GameObject playerpref;
+    [SerializeField] GameObject[] positions = new GameObject[4];
+    GameObject[] playerInstance = new GameObject[4];
+
+    float time = 0;
+    bool wait = false;
 
 	//List<Room> room = new List<Room>();
 
@@ -21,12 +27,13 @@ public class RoomScript : MonoBehaviour {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
         gm = GameManager.Instance;
-		StartCoroutine ("RequestRoomData");
+
+		//StartCoroutine ("RequestRoomData");
 
         gm._GameState
             .DistinctUntilChanged()
-            .Where(x => x == GameState.WaitingOtherPlayer)
-            .Subscribe(_ => Debug.Log("ルームメンバー募集中..."));
+            .Where(x => x == GameState.ConnectionComp)
+            .Subscribe(_ => setMenu01Player());
 
         gm._GameState
             .DistinctUntilChanged()
@@ -38,11 +45,30 @@ public class RoomScript : MonoBehaviour {
             .Where(x => x == GameState.RoomDataUpdate)
             .Subscribe(_ => RoomDataCheck());
     }
-	
-	// Update is called once per frame
-	void Update () {
-		//QuickStart ();
-	}
+
+    // Update is called once per frame
+    void FixedUpdate() {
+        //QuickStart ();
+        time = (time<10)? time+Time.deltaTime:0;
+
+        if (wait && time > 3)
+        {
+            time = 0;
+            wait = false;
+            Debug.Log("comp");
+            removeMenuPlayers();
+            gm._GameState.Value = GameState.RoomSettingComp;
+        }
+
+        if (time > 1 && gm._GameState.Value == GameState.RoomSerching)
+        {
+            time = 0;
+            Debug.Log("ルーム検索中...");
+            var data = new Dictionary<string, string>();
+            data["to"] = "";
+            so.EmitMessage("Quick", data);
+        }
+    }
 
     void QuickStart()
     {
@@ -120,16 +146,32 @@ public class RoomScript : MonoBehaviour {
         Debug.Log("check");
         if(dw.myRoom.cnt == dw.MAX)
         {
+            time = 0;
+            wait = true;
+            removeMenu02Players();
+            setMenu02Players();
+            dw.menuInvisible();
+            /*
+            time = 0;
             Debug.Log("comp");
-            gm._GameState.Value = GameState.RoomSettingComp;
+            if (time > 3)
+            {
+                removeMenuPlayers();
+                gm._GameState.Value = GameState.RoomSettingComp;
+            }
+            */
         }
         else
         {
             Debug.Log("wait");
+            removeMenu02Players();
+            setMenu02Players();
             gm._GameState.Value = GameState.WaitingOtherPlayer;
+            Debug.Log("ルームメンバー募集中...");
         }
     }
 
+    /*
 	IEnumerator RequestRoomData(){
 		while (true) {
 			if (gm._GameState.Value == GameState.RoomSerching) {
@@ -141,5 +183,57 @@ public class RoomScript : MonoBehaviour {
 				yield return new WaitForSeconds (1f);
 		}
 	}
+    */
+
+    void setMenu01Player()
+    {
+        if (playerInstance[0] == null)
+        {
+            GameObject g = Instantiate(playerpref);
+            playerInstance[0] = g;
+            g.transform.parent = positions[0].transform;
+            g.transform.localPosition = new Vector3(0, 0, 0);
+            g.transform.localEulerAngles = new Vector3(0, 180, 0);
+            //g.GetComponent<Animator>().SetTrigger("On");
+        }
+    }
+
+    void setMenu02Players()
+    {
+        for (int i=1; i<dw.myRoom.member.Count; i++){
+            GameObject g = Instantiate(playerpref);
+            playerInstance[i] = g;
+            g.transform.parent = positions[i].transform;
+            g.transform.localPosition = new Vector3(0, 0, 0);
+            g.transform.localEulerAngles = new Vector3(0, 180, 0);
+        }
+    }
+
+    public void removeMenu01Player()
+    {
+        Destroy(playerInstance[0]);
+        playerInstance = new GameObject[4];
+    }
+
+    public void removeMenu02Players()
+    {
+        for (int i = 1; i < playerInstance.Length; i++)
+        {
+            if (playerInstance[i] != null)
+            {
+                Destroy(playerInstance[i]);
+                playerInstance[i] = null;
+            }
+        }
+    }
+
+    void removeMenuPlayers()
+    {
+        foreach (GameObject g in playerInstance)
+        {
+            Destroy(g);
+        }
+        playerInstance = new GameObject[4];
+    }
 
 }

@@ -93,8 +93,8 @@ public class Stage : MonoBehaviour {
 		spawnPoints.Add (TargetSection(xSection-1,0));
 		dw.PlayerCreate (obs,spawnPoints);
 
-        CamPos = Instantiate(CamPos, new Vector3(transform.position.x + 30f, transform.position.y + 10f, 0), Quaternion.identity);
-        CameraController.Instance.transform.parent = CamPos.transform;
+        //CamPos = Instantiate(CamPos, new Vector3(transform.position.x + 30f, transform.position.y + 10f, 0), Quaternion.identity);
+        //CameraController.Instance.transform.parent = CamPos.transform;
 	}
 	
 	// Update is called once per frame

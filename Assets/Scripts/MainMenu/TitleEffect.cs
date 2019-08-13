@@ -7,18 +7,27 @@ public class TitleEffect : MonoBehaviour
 {
 
 	IntermittentChaos IChaos;
+    Color defaultColor;
+    Renderer renderer;
+    float x = 0;
+    float t = 0;
 
     // Start is called before the first frame update
     void Start()
     {
 		IChaos = new IntermittentChaos ();
-		StartCoroutine ("Chaos");
+        renderer = GetComponent<Renderer>();
+        defaultColor = renderer.materials[0].GetColor("_EmissionColor");
     }
-		
-	IEnumerator Chaos(){
-		while (true) {
-			GetComponent<TextMeshPro> ().outlineWidth = IChaos.getChaos (GetComponent<TextMeshPro> ().outlineWidth);
-			yield return new WaitForSeconds (0.1f);
-		}
-	}
+
+    private void Update()
+    {
+        if ((t += Time.deltaTime) > 0.1f)
+        {
+            t = 0;
+            x = IChaos.getChaos(x);
+            renderer.materials[0].SetColor("_EmissionColor", defaultColor * x);
+        }
+    }
+
 }

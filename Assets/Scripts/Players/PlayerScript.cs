@@ -30,8 +30,10 @@ public class PlayerScript : MonoBehaviour {
 
     public TransMesh model;
 
-	// Use this for initialization
-	void Start () {
+    //public int atk, dif, spd;
+
+    // Use this for initialization
+    void Start () {
 		so = SocketObject.Instance;
 		dw = DataWorker.Instance;
         gm = GameManager.Instance;
@@ -43,12 +45,19 @@ public class PlayerScript : MonoBehaviour {
 		transform.LookAt (new Vector3(0,transform.position.y,0));
 		fpsCam.hRotation = transform.rotation;
         //avater.GetComponent<MeshCollider>().sharedMesh = avater.GetComponent<SkinnedMeshRenderer>().sharedMesh;
+        //atk = dif = spd = 50;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		time += Time.deltaTime;
+        /*
+        pd.atk = atk;
+        pd.dif = dif;
+        pd.spd = spd;
+        */
+
+        time += Time.deltaTime;
 
 		if (so == null && !debug)
 			return;

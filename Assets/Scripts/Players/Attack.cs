@@ -54,7 +54,18 @@ public class Attack : MonoBehaviour
 					data ["TYPE"] = "PushSwitch";
 					data ["trg"] = hit.collider.gameObject.transform.parent.gameObject.GetComponent<PlayerScript> ().pd.id;
 					so.EmitMessage ("ToOwnRoom", data);
-				}
+				}else if (hit.collider.gameObject.CompareTag("Debug"))
+                {
+                    GameObject parent = hit.transform.parent.gameObject;
+                    var mf = hit.transform.GetComponent<SkinnedMeshRenderer>();
+                    //検出したオブジェクトのローカル座標に変換
+                    Vector3 start = mf.transform.worldToLocalMatrix.MultiplyPoint(Camera.main.transform.position);
+                    Vector3 end = mf.transform.worldToLocalMatrix.MultiplyPoint(hit.point);
+                    Vector3 impact = (end - start).normalized;
+                    Debug.Log("Debug_Impact");
+                    Vector3 force = GetComponent<PlayerScript>().pd.getImpactVector(impact, parent.GetComponent<DebugPlayer>().pd);
+                    parent.GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
+                }
 				yield return new WaitForSeconds (mine.pd.getAttackSpeed());
 
 			}

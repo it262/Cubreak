@@ -25,6 +25,6 @@ public class filledImage : MonoBehaviour
 
     public void changeTargetAmount(float statasValue)
     {
-        targetAmount = statasValue / 100;
+        targetAmount = statasValue / 50;
     }
 }
