@@ -31,7 +31,7 @@ public class CameraController : SingletonMonoBehavior<CameraController>
             .Subscribe(_ => setMenu03());
         gm._GameState
             .DistinctUntilChanged()
-            .Where(x => x == GameState.Playing)
+            .Where(x => x == GameState.StartCount)
             .Subscribe(_ => setPlayer());
         transform.parent = cam_menu1_pos.transform;
         Debug.Log(transform.parent);

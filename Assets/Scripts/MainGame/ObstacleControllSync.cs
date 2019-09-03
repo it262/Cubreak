@@ -127,9 +127,8 @@ public class ObstacleControllSync : MonoBehaviour {
 			first.Clear ();
 			StartCoroutine("SendObsData");
 			Debug.Log ("初期オブジェクト設置完了");
-            gm._GameState.Value = GameState.Playing;
+            gm._GameState.Value = GameState.StartCount;
             //CameraController.Instance.transform.parent = dw.me.GetComponent<PlayerScript>().cam.transform;
-
         }
 
 	}

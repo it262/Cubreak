@@ -38,6 +38,8 @@ public enum GameState
 
     PlayerSetting,
 
+    StartCount,
+
     Playing,
 
     BackToMenu

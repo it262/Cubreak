@@ -46,6 +46,10 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	public GameObject InstanceStage,InstanceObsCon;
 	public GameObject Enhanced;
 
+    public Animator startCount;
+
+    float time = 0;
+
 	// Use this for initialization
 	void Start () {
         /*
@@ -63,6 +67,11 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
             .DistinctUntilChanged()
             .Where(x => x == GameState.RoomSettingComp)
             .Subscribe(_ =>PlayerListSet());
+
+        gm._GameState
+            .DistinctUntilChanged()
+            .Where(x => x == GameState.StartCount)
+            .Subscribe(_ => startCount.SetTrigger("Start"));
 
         /*
         gm._GameState
@@ -82,6 +91,17 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 	void Update () {
 
         Debug.Log(GameManager.Instance._GameState.Value);
+
+        if(GameManager.Instance._GameState.Value == GameState.StartCount){
+            time += Time.deltaTime;
+            Debug.Log(startCount.GetAnimatorTransitionInfo(0).IsName("StartUI_OFF"));
+
+            if (time >= 3)
+            {
+                GameManager.Instance._GameState.Value = GameState.Playing;
+            }
+            return;
+        }
 
 		if (GameManager.Instance._GameState.Value == GameState.Playing) {
 
