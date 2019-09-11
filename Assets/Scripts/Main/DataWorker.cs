@@ -16,7 +16,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 	public int MAX = 2;
 
-	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText,GameInstancePrefab,MenuStage,DebugPrefab,shutter;
+	[SerializeField]GameObject PlayerPrefab,StagePrefab,cubesController,sphereController,TitleCamera,TitleText,GameInstancePrefab,MenuStage,DebugPrefab,shutter,ResultUI;
 
 	public GameObject GameInstance;
 
@@ -49,6 +49,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
     public Animator startCount;
 
     float time = 0;
+
+    private bool die = false;
 
 	// Use this for initialization
 	void Start () {
@@ -93,10 +95,8 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
         Debug.Log(GameManager.Instance._GameState.Value);
 
         if(GameManager.Instance._GameState.Value == GameState.StartCount){
-            time += Time.deltaTime;
-            Debug.Log(startCount.GetAnimatorTransitionInfo(0).IsName("StartUI_OFF"));
-
-            if (time >= 3)
+            AnimatorStateInfo anim = startCount.GetCurrentAnimatorStateInfo(0);
+            if (anim.fullPathHash == Animator.StringToHash("Base Layer.StartUI_ON") && anim.normalizedTime > 0.6f)
             {
                 GameManager.Instance._GameState.Value = GameState.Playing;
             }
@@ -119,15 +119,17 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
             if (elimQue.Count > 0) {
 				d = elimQue.Dequeue ();
-				if (d ["trg"].Equals (GetComponent<SocketObject> ().id)) {
-					//死亡
-					MenuSetting ();
-				} else {
-					exclusion (d ["trg"].ToString ());
-				}
+				exclusion (d ["trg"].ToString ());
 			}
 
-			Debug.Log (players.Count);
+			Debug.Log (watching);
+
+            if (watching && Input.GetKeyDown(KeyCode.Escape))
+            {
+
+                MenuSetting();
+            }
+            /*
 			if (!Exping && (MAX!=1) &&(players.Count == 1)) {
 				score += 300;
 				MenuSetting ();
@@ -135,6 +137,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
             {
                 MenuSetting();
             }
+            */
 
 
         }
@@ -230,6 +233,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
     }
 
 	void MenuSetting(){
+        ResultUI.GetComponent<Animator>().SetBool("On", false);
         Enhanced.SetActive(false);
         //cc.transform.parent = titleCamerapos.transform;
         Destroy (InstanceStage);
@@ -262,9 +266,21 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
         if (players.ContainsKey(id))
         {
             if (id.Equals(me.GetComponent<PlayerScript>().pd.id)) {
-                CameraController.Instance.transform.parent = startCamerapos.transform;
+                //CameraController.Instance.transform.parent = startCamerapos.transform;
                 //Camera.main.transform.parent = null;
                 watching = true;
+                CameraController.Instance.transform.parent = InstanceStage.GetComponent<Stage>().CamPos.transform;
+                ResultUI.GetComponent<ResultIndicater>().setRanks(players.Count.ToString());
+                ResultUI.GetComponent<ResultIndicater>().setScore(300 - players.Count*50);
+                ResultUI.GetComponent<Animator>().SetBool("On", true);
+            }
+            else if(players.Count == 2)
+            {
+                watching = true;
+                CameraController.Instance.transform.parent = InstanceStage.GetComponent<Stage>().CamPos.transform;
+                ResultUI.GetComponent<ResultIndicater>().setRanks("1");
+                ResultUI.GetComponent<ResultIndicater>().setScore(300);
+                ResultUI.GetComponent<Animator>().SetBool("On", true);
             }
             Destroy (players [id]);
 			players.Remove (id);

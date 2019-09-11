@@ -20,21 +20,48 @@ public class ObsUpdate : MonoBehaviour
 
     public GameObject core;
 
+    public GameObject pre,next;
+
+    ObsUpdate preComponent;
+
+    public bool moving = true;
+
+    public bool active = false;
+
+    public bool fall = false;
+
+
     // Use this for initialization
     void Start()
     {
-		so = SocketObject.Instance;
+        so = SocketObject.Instance;
+        Ray ray = new Ray(transform.position, -transform.up);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask))
+        {
+            if (hit.transform.gameObject.CompareTag("Stage"))
+            {
+                pre = null;
+                preComponent = null;
+            }
+            else
+            {
+                pre = hit.transform.gameObject;
+                preComponent = pre.GetComponent<ObsUpdate>();
+                preComponent.next = this.gameObject;
+            }
+            return;
+        }
+        fall = true;
     }
 
-	/*
+
     // Update is called once per frame
     void Update()
     {
 
-			if (transform.position.y < -10f)
-				Destroy (gameObject);
-
-		/*
+        /*
         Ray ray = new Ray(transform.position, -transform.up);
         RaycastHit hit;
 
@@ -50,7 +77,8 @@ public class ObsUpdate : MonoBehaviour
 						hit.transform.position.y + 1f,
 						transform.position.z
 					);
-				} else {
+				} else
+                {
 					transform.position = new Vector3 (
 						transform.position.x,
 						hit.transform.position.y + 1f,
@@ -59,65 +87,120 @@ public class ObsUpdate : MonoBehaviour
 				}
                 gameObject.tag = "fallenObstacle";
 				preSpeed = 0;
+                return;
             }
-            else {
-                fallen();
-            }
-        }
-        else {
+            gameObject.tag = "Obstacle";
             fallen();
         }
+        */
+        
+        //if (!active)
+        //    return;
 
+        if (fall)
+        {
+            fallen();
+            return;
+        }
+
+        if (pre == null){
+            if (transform.position.y == 1f)
+            {
+                return;
+            }
+            moving = true;
+        }
+        else if(preComponent.moving)
+        {
+            
+            moving = true;
+        }
+        
+        fallen();
+        if (pre == null && moving == true)
+        {
+            if (transform.position.y < 1f)
+            {
+                transform.position = new Vector3(
+                            transform.position.x,
+                            1f,
+                            transform.position.z
+                        );
+                moving = false;
+            }
+        }else if (Mathf.Abs(pre.transform.position.y - transform.position.y) < 1f)
+        {
+            transform.position = new Vector3(
+                        transform.position.x,
+                        pre.transform.position.y + 1f,
+                        transform.position.z
+                    );
+            moving = false;
+        }
+
+        /*
         if (transform.CompareTag("fallenObstacle")) {
             //nothing
         }
+        */
 
-		if (transform.position.y < -10f) {
-			Destroy (gameObject);
-		}
 
         //Debug.DrawRay(ray.origin, ray.direction, Color.red, Mathf.Infinity);
 
     }
-	*/
+	
 
-	/*
+	
     //落とす関数。今回は簡略化。
     private void fallen()
     {
-		preSpeed += 0.1f;
-		transform.Translate(0, -preSpeed * Time.deltaTime, 0);
-    }
-    private void OnCollisionEnter(Collision collision)
-    {
-		if(collision.gameObject.CompareTag("Player") && transform.CompareTag("Obstacle")){
-			if (collision.gameObject.GetComponent<PlayerScript> ().isPlayer) {
-				var data = new Dictionary<string,string> ();
-				data ["TYPE"] = "DestroyObs";
-				data ["n"] = id.ToString ();
-				data ["attacker"] = so.id.ToString ();
-				so.EmitMessage ("ToOwnRoom", data);
-				Debug.Log ("Send:" +id.ToString () + "破壊");
-			}
-			var data = new Dictionary<string,string> ();
-			data ["TYPE"] = "PlayerEliminate";
-			data ["trg"] = so.id;
-			so.EmitMessage ("ToOwnRoom", data);
-			Debug.Log ("Send:" + id + "破壊");
-			Destroy ();
-
-		}
+        if (moving)
+        {
+            preSpeed += 0.1f;
+            transform.Translate(0, -preSpeed * Time.deltaTime, 0);
+        }
+        else
+        {
+            preSpeed = 0;
+        }
     }
 
-	private void OnCollisionExit(Collision collision){
-
-	}
-*/
 
 	public void Destroy(){
+        if (next != null)
+        {
+            if (pre == null)
+            {
+                next.GetComponent<ObsUpdate>().setPrevious(null);
+            }
+            else
+            {
+                next.GetComponent<ObsUpdate>().setPrevious(pre);
+                preComponent.next = next;
+            }
+        }
+        else if(pre!=null)
+        {
+            preComponent.next = null;
+        }
 		particle.GetComponent<Renderer> ().material = core.GetComponent<Renderer>().material;
 		GameObject p = Instantiate (particle, transform.position, Quaternion.identity);
 		Destroy (p, 2f);
 		Destroy(this.gameObject);
 	}
+
+    public void setPrevious(GameObject g)
+    {
+        if (g != null)
+        {
+            pre = g;
+            preComponent = g.GetComponent<ObsUpdate>();
+            moving = true;
+        }
+        else
+        {
+            pre = null;
+            preComponent = null;
+        }
+    }
 }

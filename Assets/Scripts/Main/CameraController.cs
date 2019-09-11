@@ -40,7 +40,7 @@ public class CameraController : SingletonMonoBehavior<CameraController>
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(transform.position);
+        //Debug.Log(transform.position);
         if (transform.localPosition != Vector3.zero)
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, 0.05f);

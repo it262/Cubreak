@@ -41,6 +41,9 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	public float SendObsInterval = 0.5f;
 
+    int xSection, zSection;
+
+
 	// Use this for initialization
 	void Start(){
 		// -> FirstProcessing()
@@ -52,7 +55,10 @@ public class ObstacleControllSync : MonoBehaviour {
 		g.GetComponent<DestroyPlane> ().ocs = this;
 		g.transform.parent = dw.GameInstance.transform;
 
-       gm._GameState
+        xSection = stage.GetComponent<Stage>().half_xSection * 2;
+        zSection = stage.GetComponent<Stage>().half_zSection * 2;
+
+        gm._GameState
             .DistinctUntilChanged()
             .Where(x => x == GameState.DefaultObstacleSetting)
             .Subscribe(_ => SendDefaultObstacle());
@@ -89,10 +95,9 @@ public class ObstacleControllSync : MonoBehaviour {
             {
                 xTarget = (int)Random.Range(0, stage.GetComponent<Stage>().xSection);
                 zTarget = (int)Random.Range(0, stage.GetComponent<Stage>().zSection);
-                targetSection = stage.GetComponent<Stage>().TargetSection(xTarget, zTarget);
 
-                data["x" + i] = targetSection[0].ToString();
-                data["z" + i] = targetSection[1].ToString();
+                data["x" + i] = xTarget.ToString();
+                data["z" + i] = zTarget.ToString();
                 data["color" + i] = ((int)Random.Range(0, 5)).ToString();//0:normal 1:attack 2:diffence 3:speed 4:heal
 
             }
@@ -103,35 +108,42 @@ public class ObstacleControllSync : MonoBehaviour {
     }
 
 
-    void ReceiveDefaultObstacle(){
-		//obstacleの初期配置
-		if(first.Count > 0){
-			int max = int.Parse (first ["max"]);
-			for (int i = 0; i < max; i++) {
-				string x = "x"+i;
-				string z = "z"+i;
-				GameObject obs = (GameObject)Instantiate (obstaclePrefab,
-					new Vector3 (float.Parse(first[x]), stage.transform.position.y+1f, float.Parse(first[z])),
-					                Quaternion.identity);
-				obs.gameObject.tag = "fallenObstacle";
-				obstacle.Add (idCounter, obs);
-				obs.GetComponent<ObsUpdate> ().id = idCounter++;
-				obs.transform.parent = dw.GameInstance.transform;
-				Color color = SettingColor (obs, int.Parse (first ["color" + i]));
-				GameObject summon = (GameObject)Instantiate (SummonPref, obs.transform.position, Quaternion.identity);
-				summon.GetComponent<ParticleSystem> ().startColor = color;
-				summon.transform.parent = dw.GameInstance.transform;
-				Destroy (summon, 2f);
+    void ReceiveDefaultObstacle()
+    {
+        //obstacleの初期配置
+        if (first.Count > 0)
+        {
+            int max = int.Parse(first["max"]);
+            for (int i = 0; i < max; i++)
+            {
+                string x = "x" + i;
+                string z = "z" + i;
+                int xT = int.Parse(first[x]);
+                int zT = int.Parse(first[z]);
+                targetSection = stage.GetComponent<Stage>().TargetSection(xT, zT);
+                GameObject obs = (GameObject)Instantiate(obstaclePrefab,
+                    new Vector3(targetSection.x, stage.transform.position.y + 1f, targetSection.y),
+                                    Quaternion.identity);
+                obs.GetComponent<ObsUpdate>().active = true;
+                obs.gameObject.tag = "fallenObstacle";
+                obstacle.Add(idCounter, obs);
+                obs.GetComponent<ObsUpdate>().id = idCounter++;
+                obs.transform.parent = dw.GameInstance.transform;
+                Color color = SettingColor(obs, int.Parse(first["color" + i]));
+                GameObject summon = (GameObject)Instantiate(SummonPref, obs.transform.position, Quaternion.identity);
+                summon.GetComponent<ParticleSystem>().startColor = color;
+                summon.transform.parent = dw.GameInstance.transform;
+                Destroy(summon, 2f);
 
-			}
-			first.Clear ();
-			StartCoroutine("SendObsData");
-			Debug.Log ("初期オブジェクト設置完了");
+            }
+            first.Clear();
+            StartCoroutine("SendObsData");
+            Debug.Log("初期オブジェクト設置完了");
             gm._GameState.Value = GameState.StartCount;
             //CameraController.Instance.transform.parent = dw.me.GetComponent<PlayerScript>().cam.transform;
         }
 
-	}
+    }
 
 	void ObsUpdate(){
 
@@ -170,7 +182,7 @@ public class ObstacleControllSync : MonoBehaviour {
 						for (int k = 0; k < y_width; k++) {
 						if (!obstacle.ContainsKey (n)) {
 							GameObject o = (GameObject)Instantiate (obstaclePrefab,
-								               new Vector3 (targetSection.x + i, _Y - j, targetSection.y/*z*/ - k),
+								               new Vector3 (targetSection.x + i, _Y + j, targetSection.y/*z*/ - k),
 								               Quaternion.identity);
 							obstacle.Add (n, o);
 							o.GetComponent<ObsUpdate> ().id = n;
@@ -181,7 +193,7 @@ public class ObstacleControllSync : MonoBehaviour {
 							summon.transform.parent = dw.GameInstance.transform;
 							Destroy (summon, 2f);
 							n++;
-						}
+                        }
 						}
 					}
 				}
@@ -270,8 +282,8 @@ public class ObstacleControllSync : MonoBehaviour {
 
 				var json = new Dictionary<string,string> ();
 				json ["n"] = idCounter.ToString ();
-				json ["xTarget"] = ((int)Random.Range (0, stage.GetComponent<Stage> ().xSection)).ToString ();
-				json ["zTarget"] = ((int)Random.Range (0, stage.GetComponent<Stage> ().zSection)).ToString ();
+				json ["xTarget"] = ((int)Random.Range (0, xSection)).ToString ();
+				json ["zTarget"] = ((int)Random.Range (0, zSection)).ToString ();
 				int x_width = (int)Random.Range (1, 3);
 				int y_width = (int)Random.Range (1, 2);
 				int z_width = (int)Random.Range (1, 3);

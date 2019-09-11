@@ -60,13 +60,40 @@ public class ButtonTest : MonoBehaviour {
 
 	*/
 
-	public void roomSearch(){
+	public void roomSearch4(){
 		if (so.connecting && so.id != null) {
 			if (gm._GameState.Value == GameState.ConnectionComp && so.id!="" && so.name!="") {
                 dw.roomState = null;
+                dw.MAX = 4;
                 gm._GameState.Value = GameState.RoomSerching;
             } 
 		}
 	}
+
+    public void roomSearch2()
+    {
+        if (so.connecting && so.id != null)
+        {
+            if (gm._GameState.Value == GameState.ConnectionComp && so.id != "" && so.name != "")
+            {
+                dw.roomState = null;
+                dw.MAX = 2;
+                gm._GameState.Value = GameState.RoomSerching;
+            }
+        }
+    }
+
+    public void roomSearchPrac()
+    {
+        if (so.connecting && so.id != null)
+        {
+            if (gm._GameState.Value == GameState.ConnectionComp && so.id != "" && so.name != "")
+            {
+                dw.roomState = null;
+                dw.MAX = 1;
+                gm._GameState.Value = GameState.RoomSerching;
+            }
+        }
+    }
 
 }
