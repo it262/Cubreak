@@ -29,11 +29,12 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
         gm = GameManager.Instance;
 
 		//StartCoroutine ("RequestRoomData");
-
+        /*
         gm._GameState
             .DistinctUntilChanged()
             .Where(x => x == GameState.ConnectionComp)
             .Subscribe(_ => setMenu01Player());
+            */
 
         gm._GameState
             .DistinctUntilChanged()
@@ -56,7 +57,7 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
             time = 0;
             wait = false;
             Debug.Log("comp");
-            removeMenuPlayers();
+            //removeMenuPlayers();
             gm._GameState.Value = GameState.RoomSettingComp;
         }
 
@@ -148,8 +149,8 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
         {
             time = 0;
             wait = true;
-            removeMenu02Players();
-            setMenu02Players();
+            //removeMenu02Players();
+            //setMenu02Players();
             dw.menuInvisible();
             /*
             time = 0;
@@ -164,8 +165,8 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
         else
         {
             Debug.Log("wait");
-            removeMenu02Players();
-            setMenu02Players();
+            //removeMenu02Players();
+            //setMenu02Players();
             gm._GameState.Value = GameState.WaitingOtherPlayer;
             Debug.Log("ルームメンバー募集中...");
         }

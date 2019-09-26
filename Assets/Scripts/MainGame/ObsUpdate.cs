@@ -49,11 +49,22 @@ public class ObsUpdate : MonoBehaviour
             {
                 pre = hit.transform.gameObject;
                 preComponent = pre.GetComponent<ObsUpdate>();
-                preComponent.next = this.gameObject;
+                if (preComponent.fall)
+                {
+                    fall = true;
+                }
+                else
+                {
+                    preComponent.next = this.gameObject;
+                }
             }
             return;
         }
         fall = true;
+        if (core == null)
+        {
+            core = this.gameObject;
+        }
     }
 
 
@@ -61,45 +72,11 @@ public class ObsUpdate : MonoBehaviour
     void Update()
     {
 
-        /*
-        Ray ray = new Ray(transform.position, -transform.up);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-        {
-            float dis = hit.distance;
-            if (dis <= 0.5)
-            {
-				Debug.Log (hit.transform.gameObject.tag);
-				if (hit.transform.gameObject.CompareTag ("Stage")) {
-					transform.position = new Vector3 (
-						transform.position.x,
-						hit.transform.position.y + 1f,
-						transform.position.z
-					);
-				} else
-                {
-					transform.position = new Vector3 (
-						transform.position.x,
-						hit.transform.position.y + 1f,
-						transform.position.z
-					);
-				}
-                gameObject.tag = "fallenObstacle";
-				preSpeed = 0;
-                return;
-            }
-            gameObject.tag = "Obstacle";
-            fallen();
-        }
-        */
-        
-        //if (!active)
-        //    return;
-
         if (fall)
         {
             fallen();
+            if(transform.position.y<-100)
+                Destroy();
             return;
         }
 

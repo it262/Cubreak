@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
     <e p="C:\Users\ITaku\.Rider2019.2\system\extResources" t="IncludeRecursive" />
@@ -71,6 +71,7 @@
               <e p="Sample11_Logger.cs" t="Include" />
               <e p="Sample12_ReactiveProperty.cs" t="Include" />
               <e p="Sample13_ToDoApp.cs" t="Include" />
+              <e p="UniRx.Examples.asmdef" t="Include" />
             </e>
             <e p="readme.txt" t="Include" />
             <e p="Scripts" t="Include">
@@ -238,6 +239,7 @@
               </e>
               <e p="TimeInterval.cs" t="Include" />
               <e p="Timestamped.cs" t="Include" />
+              <e p="UniRx.asmdef" t="Include" />
               <e p="UnityEngineBridge" t="Include">
                 <e p="AsyncOperationExtensions.cs" t="Include" />
                 <e p="CancellationToken.cs" t="Include" />

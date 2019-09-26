@@ -64,6 +64,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
         so = SocketObject.Instance;
         gm = GameManager.Instance;
+        cc = CameraController.Instance;
 
         gm._GameState
             .DistinctUntilChanged()
@@ -187,7 +188,9 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
 	void GameSettings(){
 		GameInstance = (GameObject)Instantiate (GameInstancePrefab);
-		TitleText.SetActive (false);
+		//TitleText.SetActive (false);
+		//TitleText.GetComponent<TitleEffect>().active = true;
+		TitleText.GetComponent<TitleEffect>().setActive_script(true);
         //TitleCamera.SetActive (false);
         //sphereController.SetActive (false);
         //cubesController.GetComponent<cubesController> ().GameStart ();
@@ -232,7 +235,10 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
         gm._GameState.Value = GameState.DefaultObstacleSetting;
     }
 
-	void MenuSetting(){
+	void MenuSetting()
+	{
+		
+		cc.transform.parent = cc.cam_menu1_pos.transform;
         ResultUI.GetComponent<Animator>().SetBool("On", false);
         Enhanced.SetActive(false);
         //cc.transform.parent = titleCamerapos.transform;
@@ -245,9 +251,10 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 		DataClear ();
         //MenuStage.SetActive(true);
         //CameraController.Instance.transform.parent = null;
-        MenuStage.GetComponent<Animator>().SetBool("On", false);
+        //MenuStage.GetComponent<Animator>().SetBool("On", false);
         //TitleCamera.SetActive (true);
-        TitleText.SetActive (true);
+        //TitleText.SetActive (true);
+        TitleText.GetComponent<TitleEffect>().setActive_script(false);
 		//sphereController.SetActive (true);
 		//cubesController.SetActive (true);
 		//cubesController.GetComponent<cubesController> ().CubeSetting ();
@@ -273,6 +280,7 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
                 ResultUI.GetComponent<ResultIndicater>().setRanks(players.Count.ToString());
                 ResultUI.GetComponent<ResultIndicater>().setScore(300 - players.Count*50);
                 ResultUI.GetComponent<Animator>().SetBool("On", true);
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
             }
             else if(players.Count == 2)
             {
@@ -347,8 +355,9 @@ public class DataWorker : SingletonMonoBehavior<DataWorker> {
 
     public void menuInvisible()
     {
-        MenuStage.GetComponent<Animator>().SetBool("On", true);
-        CameraController.Instance.transform.parent = startCamerapos.transform;
+        //MenuStage.GetComponent<Animator>().SetBool("On", true);
+        //TitleText.GetComponent<TitleEffect>().active = true;
+        //CameraController.Instance.transform.parent = startCamerapos.transform;
     }
 
 }

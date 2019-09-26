@@ -43,7 +43,9 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 
 	public bool connecting = false;
 
-    /*
+	public bool error = false;
+
+	/*
 	void Awake(){
 		GameObject[] sockets = GameObject.FindGameObjectsWithTag ("SocketObject");
 		if (sockets.Length > 1) {
@@ -53,7 +55,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.SetCursor (null,Vector2.zero,CursorMode.ForceSoftware);
 	}
-    */
+	*/
 
 	public void Start() 
 	{
@@ -144,6 +146,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	{
 		connecting = false;
 		Debug.Log("[SocketIO] Error received: " + e.name + " " + e.data);
+		error = true;
 	}
 
 	public void SocketClose(SocketIOEvent e)

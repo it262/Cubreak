@@ -8,7 +8,7 @@ public class CameraController : SingletonMonoBehavior<CameraController>
     GameManager gm;
 
     public GameObject lookAt,cam_menu1_pos,cam_menu2_pos, cam_menu3_pos;
-    public GameObject Menu01, Menu02,Menu03;
+    public GameObject Menu01, Menu02,Menu03,Error;
     public Vector3 setPos;
     // Start is called before the first frame update
     void Start()
@@ -41,6 +41,19 @@ public class CameraController : SingletonMonoBehavior<CameraController>
     void Update()
     {
         //Debug.Log(transform.position);
+        if (SocketObject.Instance.error)
+        {
+            if (!Error.GetComponent<Animator>().GetBool("On"))
+            {
+                Error.GetComponent<Animator>().SetBool("On", true);
+            }
+            else if(Input.anyKeyDown)
+            {
+                Error.GetComponent<Animator>().SetBool("On", false);
+                SocketObject.Instance.error = false;
+            }
+        }
+        
         if (transform.localPosition != Vector3.zero)
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, 0.05f);
@@ -83,14 +96,16 @@ public class CameraController : SingletonMonoBehavior<CameraController>
 
     void setMenu02()
     {
+        Vector3 pos = transform.localPosition;
         transform.parent = cam_menu2_pos.transform;
+        transform.position = pos;
         Menu01.GetComponent<Animator>().SetBool("On", false);
         Menu02.GetComponent<Animator>().SetBool("On", true);
     }
 
     void setMenu03()
     {
-        transform.parent = cam_menu3_pos.transform;
+        //transform.parent = cam_menu3_pos.transform;
         Menu01.GetComponent<Animator>().SetBool("On", false);
         Menu02.GetComponent<Animator>().SetBool("On", false);
     }

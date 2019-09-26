@@ -54,6 +54,7 @@ public class Attack : MonoBehaviour
 					data ["TYPE"] = "PushSwitch";
 					data ["trg"] = hit.collider.gameObject.transform.parent.gameObject.GetComponent<PlayerScript> ().pd.id;
 					so.EmitMessage ("ToOwnRoom", data);
+					Debug.Log ("Push:" + hit.collider.gameObject.GetComponent<ObsUpdate>().id.ToString () + "爆破");
 				}else if (hit.collider.gameObject.CompareTag("Debug"))
                 {
                     GameObject parent = hit.transform.parent.gameObject;

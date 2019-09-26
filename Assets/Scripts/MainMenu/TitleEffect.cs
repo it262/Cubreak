@@ -13,6 +13,7 @@ public class TitleEffect : MonoBehaviour
     float t = 0;
 
     [SerializeField] Renderer[] walls;
+    [SerializeField] private GameObject particle;
     public bool active = false;
 
     float y = 0;
@@ -37,7 +38,6 @@ public class TitleEffect : MonoBehaviour
 
         if (active)
         {
-            
             foreach (Renderer r in walls)
             {
                 r.material.SetTextureOffset("_MainTex", new Vector2(0, y));
@@ -52,4 +52,10 @@ public class TitleEffect : MonoBehaviour
 
     }
 
+    public void setActive_script(bool flug)
+    {
+        active = flug;
+        particle.SetActive(!active);
+        GetComponent<MeshRenderer>().enabled = !active;
+    }
 }

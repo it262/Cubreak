@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dba06a139fefdf94ab982bf3030aeab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obstaclePrefab: {fileID: 8561915561672720467, guid: d43d92cc6fdd0544ab79a938f0bc6318,
+  obstaclePrefab: {fileID: 1259663811491254, guid: 5b78c348033ef054fac54329e7a0162e,
     type: 3}
   SummonPref: {fileID: 8269553044903239756, guid: eee3a8a510175f34292a8c519cc04d1d,
     type: 3}
@@ -56,4 +56,4 @@ MonoBehaviour:
   stage: {fileID: 0}
   speed: 0
   FirstObsMax: 10
-  SendObsInterval: 1
+  SendObsInterval: 0.5

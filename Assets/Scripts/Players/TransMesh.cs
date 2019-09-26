@@ -34,8 +34,8 @@ public class TransMesh : MonoBehaviour
     {
         so = SocketObject.Instance;
         dw = DataWorker.Instance;
-        if(!debug)
-        ps = transform.parent.GetComponent<PlayerScript>();
+        if (!debug)
+            ps = transform.parent.GetComponent<PlayerScript>();
 
         copyMesh = Instantiate(originMesh);
         mf = GetComponent<SkinnedMeshRenderer>();

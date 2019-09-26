@@ -24,7 +24,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	public float speed;
 
-	private int _Y = 30;
+	private int _Y = 100;
 	[SerializeField] int FirstObsMax = 10;
 
 	bool send = false;
@@ -78,7 +78,7 @@ public class ObstacleControllSync : MonoBehaviour {
             ReceiveDefaultObstacle();
 
         //obstacleがフィールド上になかったら新しいobstacleを召喚する。
-        if (gm._GameState.Value == GameState.Playing)
+        if (gm._GameState.Value == GameState.StartCount || gm._GameState.Value == GameState.Playing)
 		    ObsUpdate();
 	}
 
@@ -275,6 +275,8 @@ public class ObstacleControllSync : MonoBehaviour {
 
 	IEnumerator SendObsData(){
 			while (true) {
+				if(gm._GameState.Value != GameState.Playing)
+					yield return new WaitForSeconds (SendObsInterval);
 			if (!dw.watching && dw.RoomMaster.Equals(dw.me.GetComponent<PlayerScript>().pd.id) && gm._GameState.Value == GameState.Playing) {
 
 				var data = new Dictionary<string,string> ();
