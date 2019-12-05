@@ -37,7 +37,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 {
 	private SocketIOComponent socket;
 
-	string url = "ws://52.194.134.160:1337/socket.io/?EIO=4&transport=websocket";
+	string url = "ws://35.230.95.11:1337/socket.io/?EIO=4&transport=websocket";
 
 	public string id,name;
 
