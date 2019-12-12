@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1720834226}
   - component: {fileID: 1720834225}
   - component: {fileID: 1720834224}
+  - component: {fileID: 8064385123157444478}
   - component: {fileID: 3127057030369932327}
   - component: {fileID: 8003867418513716658}
   m_Layer: 9
@@ -91,6 +92,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 5120
+  hand: {fileID: 0}
 --- !u!114 &1720834226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,6 +144,18 @@ MonoBehaviour:
   vRotation: {x: 0, y: 0, z: 0, w: 0}
   hRotation: {x: 0, y: 0, z: 0, w: 0}
   ps: {fileID: 0}
+--- !u!114 &8064385123157444478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720834221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0de4d036614349541af45ec0a3421c3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!82 &3127057030369932327
 AudioSource:
   m_ObjectHideFlags: 0

@@ -26,7 +26,7 @@ public class fpsCamera : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (!ps.pd.isPlayer)
+		if (ps==null && !ps.pd.isPlayer)
 			return;
 		
         float sensitivity = 5f; // いわゆるマウス感度
