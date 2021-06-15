@@ -16,11 +16,10 @@ public class ClickObject : MonoBehaviour
   // Update is called once per frames
   void Update()
   {
-    if(Input.mouse)
     if (Input.GetMouseButtonDown(0))
     {
       Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-      if (Physics.Raycast(ray, out hit,mask))
+      if (Physics.Raycast(ray, out hit, mask))
       {
         Debug.Log(hit.collider.gameObject.name);
       }
