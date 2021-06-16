@@ -174,7 +174,7 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	}
 
 	public void GetRooms(SocketIOEvent e){
-		GetComponent<DataWorker>().roomState = e.data;
+		GetComponent<DataWorker>()._roomState = e.data;
 		Debug.Log (e.data);
 	}
 
@@ -186,11 +186,11 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 
 	public void PongName(SocketIOEvent e){
 		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
-		GetComponent<DataWorker> ().myRoom.member [d ["id"]] = WWW.UnEscapeURL (d ["name"]);
+		GetComponent<DataWorker> ()._myRoom.member [d ["id"]] = WWW.UnEscapeURL (d ["name"]);
 	}
 
 	public void Quick(SocketIOEvent e){
-		GetComponent<DataWorker>().roomState = e.data;
+		GetComponent<DataWorker>()._roomState = e.data;
         GameManager.Instance._GameState.Value = GameState.CheckRoomData;
 	}
 
@@ -198,15 +198,15 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
         //var data = new JSONObject (e.data.ToString ());
         Room r = new Room (e.data.GetField ("name").str);
         var dw = GetComponent<DataWorker>();
-        dw.RoomMaster = null;
+        dw._roomMaster = null;
         var sockets = e.data.GetField("sockets");
         foreach (string d in sockets.keys) {
-            if (dw.RoomMaster == null)
-                dw.RoomMaster = d;
+            if (dw._roomMaster == null)
+                dw._roomMaster = d;
 			r.member.Add(d, sockets.GetField(d).str);
 		}
 		r.cnt = (int)e.data.GetField("length").n;
-		dw.myRoom = r;
+		dw._myRoom = r;
         GameManager.Instance._GameState.Value = GameState.RoomDataUpdate;
 		Debug.Log ("[入室]"+r.roomName);
 	}
@@ -264,29 +264,29 @@ public class SocketObject : SingletonMonoBehavior<SocketObject>
 	public void FirstObs(SocketIOEvent e)
 	{
 		Debug.Log ("初期オブジェクト位置受信");
-		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().first = new JSONObject (e.data.ToString ()).ToDictionary ();
+		GetComponent<DataWorker>()._instanceObsCon.GetComponent<ObstacleControllSync> ().first = new JSONObject (e.data.ToString ()).ToDictionary ();
 	}
 
 	public void Obs(SocketIOEvent e)
 	{
 		Debug.Log ("OBSデータ受信");
 		Dictionary<string,string> d = new JSONObject (e.data.ToString ()).ToDictionary ();
-		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().obs.Enqueue(d["json"]);
+		GetComponent<DataWorker>()._instanceObsCon.GetComponent<ObstacleControllSync> ().obs.Enqueue(d["json"]);
 	}
 
 	public void DestroyObs(SocketIOEvent e)
 	{
-		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().victim.Enqueue(new JSONObject (e.data.ToString ()).ToDictionary ());
+		GetComponent<DataWorker>()._instanceObsCon.GetComponent<ObstacleControllSync> ().victim.Enqueue(new JSONObject (e.data.ToString ()).ToDictionary ());
 	}
 
 	public void StateUpdate(SocketIOEvent e)
 	{
-		GetComponent<DataWorker>().InstanceObsCon.GetComponent<ObstacleControllSync> ().state[new JSONObject (e.data.ToString ()).ToDictionary ()["id"]] = new JSONObject (e.data.ToString ()).ToDictionary ()["state"];
+		GetComponent<DataWorker>()._instanceObsCon.GetComponent<ObstacleControllSync> ().state[new JSONObject (e.data.ToString ()).ToDictionary ()["id"]] = new JSONObject (e.data.ToString ()).ToDictionary ()["state"];
 	}
 
 	public void Dead(SocketIOEvent e)
 	{
-		GetComponent<DataWorker>().exclusion(new JSONObject(e.data.ToString ()).ToDictionary()["id"]);
+		GetComponent<DataWorker>().Exclusion(new JSONObject(e.data.ToString ()).ToDictionary()["id"]);
 	}
 
 	public void HeartBeat(SocketIOEvent e)

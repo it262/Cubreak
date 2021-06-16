@@ -46,8 +46,8 @@ public class DebugPlayer : MonoBehaviour
 
     private void Update()
     {
-        pd.atk = atk;
-        pd.dif = dif;
-        pd.spd = spd;
+        pd._atk = atk;
+        pd._dif = dif;
+        pd._spd = spd;
     }
 }

@@ -83,8 +83,8 @@ public class Stage : MonoBehaviour {
 		GameObject obs = (GameObject)Instantiate (ObsController, Vector3.zero, Quaternion.identity);
 		obs.GetComponent<ObstacleControllSync> ().stage = this.gameObject;
         Debug.Log(obs.GetComponent<ObstacleControllSync>().stage);
-        dw.InstanceObsCon = obs;
-		obs.transform.parent = dw.GameInstance.transform;
+        dw._instanceObsCon = obs;
+		obs.transform.parent = dw._gameInstance.transform;
 
 		List<Vector2> spawnPoints = new List<Vector2> ();
 		spawnPoints.Add (TargetSection(0,0));
@@ -94,7 +94,7 @@ public class Stage : MonoBehaviour {
 		dw.PlayerCreate (obs,spawnPoints);
 
         CamPos = Instantiate(CamPos, new Vector3(transform.position.x + 30f, transform.position.y + 10f, 0), Quaternion.identity);
-        CamPos.transform.parent = dw.GameInstance.transform;
+        CamPos.transform.parent = dw._gameInstance.transform;
 	}
 	
 	// Update is called once per frame

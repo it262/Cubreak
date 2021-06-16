@@ -4,102 +4,111 @@ using UnityEngine;
 
 public class PlayerData
 {
+    internal string _id;
+    internal string _name;
+    internal bool _isPlayer = false;
 
-    public string id, name;
-    public bool isPlayer = false;
+    internal int _atk;
+    internal int _dif;
+    internal int _spd;
 
-    public int atk;
-    public int dif;
-    public int spd;
+    internal float _attackRange = 5f;
 
-    private int max = 50;
-    private int min = 1;
+    internal float _impactRestriction = 10f;
+    internal float _moveSpeedRate = 0.05f;
+    internal float _attackSpeedRate = 0.035f;
 
-    private int plus = 3;
-    private int minus = 1;
+    private int _max = 50;
+    private int _min = 1;
 
-    public float attackRange = 5f;
+    private int _plus = 3;
+    private int _minus = 1;
 
-    public float impact_Restriction = 10;
-    public float moveSpeedRate = 0.05f;
-    public float attackSpeedRate = 0.035f;
-
-    public PlayerData()
+    internal PlayerData()
     {
-        atk = 25;
-        dif = 25;
-        spd = 25;
+        _atk = 25;
+        _dif = 25;
+        _spd = 25;
     }
 
-    public void changeState(string str)
+    internal void ChangeState(string str)
     {
         switch (str)
         {
             case "atk":
-                atk_plus();
+                AtkPlus();
                 break;
             case "dif":
-                dif_plus();
+                DifPlus();
                 break;
             case "spd":
-                spd_plus();
+                SpdPlus();
                 break;
             default:
-                black_minus();
+                BlackMinus();
                 break;
         }
     }
 
-    public void atk_plus()
+    internal void AtkPlus()
     {
-        atk += plus;
-        dif = (dif - minus <= min) ? min : dif - minus;
-        spd = (spd - minus <= min) ? min : spd - minus;
-        if (atk > max)
-            atk = max;
+        _atk += _plus;
+        _dif = (_dif - _minus <= _min) ? _min : _dif - _minus;
+        _spd = (_spd - _minus <= _min) ? _min : _spd - _minus;
+        if (_atk > _max)
+        {
+            _atk = _max;
+        }
     }
-    public void dif_plus()
+    internal void DifPlus()
     {
-        dif += plus;
-        atk = (atk - minus <= min) ? min : atk - minus;
-        spd = (spd - minus <= min) ? min : spd - minus;
-        if (dif > max)
-            dif = max;
+        _dif += _plus;
+        _atk = (_atk - _minus <= _min) ? _min : _atk - _minus;
+        _spd = (_spd - _minus <= _min) ? _min : _spd - _minus;
+        if (_dif > _max)
+        {
+            _dif = _max;
+        }
     }
-    public void spd_plus()
+    internal void SpdPlus()
     {
-        spd += plus;
-        atk = (atk - minus <= min) ? min : atk - minus;
-        dif = (dif - minus <= min) ? min : dif - minus;
-        if (spd > max)
-            spd = max;
-    }
-
-    public void black_minus()
-    {
-        int sub = Random.Range(0, minus+1);
-        atk = (atk - sub <= 0) ? min : atk - sub;
-        sub = Random.Range(0, minus+1);
-        dif = (dif - sub <= 0) ? min : dif - sub;
-        sub = Random.Range(0, minus+1);
-        spd = (spd - sub <= 0) ? min : spd - sub;
-
-        Debug.Log("[State]"+atk+":"+dif+";"+spd);
+        _spd += _plus;
+        _atk = (_atk - _minus <= _min) ? _min : _atk - _minus;
+        _dif = (_dif - _minus <= _min) ? _min : _dif - _minus;
+        if (_spd > _max)
+        {
+            _spd = _max;
+        }
     }
 
-    public float getMoveSpeed()
+    internal void BlackMinus()
     {
-        return 3 + (spd * moveSpeedRate);
+        _atk = GetRandomState(_atk);
+        _dif = GetRandomState(_dif);
+        _spd = GetRandomState(_spd);
+
+        int GetRandomState(int state)
+        {
+            int sub = Random.Range(0, _minus + 1);
+            return (state - sub <= 0) ? _min : state - sub;
+        }
+
+        Debug.Log("[State]" + _atk + ":" + _dif + ";" + _spd);
     }
 
-    public float getAttackSpeed()
+    internal float GetMoveSpeed()
     {
-        return 2 - (spd * attackSpeedRate);
+        return 3f + (_spd * _moveSpeedRate);
     }
 
-    public Vector3 getImpactVector(Vector3 vector, PlayerData target)
+    internal float GetAttackSpeed()
     {
-        float force = atk - target.dif;
+        return 2f - (_spd * _attackSpeedRate);
+    }
+
+    internal Vector3 GetImpactVector(Vector3 vector, PlayerData target)
+    {
+        float force = _atk - target._dif;
         if (force <= 0)
         {
             force = 1;
@@ -110,7 +119,7 @@ public class PlayerData
             force = impact_Restriction;
         }
         */
-        return vector * 3 + vector * force*0.3f;
+        return vector * 3f + vector * force * 0.3f;
     }
 
 }

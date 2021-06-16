@@ -63,8 +63,8 @@ public class ButtonTest : MonoBehaviour {
 	public void roomSearch4(){
 		if (so.connecting && so.id != null) {
 			if (gm._GameState.Value == GameState.ConnectionComp && so.id!="" && so.name!="") {
-                dw.roomState = null;
-                dw.MAX = 4;
+                dw._roomState = null;
+                dw._max = 4;
                 gm._GameState.Value = GameState.RoomSerching;
             } 
 		}
@@ -76,8 +76,8 @@ public class ButtonTest : MonoBehaviour {
         {
             if (gm._GameState.Value == GameState.ConnectionComp && so.id != "" && so.name != "")
             {
-                dw.roomState = null;
-                dw.MAX = 2;
+                dw._roomState = null;
+                dw._max = 2;
                 gm._GameState.Value = GameState.RoomSerching;
             }
         }
@@ -89,8 +89,8 @@ public class ButtonTest : MonoBehaviour {
         {
             if (gm._GameState.Value == GameState.ConnectionComp && so.id != "" && so.name != "")
             {
-                dw.roomState = null;
-                dw.MAX = 1;
+                dw._roomState = null;
+                dw._max = 1;
                 gm._GameState.Value = GameState.RoomSerching;
             }
         }

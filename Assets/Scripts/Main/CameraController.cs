@@ -112,9 +112,9 @@ public class CameraController : SingletonMonoBehavior<CameraController>
 
     void setPlayer()
     {
-        if (DataWorker.Instance != null && DataWorker.Instance.me != null)
+        if (DataWorker.Instance != null && DataWorker.Instance._me != null)
         {
-            transform.parent = DataWorker.Instance.me.GetComponent<PlayerScript>().cam.transform;
+            transform.parent = DataWorker.Instance._me.GetComponent<PlayerScript>()._camera.transform;
         }
     }
 }

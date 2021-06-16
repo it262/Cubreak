@@ -53,7 +53,7 @@ public class ObstacleControllSync : MonoBehaviour {
 		jj = new JsonInJson ();
 		GameObject g = Instantiate (DestroyPlane, new Vector3 (0, -50, 0), Quaternion.identity);
 		g.GetComponent<DestroyPlane> ().ocs = this;
-		g.transform.parent = dw.GameInstance.transform;
+		g.transform.parent = dw._gameInstance.transform;
 
         xSection = stage.GetComponent<Stage>().half_xSection * 2;
         zSection = stage.GetComponent<Stage>().half_zSection * 2;
@@ -84,7 +84,7 @@ public class ObstacleControllSync : MonoBehaviour {
 
     void SendDefaultObstacle()
     {
-        if (dw.RoomMaster.Equals(dw.me.GetComponent<PlayerScript>().pd.id))
+        if (dw._roomMaster.Equals(dw._me.GetComponent<PlayerScript>().PlayerData._id))
         {
             var data = new Dictionary<string, string>();
             data["TYPE"] = "FirstObs";
@@ -128,11 +128,11 @@ public class ObstacleControllSync : MonoBehaviour {
                 obs.gameObject.tag = "fallenObstacle";
                 obstacle.Add(idCounter, obs);
                 obs.GetComponent<ObsUpdate>().id = idCounter++;
-                obs.transform.parent = dw.GameInstance.transform;
+                obs.transform.parent = dw._gameInstance.transform;
                 Color color = SettingColor(obs, int.Parse(first["color" + i]));
                 GameObject summon = (GameObject)Instantiate(SummonPref, obs.transform.position, Quaternion.identity);
                 summon.GetComponent<ParticleSystem>().startColor = color;
-                summon.transform.parent = dw.GameInstance.transform;
+                summon.transform.parent = dw._gameInstance.transform;
                 Destroy(summon, 2f);
 
             }
@@ -152,7 +152,7 @@ public class ObstacleControllSync : MonoBehaviour {
 			var v = victim.Dequeue ();
 			var trgObs = obstacle [int.Parse (v ["n"])];
 			if (trgObs != null) {
-                dw.players[v["attacker"]].GetComponent<PlayerScript>().pd.changeState(trgObs.GetComponent<ObsUpdate>().type);
+                dw._players[v["attacker"]].GetComponent<PlayerScript>().PlayerData.ChangeState(trgObs.GetComponent<ObsUpdate>().type);
 				trgObs.GetComponent<ObsUpdate> ().Destroy ();
 			}
 		}
@@ -186,11 +186,11 @@ public class ObstacleControllSync : MonoBehaviour {
 								               Quaternion.identity);
 							obstacle.Add (n, o);
 							o.GetComponent<ObsUpdate> ().id = n;
-							o.transform.parent = dw.GameInstance.transform;
+							o.transform.parent = dw._gameInstance.transform;
 							Color color = SettingColor (o, int.Parse (c [cnt++].ToString ()));
 							GameObject summon = (GameObject)Instantiate (SummonPref, o.transform.position, Quaternion.identity);
 							summon.GetComponent<ParticleSystem> ().startColor = color;
-							summon.transform.parent = dw.GameInstance.transform;
+							summon.transform.parent = dw._gameInstance.transform;
 							Destroy (summon, 2f);
 							n++;
                         }
@@ -277,7 +277,7 @@ public class ObstacleControllSync : MonoBehaviour {
 			while (true) {
 				if(gm._GameState.Value != GameState.Playing)
 					yield return new WaitForSeconds (SendObsInterval);
-			if (!dw.watching && dw.RoomMaster.Equals(dw.me.GetComponent<PlayerScript>().pd.id) && gm._GameState.Value == GameState.Playing) {
+			if (!dw._watching && dw._roomMaster.Equals(dw._me.GetComponent<PlayerScript>().PlayerData._id) && gm._GameState.Value == GameState.Playing) {
 
 				var data = new Dictionary<string,string> ();
 				data ["TYPE"] = "Obs";

@@ -95,8 +95,8 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
 			return;
 		}
         */
-        var state = dw.roomState;
-        dw.roomState = null;
+        var state = dw._roomState;
+        dw._roomState = null;
 
         //入室可能ルームが見つかったかどうか
         bool hit = false;
@@ -109,16 +109,16 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
                 if (roomName.Contains("[ROOM]"))
                 {
                     Debug.Log(roomName);
-                    if (dw.MAX > cnt)
+                    if (dw._max > cnt)
                     {
                         if (state.list[i]["playing"].ToString().Equals("false"))
                         {
-                            Debug.Log("Room:[" + roomName + "] " + cnt + "/" + dw.MAX);
+                            Debug.Log("Room:[" + roomName + "] " + cnt + "/" + dw._max);
                             //ルーム入室リクエスト送信（未確定）
                             var data = new Dictionary<string, string>();
                             data["to"] = roomName;
                             data["name"] = so.name;
-                            data["max"] = dw.MAX.ToString();
+                            data["max"] = dw._max.ToString();
                             so.EmitMessage("Quick", data);
                             hit = true;
                             break;
@@ -133,8 +133,8 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
             var data = new Dictionary<string, string>();
             data["to"] = "JOIN";
             data["name"] = so.name;
-            Debug.Log(dw.MAX);
-            data["max"] = dw.MAX.ToString();
+            Debug.Log(dw._max);
+            data["max"] = dw._max.ToString();
             so.EmitMessage("Quick", data);
         }
 
@@ -145,13 +145,13 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
     void RoomDataCheck()
     {
         Debug.Log("check");
-        if(dw.myRoom.cnt == dw.MAX)
+        if(dw._myRoom.cnt == dw._max)
         {
             time = 0;
             wait = true;
             //removeMenu02Players();
             //setMenu02Players();
-            dw.menuInvisible();
+            dw.MenuInvisible();
             /*
             time = 0;
             Debug.Log("comp");
@@ -201,7 +201,7 @@ public class RoomScript : SingletonMonoBehavior<RoomScript> {
 
     void setMenu02Players()
     {
-        for (int i=1; i<dw.myRoom.member.Count; i++){
+        for (int i=1; i<dw._myRoom.member.Count; i++){
             GameObject g = Instantiate(playerpref);
             playerInstance[i] = g;
             g.transform.parent = positions[i].transform;

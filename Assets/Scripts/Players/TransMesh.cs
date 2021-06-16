@@ -4,102 +4,93 @@ using UnityEngine;
 
 public class TransMesh : MonoBehaviour
 {
-    SocketObject so;
-    DataWorker dw;
-    PlayerScript ps;
+    [SerializeField] private Mesh _originMesh = default;
+    [SerializeField] private Material _mat = default;
+    [SerializeField] private GameObject _effect = default;
+    [SerializeField] bool _debug = false;
 
-    Dictionary<string, string> d;
+    private SocketObject _socketObject;
+    private DataWorker _dataWorker;
+    private PlayerScript _playerScript;
+    private Dictionary<string, string> _dictionary;
+    private SkinnedMeshRenderer _skinnedMesh;
+    private MeshCollider _meshCollider;
+    private Vector3[] _test;
+    private Mesh _copyMesh;
+    private Vector3 _start, _end;
+    private GameObject _target;
 
-    SkinnedMeshRenderer mf;
-    //MeshFilter mf;
-    MeshCollider mc;
-    Vector3[] test;
-
-
-    [SerializeField] Mesh originMesh;
-
-    [SerializeField] Material mat;
-
-    [SerializeField] GameObject effect;
-
-    Mesh copyMesh;
-
-    public Vector3 start, end;
-    public GameObject target;
-
-    [SerializeField] bool debug = false;
-
-    // Start is called before the first frame update
+    // _start is called before the first frame update
     void Start()
     {
-        so = SocketObject.Instance;
-        dw = DataWorker.Instance;
-        if (!debug)
-            ps = transform.parent.GetComponent<PlayerScript>();
+        _socketObject = SocketObject.Instance;
+        _dataWorker = DataWorker.Instance;
+        if (!_debug)
+            _playerScript = transform.parent.GetComponent<PlayerScript>();
 
-        copyMesh = Instantiate(originMesh);
-        mf = GetComponent<SkinnedMeshRenderer>();
-        mc = GetComponent<MeshCollider>();
-        mf.sharedMesh = copyMesh;
-        mf.sharedMesh.RecalculateBounds();
-        mf.sharedMesh.RecalculateNormals();
-        mc.sharedMesh = mf.sharedMesh;
+        _copyMesh = Instantiate(_originMesh);
+        _skinnedMesh = GetComponent<SkinnedMeshRenderer>();
+        _meshCollider = GetComponent<MeshCollider>();
+        _skinnedMesh.sharedMesh = _copyMesh;
+        _skinnedMesh.sharedMesh.RecalculateBounds();
+        _skinnedMesh.sharedMesh.RecalculateNormals();
+        _meshCollider.sharedMesh = _skinnedMesh.sharedMesh;
 
-        for(int i=0; i<GetComponent<Renderer>().sharedMaterials.Length; i++)
+        for (int i = 0; i < GetComponent<Renderer>().sharedMaterials.Length; i++)
         {
-            GetComponent<Renderer>().sharedMaterials[i] = mat;
+            GetComponent<Renderer>().sharedMaterials[i] = _mat;
         }
 
-        start = end = Vector3.zero;
-        if (!debug)
-            ps.model = this;
+        _start = _end = Vector3.zero;
+        if (!_debug)
+            _playerScript._transmesh = this;
 
     }
     // Update is called once per frame
     void Update()
     {
-        if (debug)
+        if (_debug)
             return;
 
-        if (start != Vector3.zero && end != Vector3.zero)
+        if (_start != Vector3.zero && _end != Vector3.zero)
         {
-            Vector3 startW = mf.transform.localToWorldMatrix.MultiplyPoint(start);
-            Vector3 endW = mf.transform.localToWorldMatrix.MultiplyPoint(end);
-            transformMesh(start, end);
-            if (ps.pd.isPlayer)
+            Vector3 _startW = _skinnedMesh.transform.localToWorldMatrix.MultiplyPoint(_start);
+            Vector3 _en_dataWorker = _skinnedMesh.transform.localToWorldMatrix.MultiplyPoint(_end);
+            TransformMesh(_start, _end);
+            if (_playerScript.PlayerData._isPlayer)
             {
-                Vector3 impact = (endW - startW).normalized;
+                Vector3 impact = (_en_dataWorker - _startW).normalized;
                 Debug.Log("impact");
-                transform.parent.gameObject.GetComponent<Rigidbody>().AddForce(ps.pd.getImpactVector(impact, target.GetComponent<PlayerScript>().pd), ForceMode.Impulse);
+                transform.parent.gameObject.GetComponent<Rigidbody>().AddForce(_playerScript.PlayerData.GetImpactVector(impact, _target.GetComponent<PlayerScript>().PlayerData), ForceMode.Impulse);
             }
-            Destroy(Instantiate(effect, endW, Quaternion.identity), 5);
-            start = end = Vector3.zero;
+            Destroy(Instantiate(_effect, _en_dataWorker, Quaternion.identity), 5);
+            _start = _end = Vector3.zero;
         }
     }
 
-    private void transformMesh(Vector3 start, Vector3 end)
+    internal void SetImpactData(Vector3 _start, Vector3 _end, GameObject target)
+    {
+        this._start = _start;
+        this._end = _end;
+        this._target = target;
+    }
+
+    private void TransformMesh(Vector3 _start, Vector3 _end)
     {
         //ローカル座標を受け取る
-        test = copyMesh.vertices;
-        for (int i = 0; i < test.Length; i++)
+        _test = _copyMesh.vertices;
+        for (int i = 0; i < _test.Length; i++)
         {
-            Vector3 transPoint = test[i];
-            float distance = Vector3.Distance(end, transPoint);
+            Vector3 transPoint = _test[i];
+            float distance = Vector3.Distance(_end, transPoint);
             if (distance < 5)
             {
-                test[i] += (transPoint - start).normalized * (1 / Mathf.Sqrt(distance * distance)) * Time.deltaTime;
+                _test[i] += (transPoint - _start).normalized * (1 / Mathf.Sqrt(distance * distance)) * Time.deltaTime;
             }
         }
-        mf.sharedMesh.vertices = test;
-        mf.sharedMesh.RecalculateBounds();    //メッシュコンポーネントのプロパティboundsを再計算する
-        mf.sharedMesh.RecalculateNormals();
-        mc.sharedMesh = mf.sharedMesh;
-    }
-
-    public void setImpactData(Vector3 start,Vector3 end,GameObject target)
-    {
-        this.start = start;
-        this.end = end;
-        this.target = target;
+        _skinnedMesh.sharedMesh.vertices = _test;
+        _skinnedMesh.sharedMesh.RecalculateBounds();    //メッシュコンポーネントのプロパティboundsを再計算する
+        _skinnedMesh.sharedMesh.RecalculateNormals();
+        _meshCollider.sharedMesh = _skinnedMesh.sharedMesh;
     }
 }
