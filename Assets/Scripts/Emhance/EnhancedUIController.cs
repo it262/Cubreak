@@ -4,42 +4,43 @@ using UnityEngine;
 
 public class EnhancedUIController : MonoBehaviour
 {
-    float attack = 50f;
-    float defence = 50f;
-    float speed = 50f;
+    internal static SocketObject _socketObject;
+    internal static DataWorker _dataWorker;
+    internal GameObject _attackUI, _diffenceUI, _speedUI;
 
-	public static SocketObject so;
-	public static DataWorker dw;
-    static GameManager gm;
-	PlayerScript mine;
-	PlayerData pd;
+    private static GameManager _gameManager;
 
-    public GameObject AttackUI, DiffenceUI, SpeedUI;
-	filledImage a,d,s;
+    private float _attack = 50f;
+    private float _defence = 50f;
+    private float _speed = 50f;
+    private PlayerScript _mine;
+    private filledImage _filledImageA, _filledImageD, _filledImageS;
+
     // Start is called before the first frame update
     void Start()
     {
-		so = SocketObject.Instance;
-		dw = DataWorker.Instance;
-        gm = GameManager.Instance;
-		a = AttackUI.GetComponent<filledImage> ();
-		d = DiffenceUI.GetComponent<filledImage> ();
-		s = SpeedUI.GetComponent<filledImage> ();
+        _socketObject = SocketObject.Instance;
+        _dataWorker = DataWorker.Instance;
+        _gameManager = GameManager.Instance;
+        _filledImageA = _attackUI.GetComponent<filledImage>();
+        _filledImageD = _diffenceUI.GetComponent<filledImage>();
+        _filledImageS = _speedUI.GetComponent<filledImage>();
     }
 
     // Update is called once per frame
     void Update()
     {
-		if (!so.id.Equals("") && dw.me != null) {
-			if (mine == null) {
-				mine = dw.me.GetComponent<PlayerScript> ();
-			}
-			pd = mine.pd;
-			fillUpdate (pd);
-		}
-        
+        if (!_socketObject.id.Equals("") && _dataWorker._me != null)
+        {
+            if (_mine == null)
+            {
+                _mine = _dataWorker._me.GetComponent<PlayerScript>();
+            }
+            FillUpdate(_mine.PlayerData);
+        }
+
     }
-	/*
+    /*
     public void ClickAttack()
     {
         attack += 2f;
@@ -67,9 +68,10 @@ public class EnhancedUIController : MonoBehaviour
 		fillUpdate ();
     }
 */
-	void fillUpdate(PlayerData state){
-		a.changeTargetAmount(state.atk);
-		d.changeTargetAmount(state.dif);
-		s.changeTargetAmount(state.spd);
-	}
+    private void FillUpdate(PlayerData state)
+    {
+        _filledImageA.changeTargetAmount(state._atk);
+        _filledImageD.changeTargetAmount(state._dif);
+        _filledImageS.changeTargetAmount(state._spd);
+    }
 }

@@ -21,9 +21,9 @@ public class DebugMAX : MonoBehaviour
 
 	public void changeField(){
 		if (int.TryParse (GetComponent<Text> ().text, out _MAX)) {
-			dw.MAX = (_MAX <= 0) ? 2 : _MAX;
+			dw._max = (_MAX <= 0) ? 2 : _MAX;
 		} else {
-			dw.MAX = 2;
+			dw._max = 2;
 		}
 	}
 }
